@@ -1,0 +1,11 @@
+﻿<Window x:Class="AlgoView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="300" Width="300">
+    <StackPanel Width="150">
+        <Button Content="Rodar AG" Margin="0,0,0,10" Click="Button_Click_1"/>
+        <Button Content="Rodar AG Performance" Margin="0,0,0,10" Click="Button_Click" Visibility="Collapsed"/>
+        <Button Content="Rodar DE" Margin="0,0,0,10" Click="DEClick"/>
+        <Button Content="Funções" Margin="0,0,0,10" Click="FuncoesClick"/>
+    </StackPanel>
+</Window>
