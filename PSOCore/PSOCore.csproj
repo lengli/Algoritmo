@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{773B29B4-113B-4D24-8F29-0C26C02907CF}</ProjectGuid>
+    <ProjectGuid>{EBC0B467-E91E-40D7-B688-77BFC49CBD75}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LocalCore</RootNamespace>
-    <AssemblyName>LocalCore</AssemblyName>
+    <RootNamespace>PSOCore</RootNamespace>
+    <AssemblyName>PSOCore</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,16 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuscaMutacao\MutacaoBinaria.cs" />
-    <Compile Include="BuscaMutacao\MutacaoReal.cs" />
-    <Compile Include="HillClimbing\RotinaHillClimbing.cs" />
-    <Compile Include="HillClimbing\ParametrosHillClimbing.cs" />
-    <Compile Include="LSChains\IndividuoLSChains.cs" />
-    <Compile Include="LSChains\ParametrosLSChains.cs" />
-    <Compile Include="LSChains\RotinaLSChains.cs" />
+    <Compile Include="RotinaPSO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AlgoCore\AlgoCore.csproj">
+      <Project>{9CCD02DB-7EF7-4482-B00B-A68F34548228}</Project>
+      <Name>AlgoCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlgoResult\AlgoResult.csproj">
       <Project>{81E003C6-F470-4C8B-BE08-B2184A9D649E}</Project>
       <Name>AlgoResult</Name>

@@ -72,6 +72,7 @@ namespace AlgoResult
             ID = NextID;
             Aptidao = double.MaxValue;
             Atributos = new List<Numero>();
+            ParamExtras = new Dictionary<string, object>();
         }
 
         public bool Proximo(double distancia, IndividuoBin ind2)
@@ -91,6 +92,7 @@ namespace AlgoResult
         public int ID { get; protected set; }
         public double Aptidao { get; set; }
         public List<Numero> Atributos { get; set; }
+        public Dictionary<string, object> ParamExtras { get; set; }
 
         public IndividuoBin Clone()
         {

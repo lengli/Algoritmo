@@ -8,6 +8,7 @@ using AlgoResult;
 using Functions;
 using LocalCore.HillClimbing;
 using LocalCore.LSChains;
+using LocalCore.BuscaMutacao;
 
 namespace AGCore
 {
@@ -144,15 +145,15 @@ namespace AGCore
             // busca local
             for (int z = 0; z < qtdMutLocal; z++)
             {
-                populacao[z] = AGOperadores.MutacaoLocal(populacao[z], FuncaoAptidao);
-                populacao[z] = AGOperadores.MutacaoLocal(populacao[z], FuncaoAptidao);
+                populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
+                populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
 
                 // +- 5% -> alta convergencia
-                populacao[z] = AGOperadores.MutacaoReal(populacao[z], FuncaoAptidao, (max - min) / 20);
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, (max - min) / 20);
                 // +- 0.1% - > exploração
-                populacao[z] = AGOperadores.MutacaoReal(populacao[z], FuncaoAptidao, (max - min) / 1000);
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, (max - min) / 1000);
                 // +- precisão - > explotação
-                populacao[z] = AGOperadores.MutacaoReal(populacao[z], FuncaoAptidao, Math.Pow(10, -precisao));
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, Math.Pow(10, -precisao));
             }
 
             // busca por hill climbing

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{773B29B4-113B-4D24-8F29-0C26C02907CF}</ProjectGuid>
+    <ProjectGuid>{9CCD02DB-7EF7-4482-B00B-A68F34548228}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LocalCore</RootNamespace>
-    <AssemblyName>LocalCore</AssemblyName>
+    <RootNamespace>AlgoCore</RootNamespace>
+    <AssemblyName>AlgoCore</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,13 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuscaMutacao\MutacaoBinaria.cs" />
-    <Compile Include="BuscaMutacao\MutacaoReal.cs" />
-    <Compile Include="HillClimbing\RotinaHillClimbing.cs" />
-    <Compile Include="HillClimbing\ParametrosHillClimbing.cs" />
-    <Compile Include="LSChains\IndividuoLSChains.cs" />
-    <Compile Include="LSChains\ParametrosLSChains.cs" />
-    <Compile Include="LSChains\RotinaLSChains.cs" />
+    <Compile Include="RotinaAlgo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +51,10 @@
     <ProjectReference Include="..\Functions\Functions.csproj">
       <Project>{C59A0912-6A0A-4FAF-AABC-C3C7A3471643}</Project>
       <Name>Functions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LocalCore\LocalCore.csproj">
+      <Project>{773B29B4-113B-4D24-8F29-0C26C02907CF}</Project>
+      <Name>LocalCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
