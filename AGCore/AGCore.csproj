@@ -45,6 +45,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AlgoCore\AlgoCore.csproj">
+      <Project>{9CCD02DB-7EF7-4482-B00B-A68F34548228}</Project>
+      <Name>AlgoCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlgoResult\AlgoResult.csproj">
       <Project>{81E003C6-F470-4C8B-BE08-B2184A9D649E}</Project>
       <Name>AlgoResult</Name>

@@ -6,8 +6,12 @@
         Title="MainWindow" Height="900" Width="900">
     <ScrollViewer>
         <StackPanel>
-            <TextBlock Text="Função aptidão" Width="250" Margin="3"></TextBlock>
-            <StackPanel Width="250" Margin="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel Width="350" Margin="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="Dimensão" Width="52" Margin="3"></TextBlock>
+                <TextBlock Text="Função aptidão" Margin="3"></TextBlock>
+            </StackPanel>
+            <StackPanel Width="350" Margin="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBox Margin="0,0,20,0" Width="40" x:Name="Dimensao" Text="30" />
                 <ComboBox Width="50" x:Name="FuncaoCombo">
                     <ComboBoxItem Content="F1"/>
                     <ComboBoxItem Content="F2"/>
@@ -22,6 +26,11 @@
                     <ComboBoxItem Content="F11"/>
                     <ComboBoxItem Content="F12"/>
                     <ComboBoxItem Content="F13"/>
+                </ComboBox>
+                <TextBlock Text="X" Margin="5,4,0,0"/>
+                <ComboBox SelectedIndex="1" Margin="5,0" x:Name="NVezes">
+                    <ComboBoxItem Content="1"/>
+                    <ComboBoxItem Content="30"/>
                 </ComboBox>
                 <Button Content="Rodar AG" Width="70" Margin="3,0,0,0" Click="Button_Click" />
                 <TextBlock Margin="30,3,0,0" x:Name="Tempo" />
@@ -44,9 +53,9 @@
                 <TextBox x:Name="ProbMutacao" Margin="10,3" Width="50" Text="0.05" />
                 <TextBox x:Name="QtdMutLocal" Margin="10,3" Width="95" Text="0" />
                 <CheckBox x:Name="Elitismo" Margin="10,5" Width="40" IsChecked="True"/>
-                <TextBox x:Name="CritParada" Margin="10,3" Width="85" Text="10" ToolTip="Número de iterações sem melhoras do melhor indivíduo" />
-                <TextBox x:Name="DeltaMedApt" Margin="10,3" Width="85" Text="0.001" />
-                <TextBox x:Name="MaxAval" Margin="10,3" Width="85" Text="0" />
+                <TextBox x:Name="CritParada" Margin="10,3" Width="85" Text="20" ToolTip="Número de iterações sem melhoras do melhor indivíduo" />
+                <TextBox x:Name="DeltaMedApt" Margin="10,3" Width="85" Text="0.00000001" />
+                <TextBox x:Name="MaxAval" Margin="10,3" Width="85" Text="300000" />
             </StackPanel>
             <StackPanel Margin="10,5,10,0" Orientation="Horizontal">
                 <TextBlock Text="Tabu" Margin="10,3" Width="35" />

@@ -37,7 +37,7 @@ namespace AlgoResult
             int nBits = NBits(max - min, _precisao);
 
             // valor normalizado
-            int valNorm = _valor - Convert.ToInt32(min * Math.Pow(10, _precisao));
+            int valNorm = Convert.ToInt32(_valor - min * Math.Pow(10, _precisao));
 
             // mapeando de acordo com o número de bits
             BitArray bits = new BitArray(BitConverter.GetBytes(valNorm));
@@ -64,12 +64,12 @@ namespace AlgoResult
             _valor = array[0] + Convert.ToInt32(min * Math.Pow(10, _precisao));
 
             // mapeando o valor
-            int deltaInt = Convert.ToInt32((max - min) * Math.Pow(10, _precisao));
+            double deltaInt = Convert.ToInt32((max - min) * Math.Pow(10, _precisao));
 
             // operador de correção
             if (_valor > deltaInt)
             {
-                int fora = _valor - deltaInt;
+                double fora = _valor - deltaInt;
                 // como se a dimensão inteira fosse circular:
                 // depois do valor max, viria o valor minimo
                 _valor = fora;
@@ -84,6 +84,6 @@ namespace AlgoResult
         }
 
         // valor x 10 elevado a precisão
-        private int _valor;
+        private double _valor;
     }
 }

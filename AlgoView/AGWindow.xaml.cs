@@ -46,6 +46,7 @@ namespace AlgoView
             double pm;
             double pc;
             int nPopMutLocal;
+            int dimensao;
             bool elitismo = Elitismo.IsChecked.Value;
             bool usarTabu = UsarTabu.IsChecked.Value;
             bool tabuNaPop = TabuNaPop.IsChecked.Value;
@@ -69,6 +70,7 @@ namespace AlgoView
             if (!int.TryParse(MaxRepop.Text, out maxRepop)) return;
             if (!int.TryParse(CritParada.Text, out critParada)) return;
             if (!int.TryParse(MaxAval.Text, out maxAval)) return;
+            if (!int.TryParse(Dimensao.Text, out dimensao)) return;
 
             if (HillClimbing.IsChecked.Value)
             {
@@ -78,7 +80,7 @@ namespace AlgoView
 
                 if (double.TryParse(AceleHill.Text.Replace(".", ","), out aceleracao) &&
                     double.TryParse(EpsilonHill.Text.Replace(".", ","), out epsilon) && int.TryParse(StepHill.Text, out step))
-                    hillClimbing = new ParametrosHillClimbing(aceleracao, epsilon, 30, step);
+                    hillClimbing = new ParametrosHillClimbing(aceleracao, epsilon, dimensao, step);
             }
 
             if (LSChains.IsChecked.Value)
@@ -90,39 +92,68 @@ namespace AlgoView
                     lsChains = new ParametrosLSChains(aceleracao, nIteracoes);
             }
 
-            AlgoInfo agInfo = new AGClassico(funcao).Rodar(
-                nPop, min, max, precisao, 30, nGeracoes, pc, pm, nPopMutLocal, elitismo, maxRepop, usarTabu, tabuNaPop, critParada,
-                hillClimbing, lsChains, maxAval, deltaMedApt, distTabu);
 
-            NGerMedio.Text = agInfo.Informacoes.Last().Geracao.ToString("0.00###");
-            MediaMelhores.Text = agInfo.Informacoes.Average(info => info.MelhorAptidao).ToString("0.00###");
-            STDMelhores.Text = Std(agInfo.Informacoes.Select(info => info.MelhorAptidao).ToList()).ToString("0.00###");
-            MelhorEntre30.Text = agInfo.Informacoes.Take(30).Min(info => info.MelhorAptidao).ToString("0.00###");
+            List<AlgoInfo> infos = new List<AlgoInfo>();
 
-            GerDoMelhor.Text = agInfo.GerDoMelhor.ToString();
-            MelhorAptidão.Text = agInfo.MelhorIndividuo.Aptidao.ToString("0.00###");
-
-            List<Point> medias = new List<Point>();
-            List<Point> melhores = new List<Point>();
-            List<Point> avaliacoes = new List<Point>();
-
-            int inc = Convert.ToInt32(Math.Ceiling(agInfo.Informacoes.Count / 700.0));
-
-            for (int i = 0; i < agInfo.Informacoes.Count; i += inc)
+            for (int i = 0; i < Convert.ToInt32(NVezes.Text); i++)
             {
-                medias.Add(new Point { X = i, Y = agInfo.Informacoes[i].Media });
-                melhores.Add(new Point { X = i, Y = agInfo.Informacoes[i].MelhorAptidao });
-                avaliacoes.Add(new Point { X = i, Y = agInfo.Informacoes[i].Avaliacoes });
+                AlgoInfo agInfo = new AGClassico(funcao).Rodar(
+                   nPop, min, max, precisao, dimensao, nGeracoes, pc, pm, nPopMutLocal, elitismo, maxRepop, usarTabu, tabuNaPop, critParada,
+                   hillClimbing, lsChains, maxAval, deltaMedApt, distTabu);
+                infos.Add(agInfo);
             }
 
-            SerieMedia.ItemsSource = medias;
-            SerieMelhor.ItemsSource = melhores;
-            SerieAvaliacoes.ItemsSource = avaliacoes;
+            //NGerMedio.Text = agInfo.Informacoes.Last().Geracao.ToString("0.00###");
+            //MediaMelhores.Text = agInfo.Informacoes.Average(info => info.MelhorAptidao).ToString("0.00###");
+            //STDMelhores.Text = Std(agInfo.Informacoes.Select(info => info.MelhorAptidao).ToList()).ToString("0.00###");
+            //MelhorEntre30.Text = agInfo.Informacoes.Take(30).Min(info => info.MelhorAptidao).ToString("0.00###");
+            //GerDoMelhor.Text = agInfo.GerDoMelhor.ToString();
+            //MelhorAptidão.Text = agInfo.MelhorIndividuo.Aptidao.ToString("0.00###");
+            //NAval.Text = agInfo.Informacoes.First(info => info.Geracao == agInfo.GerDoMelhor).Avaliacoes.ToString();
+            NGerMedio.Text = infos.Average(x => x.GerDoMelhor).ToString("0.00000000");
+            MediaMelhores.Text = infos.Average(x => x.MelhorIndividuo.Aptidao).ToString("0.00000000");
+            STDMelhores.Text = Std(infos.Select(info => info.MelhorIndividuo.Aptidao).ToList()).ToString("0.00000000");
+            //MelhorEntre30.Text = agInfo.Informacoes.Take(30).Min(info => info.MelhorAptidao).ToString("0.0000");
+            // média do n. de aval.
+            NAval.Text = infos.Average(x => x.Informacoes.First(info => info.Geracao == x.GerDoMelhor).Avaliacoes).ToString("0.00000000");
+
+            int rodadaDoMelhor = 0;
+            int gerDoMelhor = 0;
+            double melhorAptidao = double.MaxValue;
+            double melhor = infos.Min(info => info.MelhorIndividuo.Aptidao);
+            for (; rodadaDoMelhor < infos.Count; rodadaDoMelhor++)
+            {
+                if (infos[rodadaDoMelhor].MelhorIndividuo.Aptidao <= melhor)
+                {
+                    melhorAptidao = infos[rodadaDoMelhor].MelhorIndividuo.Aptidao;
+                    gerDoMelhor = infos[rodadaDoMelhor].Informacoes.Last().Geracao;
+                    break;
+                }
+            }
+
+            GerDoMelhor.Text = gerDoMelhor.ToString();
+            MelhorAptidão.Text = melhorAptidao.ToString("0.00000000");
+
+            //List<Point> medias = new List<Point>();
+            //List<Point> melhores = new List<Point>();
+            //List<Point> avaliacoes = new List<Point>();
+
+            //int inc = Convert.ToInt32(Math.Ceiling(agInfo.Informacoes.Count / 700.0));
+
+            //for (int i = 0; i < agInfo.Informacoes.Count; i += inc)
+            //{
+            //    medias.Add(new Point { X = i, Y = agInfo.Informacoes[i].Media });
+            //    melhores.Add(new Point { X = i, Y = agInfo.Informacoes[i].MelhorAptidao });
+            //    avaliacoes.Add(new Point { X = i, Y = agInfo.Informacoes[i].Avaliacoes });
+            //}
+
+            //SerieMedia.ItemsSource = medias;
+            //SerieMelhor.ItemsSource = melhores;
+            //SerieAvaliacoes.ItemsSource = avaliacoes;
 
             TimeSpan deltaTempo = DateTime.Now - inicio;
             Tempo.Text = deltaTempo.TotalSeconds.ToString();
 
-            NAval.Text = agInfo.Informacoes.First(info => info.Geracao == agInfo.GerDoMelhor).Avaliacoes.ToString();
         }
 
         private double Std(List<double> els)

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgoUtil.cs" />
     <Compile Include="RotinaAlgo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -8,14 +8,10 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace AlgoView
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -23,24 +19,14 @@ namespace AlgoView
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            new PerformanceWindow().Show();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            new AGWindow().Show();
-        }
-
-        private void DEClick(object sender, RoutedEventArgs e)
-        {
-            new DEWindow().Show();
-        }
-
         private void FuncoesClick(object sender, RoutedEventArgs e)
         {
             new FuncoesWindow().Show();
+        }
+
+        private void PSOClick(object sender, RoutedEventArgs e)
+        {
+            new AlgoWindow().Show();
         }
     }
 }

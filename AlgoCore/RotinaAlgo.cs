@@ -25,8 +25,9 @@ namespace AlgoCore
         protected double _min;
         protected double _max;
         protected int _nAtributos;
-        protected int _precisao;
         protected double _distTabu;
+        protected int _gerSemMelhorar;
+        protected double _margemComp;
         protected Random rand = new Random(DateTime.Now.Millisecond);
         protected List<IndividuoBin> individuosTabu = new List<IndividuoBin>();
 
@@ -43,20 +44,24 @@ namespace AlgoCore
         }
 
         public AlgoInfo Rodar(int geracoesMAx, int tamanhoPop, double min, double max, int nAtributos, int precisao,
-            int maxAvaliacoes, bool usarTabu, double distTabu, int nMaxRepop, bool tabuNaPop, ParametrosHillClimbing hillClimbing = null,
+            int maxAvaliacoes, bool usarTabu, double distTabu, int nMaxRepop, int gerSemMelhorar, double margemComp, bool tabuNaPop, ParametrosHillClimbing hillClimbing = null,
             ParametrosLSChains lsChains = null, int qtdMutLocal = 0)
         {
+            IndividuoBin.Precisao = precisao;
             _maxAval = maxAvaliacoes;
             _geracoesMAx = geracoesMAx;
             _tamanhoPop = tamanhoPop;
             _min = min;
             _max = max;
             _nAtributos = nAtributos;
-            _precisao = precisao;
             _distTabu = distTabu;
+            _margemComp = margemComp;
+            _gerSemMelhorar = gerSemMelhorar;
 
             AlgoInfo agInfo = new AlgoInfo();
             List<IndividuoBin> populacao = PopulacaoAleatoria(tamanhoPop, min, max, nAtributos, precisao, lsChains != null);
+
+            InicializarAlgoritmo(populacao);
 
             // avaliação da população inicial
             foreach (IndividuoBin individuo in populacao)
@@ -66,7 +71,7 @@ namespace AlgoCore
             {
                 if (_maxAval != 0 && _avaliacoes >= _maxAval) break;
 
-                // avaliara individuos novos
+                // avaliará individuos novos
                 foreach (IndividuoBin individuo in populacao.Where(p => p.Aptidao == double.MaxValue))
                     individuo.Aptidao = FuncaoAptidao(individuo.Atributos.Select(n => n.ValorReal).ToList());
 
@@ -152,10 +157,23 @@ namespace AlgoCore
         }
 
         protected abstract bool CriterioDeParada(AlgoInfo agInfo);
-        protected abstract bool CriterioRepopular(AlgoInfo agInfo, int ultimaRepop);
         protected abstract void InicializarAlgoritmo(List<IndividuoBin> populacao);
         protected abstract void ExecutarAlgoritmo(List<IndividuoBin> populacao);
 
+        private bool CriterioRepopular(AlgoInfo agInfo, int ultimaRepop)
+        {
+            // n gerações sem melhoras do melhor
+            double melhorAptidao = agInfo.Informacoes.Last().MelhorAptidao;
+            int contarMelhor = 1;
+            for (int j = agInfo.Informacoes.Count - 2; j >= ultimaRepop; j--)
+            {
+                if (agInfo.Informacoes[j].MelhorAptidao <= melhorAptidao + _margemComp) contarMelhor++;
+                else break;
+            }
+
+            if (contarMelhor >= _gerSemMelhorar) return true;
+            return false;
+        }
 
         private List<IndividuoBin> PopulacaoAleatoria<T>(int nPop, double min, double max, int nAtributos, int precisao,
             List<IndividuoBin> tabu = null) where T : IndividuoBin, new()

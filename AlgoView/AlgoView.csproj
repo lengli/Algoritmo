@@ -56,11 +56,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AGWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="DEWindow.xaml">
+    <Page Include="AlgoWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -72,15 +68,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AGWindow.xaml.cs">
-      <DependentUpon>AGWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DEWindow.xaml.cs">
-      <DependentUpon>DEWindow.xaml</DependentUpon>
+    <Compile Include="AlgoWindow.xaml.cs">
+      <DependentUpon>AlgoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="FuncoesWindow.xaml.cs">
       <DependentUpon>FuncoesWindow.xaml</DependentUpon>
@@ -89,15 +82,8 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PerformanceWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PerformanceWindow.xaml.cs">
-      <DependentUpon>PerformanceWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -127,6 +113,10 @@
       <Project>{F8721596-EA7C-4461-932E-24B62096D842}</Project>
       <Name>AGCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AlgoCore\AlgoCore.csproj">
+      <Project>{9CCD02DB-7EF7-4482-B00B-A68F34548228}</Project>
+      <Name>AlgoCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlgoResult\AlgoResult.csproj">
       <Project>{81E003C6-F470-4C8B-BE08-B2184A9D649E}</Project>
       <Name>AlgoResult</Name>
@@ -142,6 +132,10 @@
     <ProjectReference Include="..\LocalCore\LocalCore.csproj">
       <Project>{773B29B4-113B-4D24-8F29-0C26C02907CF}</Project>
       <Name>LocalCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PSOCore\PSOCore.csproj">
+      <Project>{EBC0B467-E91E-40D7-B688-77BFC49CBD75}</Project>
+      <Name>PSOCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

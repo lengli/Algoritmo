@@ -1,0 +1,200 @@
+﻿<Window x:Class="AlgoView.AlgoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dvc="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:dv="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        Title="Algoritmos" Height="720" Width="980">
+    <ScrollViewer>
+        <StackPanel>
+            <Border BorderBrush="Gray" BorderThickness="0,0,0,1">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <StackPanel x:Name="DEPanel" Visibility="Collapsed">
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBlock Text="Prob Cross" Margin="10,3" Width="65" />
+                            <TextBlock Text="Fator F" Margin="10,3" Width="65" />
+                            <TextBlock Text="Tipo de Seleção" Margin="10,3" Width="85" />
+                        </StackPanel>
+                        <StackPanel Margin="10,5,0,10" Orientation="Horizontal">
+                            <TextBox x:Name="ProbCrossDE" Margin="10,3" Width="65" Text="0.1" />
+                            <TextBox x:Name="FatorF" Margin="10,3" Width="65" Text="0.28" />
+                            <ComboBox x:Name="TipoSelecao" Margin="10,3" Width="85">
+                                <ComboBoxItem Content="Rand"/>
+                                <ComboBoxItem Content="Best"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel x:Name="AGPanel" Visibility="Collapsed">
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBlock Text="Prob Cross" Margin="10,3" Width="65" />
+                            <TextBlock Text="Tipo de Cross" Margin="10,3" Width="70" />
+                            <TextBlock Text="Prob Mut" Margin="10,3" Width="50" />
+                            <TextBlock Text="Ind s/ melhoras" Margin="10,3" Width="85" />
+                            <TextBlock Text="Media - Aptidao" Margin="10,3" Width="85" />
+                        </StackPanel>
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBox x:Name="ProbCrossover" Margin="10,3" Width="65" Text="0.9" />
+                            <ComboBox Margin="10,3" Width="70" x:Name="CrossType" >
+                                <ComboBoxItem Content="Binário" Tag="0"/>
+                                <ComboBoxItem Content="Arimético" Tag="1"/>
+                                <ComboBoxItem Content="Heurístico" Tag="2"/>
+                            </ComboBox>
+                            <TextBox x:Name="ProbMutacao" Margin="10,3" Width="50" Text="0.05" />
+                            <TextBox x:Name="CritParada" Margin="10,3" Width="85" Text="20" ToolTip="Número de iterações sem melhoras do melhor indivíduo" />
+                            <TextBox x:Name="DeltaMedApt" Margin="10,3" Width="85" Text="0.00000001" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel x:Name="PsoPanel" Visibility="Collapsed">
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBlock Text="Ponderação" Margin="10,3" Width="60"/>
+                            <TextBlock Text="Φ1" Margin="10,3" Width="30"/>
+                            <TextBlock Text="Φ2" Margin="10,3" Width="30"/>
+                            <TextBlock Text="Craziness 1" Margin="10,3" Width="60"/>
+                            <TextBlock Text="Craziness 2" Margin="10,3" Width="60"/>
+                            <TextBlock Text="K (Coef Constr)" Margin="10,3" Width="80"/>
+                            <TextBlock Text="N Vizinhos" Margin="10,3" Width="60"/>
+                        </StackPanel>
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBox Text="0.5" x:Name="FatorPond" Margin="10,3" Width="60"/>
+                            <TextBox Text="0.7" x:Name="Fi1" Margin="10,3" Width="30"/>
+                            <TextBox Text="1.494" x:Name="Fi2" Margin="10,3" Width="30"/>
+                            <CheckBox IsChecked="True" x:Name="Rand1" Margin="10,5" Width="60"/>
+                            <CheckBox IsChecked="True" x:Name="Rand2" Margin="10,5" Width="60"/>
+                            <TextBox Text="0" x:Name="KConstr" Margin="10,3" Width="80"/>
+                            <TextBox Text="6" x:Name="NVizinhos" Margin="10,3" Width="60"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <StackPanel Margin="10,5,10,0" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Text="Algoritmo" Margin="10,3"  Width="60"/>
+                            <TextBlock Text="Função aptidão" Margin="10,3"  Width="80"/>
+                        </StackPanel>
+                        <StackPanel Margin="10,5,10,0" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <ComboBox x:Name="AlgoCombo" Margin="10,3"  Width="60" SelectionChanged="AlgoComboSelectionChanged">
+                                <ComboBoxItem Content="AG"/>
+                                <ComboBoxItem Content="DE"/>
+                                <ComboBoxItem Content="PSO"/>
+                            </ComboBox>
+                            <ComboBox Width="40" Margin="10,3" x:Name="FuncaoCombo">
+                                <ComboBoxItem Content="F1"/>
+                                <ComboBoxItem Content="F2"/>
+                                <ComboBoxItem Content="F3"/>
+                                <ComboBoxItem Content="F4"/>
+                                <ComboBoxItem Content="F5"/>
+                                <ComboBoxItem Content="F6"/>
+                                <ComboBoxItem Content="F7"/>
+                                <ComboBoxItem Content="F8"/>
+                                <ComboBoxItem Content="F9"/>
+                                <ComboBoxItem Content="F10"/>
+                                <ComboBoxItem Content="F11"/>
+                                <ComboBoxItem Content="F12"/>
+                                <ComboBoxItem Content="F13"/>
+                            </ComboBox>
+                            <TextBlock Text="X" Margin="0,5,4,0"/>
+                            <ComboBox SelectedIndex="1" Margin="5,0" x:Name="NVezes">
+                                <ComboBoxItem Content="1"/>
+                                <ComboBoxItem Content="30"/>
+                            </ComboBox>
+                            <Button Content="Rodar Algoritmo" Width="95" Margin="4,0,0,0" Click="Button_Click" />
+                            <TextBlock Margin="10,5,10,0" x:Name="Tempo" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <StackPanel Margin="10,5,10,0" Orientation="Horizontal">
+                <TextBlock Text="N População" Margin="10,3" Width="65" />
+                <TextBlock Text="Precisão (int)" Margin="10,3" Width="70" />
+                <TextBlock Text="Max Gerações" Margin="10,3" Width="70" />
+                <TextBlock Text="Max Avaliações" Margin="10,3" Width="80" />
+                <TextBlock Text="Tabu" Margin="10,3" Width="30" />
+                <TextBlock Text="Ger s/ melhorar" Margin="10,3" Width="80" />
+                <TextBlock Text="Margem comp." Margin="10,3" Width="80" />
+                <TextBlock Text="Max Repop" Margin="10,3" Width="60" />
+                <TextBlock Text="Incluir tabu" Margin="10,3" Width="60" />
+                <TextBlock Text="Dist Tabu" Margin="10,3" Width="55" />
+            </StackPanel>
+            <StackPanel Margin="10,3,10,10" Orientation="Horizontal">
+                <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="100" />
+                <TextBox x:Name="Precisao" Margin="10,3" Width="70" Text="2" />
+                <TextBox x:Name="MaxGer" Margin="10,3" Width="70" Text="300" />
+                <TextBox x:Name="MaxAval" Margin="10,3" Width="80" Text="16000" />
+                <CheckBox x:Name="UsarTabu" Margin="10,5" Width="30" IsChecked="False"  />
+                <TextBox x:Name="GerSMelhor" Margin="10,3" Width="80" Text="5" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
+                <TextBox x:Name="MargemComp" Margin="10,3" Width="80" Text="0.0001" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
+                <TextBox x:Name="MaxRepop" Margin="10,3" Width="60" Text="5" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
+                <CheckBox x:Name="TabuNaPop" Margin="10,5" Width="60" IsChecked="False" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}"  />
+                <TextBox x:Name="DistTabu" Margin="10,3" Width="55" Text="0.001" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
+            </StackPanel>
+            <StackPanel Margin="10,5,10,0" Orientation="Horizontal">
+                <TextBlock Text="Hill Climbing" Margin="10,3" Width="70" />
+                <TextBlock Text="N individuos" Margin="10,3" Width="75" />
+                <TextBlock Text="Aceleração" Margin="10,3" Width="65" />
+                <TextBlock Text="Epsilon" Margin="10,3" Width="50" />
+                <TextBlock Text="Step Atributos" Margin="10,3" Width="80" />
+                <TextBlock Text="LS Chains" Margin="10,3" Width="55" />
+                <TextBlock Text="Aceleração" Margin="10,3" Width="65" />
+                <TextBlock Text="N Iterações" Margin="10,3" Width="70" />
+                <TextBlock Text="N Mut Busca local" Margin="10,3" Width="95" />
+            </StackPanel>
+            <StackPanel Margin="10,3,10,20" Orientation="Horizontal">
+                <CheckBox x:Name="HillClimbing" Margin="10,3" Width="70" />
+                <TextBox x:Name="NindivHill" Margin="10,3" Width="75" Text="1"  IsEnabled="{Binding IsChecked, ElementName=HillClimbing}"/>
+                <TextBox x:Name="AceleHill" Margin="10,3" Width="65" Text="1"  IsEnabled="{Binding IsChecked, ElementName=HillClimbing}"/>
+                <TextBox x:Name="EpsilonHill" Margin="10,3" Width="50" Text="0.05" IsEnabled="{Binding IsChecked, ElementName=HillClimbing}" />
+                <TextBox x:Name="StepHill" Margin="10,3" Width="80" Text="1"  IsEnabled="{Binding IsChecked, ElementName=HillClimbing}"/>
+                <CheckBox x:Name="LSChains" Margin="10,5" Width="55" IsChecked="False"/>
+                <TextBox x:Name="AceleLSChains" Margin="10,3" Width="65" Text="1" IsEnabled="{Binding IsChecked, ElementName=LSChains}" />
+                <TextBox x:Name="NIterLSChains" Margin="10,5" Width="70" Text="3" IsEnabled="{Binding IsChecked, ElementName=LSChains}"  />
+                <TextBox x:Name="QtdMutLocal" Margin="10,3" Width="95" Text="0" />
+            </StackPanel>
+            <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
+                <TextBlock Text="No de Gerações" Margin="10,3" Width="119" />
+                <TextBlock Text="Média dos melhores" Margin="10,3" Width="102" />
+                <TextBlock Text="STD melhores" Margin="10,3" Width="74" />
+                <TextBlock Text="Melhor dentre 30" Margin="10,3" Width="89" />
+                <TextBlock Text="Melhor Aptidão" Margin="10,3" Width="85" />
+                <TextBlock Text="Geração do melhor" Margin="10,3" Width="95" />
+                <TextBlock Text="N Avaliações" Margin="10,3" Width="70" />
+            </StackPanel>
+            <StackPanel Margin="10,3,10,20" Orientation="Horizontal">
+                <TextBlock x:Name="NGerMedio" Margin="10,3" Width="119" />
+                <TextBlock x:Name="MediaMelhores" Margin="10,3" Width="102" />
+                <TextBlock x:Name="STDMelhores" Margin="10,3" Width="74" />
+                <TextBlock x:Name="MelhorEntre30" Margin="10,3" Width="89" />
+                <TextBlock x:Name="MelhorAptidão" Margin="10,3" Width="85" />
+                <TextBlock x:Name="GerDoMelhor" Margin="10,3" Width="95" />
+                <TextBlock x:Name="NAval" Margin="10,3" Width="70" />
+            </StackPanel>
+            <dvc:Chart Height="200">
+                <dvc:Chart.Series>
+                    <dvc:LineSeries Title="Média" x:Name="SerieMedia"
+                                IndependentValueBinding="{Binding Path=X}"
+                                DependentValueBinding="{Binding Path=Y}"/>
+                    <dvc:LineSeries Title="Melhor" x:Name="SerieMelhor"
+                                IndependentValueBinding="{Binding Path=X}"
+                                DependentValueBinding="{Binding Path=Y}">
+                        <dvc:LineSeries.DataPointStyle>
+                            <Style TargetType="dvc:LineDataPoint">
+                                <Setter Property="Width" Value="2"/>
+                                <Setter Property="Height" Value="2"/>
+                            </Style>
+                        </dvc:LineSeries.DataPointStyle>
+                    </dvc:LineSeries>
+                </dvc:Chart.Series>
+            </dvc:Chart>
+            <dvc:Chart Height="200">
+                <dvc:Chart.Series>
+                    <dvc:LineSeries Title="Avaliacoes" x:Name="SerieAvaliacoes"
+                                IndependentValueBinding="{Binding Path=X}"
+                                DependentValueBinding="{Binding Path=Y}">
+                        <dvc:LineSeries.DataPointStyle>
+                            <Style TargetType="dvc:LineDataPoint">
+                                <Setter Property="Width" Value="2"/>
+                                <Setter Property="Height" Value="2"/>
+                            </Style>
+                        </dvc:LineSeries.DataPointStyle>
+                    </dvc:LineSeries>
+                </dvc:Chart.Series>
+            </dvc:Chart>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

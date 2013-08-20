@@ -26,6 +26,7 @@
                 <Button Content="Mostrar Função" Width="120" Margin="3,0,0,0" Click="Button_Click" />
                 <TextBlock Margin="30,3,0,0" x:Name="Tempo" />
             </StackPanel>
+            
             <dvc:Chart Height="300">
                 <dvc:Chart.Series>
                     <dvc:LineSeries Title="Aptidao" x:Name="Grafico"

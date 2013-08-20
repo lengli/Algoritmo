@@ -31,11 +31,6 @@ namespace PSOCore
             return false;
         }
 
-        protected override bool CriterioRepopular(AlgoInfo agInfo, int ultimaRepop)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void InicializarAlgoritmo(List<IndividuoBin> populacao)
         {
             GerarVelocidadesIniciais(_nAtributos, populacao);
@@ -43,10 +38,11 @@ namespace PSOCore
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-            IndividuoBin pi = populacao.OrderBy(p => p.Aptidao).First();
 
             foreach (IndividuoBin individuo in populacao)
             {
+                IndividuoBin pi = populacao.OrderBy(p => p.Aptidao).First();
+
                 var vizinhos = populacao.OrderBy(ind => ind.DistEuclidiana(individuo)).Take(_nVizinhos);
                 IndividuoBin pg = vizinhos.OrderBy(v => v.Aptidao).First();
 
@@ -56,8 +52,13 @@ namespace PSOCore
                     velocidade[i] = _fatorPond * velocidade[i];
                     velocidade[i] += _fi1 * (pi.Valor(i) - individuo.Valor(i)) * (usarRand1 ? rand.NextDouble() : 1);
                     velocidade[i] += _fi2 * (pg.Valor(i) - individuo.Valor(i)) * (usarRand2 ? rand.NextDouble() : 1);
-                    individuo.Atributos[i].ValorReal = individuo.Valor(i) + velocidade[i];
+                    velocidade[i] *= CoefConstr();
+                    double novoValor = individuo.Valor(i) + velocidade[i];
+                    if (novoValor <= IndividuoBin.Minimo) novoValor = IndividuoBin.Minimo;
+                    else if (novoValor >= IndividuoBin.Maximo) novoValor = IndividuoBin.Maximo;
+                    individuo.Atributos[i].ValorReal = novoValor;
                 }
+                individuo.Aptidao = FuncaoAptidao(individuo.Atributos.Select(n => n.ValorReal).ToList());
             }
         }
 
@@ -76,6 +77,7 @@ namespace PSOCore
 
         private double CoefConstr()
         {
+            if (_coefKConstr <= 0) return 1;
             double fi = _fi1 + _fi2;
             if (fi <= 4) return Math.Sqrt(_coefKConstr);
 
@@ -91,11 +93,11 @@ namespace PSOCore
 
                 for (int i = 0; i < nAtributos; i++)
                 {
-                    double r = rand.NextDouble();
-                    r *= (_max - _min);
-                    r += _min;
+                    //double r = rand.NextDouble();
+                    //r *= (_max - _min);
+                    //r += _min;
 
-                    ((List<double>)individuo.ParamExtras[propVelocidade]).Add(r);
+                    ((List<double>)individuo.ParamExtras[propVelocidade]).Add(0);
                 }
             }
         }

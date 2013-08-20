@@ -45,8 +45,6 @@ namespace AlgoResult
                     double next = rand.NextDouble();
                     next *= (max - min);
                     next += min;
-                    if (next > 500)
-                    { }
                     ind.Atributos.Add(new Numero(precisao) { ValorReal = next });
                 }
 
@@ -91,7 +89,21 @@ namespace AlgoResult
 
         public int ID { get; protected set; }
         public double Aptidao { get; set; }
-        public List<Numero> Atributos { get; set; }
+        private List<Numero> _atributos;
+        public List<Numero> Atributos
+        {
+            get
+            {
+                return _atributos;
+            }
+            set
+            {
+                // reconstroi o individuo
+                ID = NextID;
+                Aptidao = double.MaxValue;
+                _atributos = value;
+            }
+        }
         public Dictionary<string, object> ParamExtras { get; set; }
 
         public IndividuoBin Clone()
@@ -100,7 +112,7 @@ namespace AlgoResult
             foreach (Numero num in Atributos)
                 novosAtributos.Add(new Numero(Precisao) { ValorReal = num.ValorReal });
 
-            return new IndividuoBin { ID = ID, Aptidao = Aptidao, Atributos = novosAtributos };
+            return new IndividuoBin { ID = ID, Aptidao = Aptidao, Atributos = novosAtributos, ParamExtras = ParamExtras };
         }
 
         private List<bool> _cromossomo = null;
