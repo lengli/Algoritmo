@@ -169,6 +169,8 @@ namespace AlgoView
             Pior_Aval.Text = string.Format("{0} ({1})", piorRodada.MelhorIndividuo.Aptidao, piorRodada.AvalParaMelhor);
             MediaMelhor_MediaAval.Text = string.Format("{0} ({1})", mediaMelhores, mediaAval);
             TxSucesso.Text = string.Format("{0:0.00%}", txSucesso);
+            StdMelhor_StdAval.Text = string.Format("{0} ({1})", Std(infos.Select(info => info.MelhorIndividuo.Aptidao).ToList()),
+                Std(infos.Select(info => (double)info.AvalParaMelhor).ToList()));
         }
 
         private void ExibirUmaRodada(AlgoInfo agInfo)
