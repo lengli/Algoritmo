@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace AlgoResult
 {
-    public class Numero
+    public class NumeroBinario
     {
         public static int NBits(double delta, int precisao)
         {
@@ -27,7 +27,7 @@ namespace AlgoResult
                 // salvar o valor como inteiro, considerando a precisão
                 double valor = value;
                 valor *= Math.Pow(10, _precisao);
-                _valor = Convert.ToInt32(valor);
+                _valor = valor;
             }
         }
 
@@ -78,7 +78,7 @@ namespace AlgoResult
 
         private int _precisao;
 
-        public Numero(int precisao)
+        public NumeroBinario(int precisao)
         {
             _precisao = precisao;
         }

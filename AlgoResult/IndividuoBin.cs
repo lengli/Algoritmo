@@ -45,7 +45,7 @@ namespace AlgoResult
                     double next = rand.NextDouble();
                     next *= (max - min);
                     next += min;
-                    ind.Atributos.Add(new Numero(precisao) { ValorReal = next });
+                    ind.Atributos.Add(next);
                 }
 
                 if (tabu != null)
@@ -69,7 +69,7 @@ namespace AlgoResult
         {
             ID = NextID;
             Aptidao = double.MaxValue;
-            Atributos = new List<Numero>();
+            Atributos = new List<double>();
             ParamExtras = new Dictionary<string, object>();
         }
 
@@ -79,7 +79,7 @@ namespace AlgoResult
             double sqrSum = 0;
             for (int i = 0; i < Atributos.Count; i++)
             {
-                sqrSum += Math.Pow(Atributos[i].ValorReal - ind2.Atributos[i].ValorReal, 2);
+                sqrSum += Math.Pow(Atributos[i] - ind2.Atributos[i], 2);
             }
 
             sqrSum = Math.Sqrt(sqrSum);
@@ -89,8 +89,8 @@ namespace AlgoResult
 
         public int ID { get; protected set; }
         public double Aptidao { get; set; }
-        private List<Numero> _atributos;
-        public List<Numero> Atributos
+        private List<double> _atributos;
+        public List<double> Atributos
         {
             get
             {
@@ -108,13 +108,15 @@ namespace AlgoResult
 
         public IndividuoBin Clone()
         {
-            List<Numero> novosAtributos = new List<Numero>();
-            foreach (Numero num in Atributos)
-                novosAtributos.Add(new Numero(Precisao) { ValorReal = num.ValorReal });
+            List<double> novosAtributos = new List<double>();
+            foreach (double num in Atributos)
+                novosAtributos.Add(num);
 
-            return new IndividuoBin { ID = ID, Aptidao = Aptidao, Atributos = novosAtributos, ParamExtras = ParamExtras };
+            IndividuoBin individuo = new IndividuoBin { ID = ID, Atributos = novosAtributos, ParamExtras = ParamExtras };
+            individuo.Aptidao = Aptidao;
+            return individuo;
         }
-
+        /*
         private List<bool> _cromossomo = null;
         public List<bool> Cromossomo
         {
@@ -126,7 +128,7 @@ namespace AlgoResult
                 _cromossomo = new List<bool>();
 
                 // encadeia os números como cadeia de bits
-                foreach (Numero at in Atributos)
+                foreach (double at in Atributos)
                     _cromossomo.AddRange(at.GetBits(Maximo, Minimo));
 
                 return _cromossomo;
@@ -148,7 +150,6 @@ namespace AlgoResult
                 _cromossomo = null;
             }
         }
-
         public double Valor(int indiceAtributo)
         {
             return Atributos[indiceAtributo].ValorReal;
@@ -162,5 +163,6 @@ namespace AlgoResult
             if (Atributos.Any(a => a.ValorReal > IndividuoBin.Maximo || a.ValorReal < IndividuoBin.Minimo))
                 Cromossomo = tempCromo;
         }
+        */
     }
 }

@@ -37,8 +37,8 @@ namespace LocalCore.HillClimbing
 
                     for (int j = 0; j < 3; j++)
                     {
-                        // atributos para serem comparados
-                        List<double> atts = novoIndiv.Atributos.Select(at => at.ValorReal).ToList();
+                        // atributos para serem comparados - criando uma cópia da lista
+                        List<double> atts = novoIndiv.Atributos.Select(at => at).ToList();
 
                         atts[i] += parametros.StepAtributos[i] * candidatos[j];
                         double apt = FuncApt(atts);
@@ -53,7 +53,7 @@ namespace LocalCore.HillClimbing
                     // escolha do melhor fator entre os "candidatos"
                     if (melhor != -1)
                     {
-                        novoIndiv.Atributos[i].ValorReal = novoIndiv.Atributos[i].ValorReal + parametros.StepAtributos[i] * candidatos[melhor];
+                        novoIndiv.Atributos[i] = novoIndiv.Atributos[i] + parametros.StepAtributos[i] * candidatos[melhor];
                         novoIndiv.Aptidao = melhorApt;
                     }
                 }

@@ -17,13 +17,14 @@ namespace AGCore
 
     public class AGClassico : RotinaAlgo
     {
-        public AGClassico(FuncAptidao funcao, double probCrossover, double probMutacao, double deltaMedApt, int critParada, CrossType crossType)
+        public AGClassico(FuncAptidao funcao, double probCrossover, double probMutacao, double rangeMutacao, double deltaMedApt, int critParada, CrossType crossType)
             : base(funcao)
         {
             this.probCrossover = probCrossover;
             this.probMutacao = probMutacao;
             this.deltaMedApt = deltaMedApt;
             this.critParada = critParada;
+            this.rangeMutacao = rangeMutacao;
             this.crossType = crossType;
             erroPrecisao = Math.Pow(10, -IndividuoBin.Precisao);
         }
@@ -33,12 +34,12 @@ namespace AGCore
             List<double> probAcum = AGOperadores.MetodoDaRoleta(populacao.Select(ind => ind.Aptidao).ToList());
             List<IndividuoBin> popInterm = AGOperadores.SelecaoPopulacaoIntermediaria(probAcum, populacao);
             AGOperadores.Crossover(popInterm, probCrossover, crossType);
-            AGOperadores.Mutacao(popInterm, probMutacao);
+            AGOperadores.MutacaoReal(popInterm, probMutacao, rangeMutacao);
 
             foreach (IndividuoBin individuo in popInterm)
                 // não avalia individuos previamente avaliados
                 if (individuo.Aptidao >= double.MaxValue)
-                    individuo.Aptidao = FuncaoAptidao(individuo.Atributos.Select(n => n.ValorReal).ToList());
+                    individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
 
             populacao.AddRange(popInterm);
         }
@@ -47,6 +48,7 @@ namespace AGCore
 
         private double probCrossover;
         private double probMutacao;
+        private double rangeMutacao;
         private double deltaMedApt;
         private int critParada;
         private double erroPrecisao;
@@ -72,7 +74,7 @@ namespace AGCore
                 if (nMelhores >= critParada) return true;
             }
 
-            if (Math.Abs(agInfo.MelhorIndividuo.Aptidao - agInfo.Informacoes[agInfo.GerDoMelhor].Media) < deltaMedApt)
+            if (deltaMedApt != 0 && Math.Abs(agInfo.MelhorIndividuo.Aptidao - agInfo.Informacoes[agInfo.GerDoMelhor].Media) < deltaMedApt)
                 return true;
             return false;
         }

@@ -12,18 +12,17 @@ namespace LocalCore.BuscaMutacao
         public static IndividuoBin Executar(IndividuoBin ind, FuncAptidao funcAptidao, double mutReal)
         {
             IndividuoBin tempInd = ind.Clone();
-            List<bool> cromo = tempInd.Cromossomo;
             double aptidaoInicial = ind.Aptidao;
 
             for (int i = 0; i < tempInd.Atributos.Count; i++)
             {
-                double valorAntigo = tempInd.Atributos[i].ValorReal;
-                double novoValor = tempInd.Atributos[i].ValorReal - mutReal;
+                double valorAntigo = tempInd.Atributos[i];
+                double novoValor = tempInd.Atributos[i] - mutReal;
 
                 if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo) continue;
 
-                tempInd.Atributos[i].ValorReal = novoValor;
-                double aptidaoNova = funcAptidao(tempInd.Atributos.Select(n => n.ValorReal).ToList());
+                tempInd.Atributos[i] = novoValor;
+                double aptidaoNova = funcAptidao(tempInd.Atributos);
 
                 if (aptidaoNova < aptidaoInicial)
                 {
@@ -33,19 +32,19 @@ namespace LocalCore.BuscaMutacao
                 }
                 else
                 {
-                    tempInd.Atributos[i].ValorReal = valorAntigo;
+                    tempInd.Atributos[i] = valorAntigo;
                 }
             }
 
             for (int i = 0; i < tempInd.Atributos.Count; i++)
             {
-                double valorAntigo = tempInd.Atributos[i].ValorReal;
-                double novoValor = tempInd.Atributos[i].ValorReal + mutReal;
+                double valorAntigo = tempInd.Atributos[i];
+                double novoValor = tempInd.Atributos[i] + mutReal;
 
                 if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo) continue;
 
-                tempInd.Atributos[i].ValorReal = novoValor;
-                var list = tempInd.Atributos.Select(n => n.ValorReal).ToList();
+                tempInd.Atributos[i] = novoValor;
+                var list = tempInd.Atributos.Select(n => n).ToList();
                 double aptidaoNova = funcAptidao(list);
 
                 if (aptidaoNova < aptidaoInicial)
@@ -56,7 +55,7 @@ namespace LocalCore.BuscaMutacao
                 }
                 else
                 {
-                    tempInd.Atributos[i].ValorReal = valorAntigo;
+                    tempInd.Atributos[i] = valorAntigo;
                 }
             }
             return ind;

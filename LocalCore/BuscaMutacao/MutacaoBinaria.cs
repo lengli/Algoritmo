@@ -7,6 +7,7 @@ using Functions;
 
 namespace LocalCore.BuscaMutacao
 {
+    /*
     public class MutacaoBinaria
     {
         public static IndividuoBin Executar(IndividuoBin ind, FuncAptidao funcAptidao)
@@ -20,9 +21,9 @@ namespace LocalCore.BuscaMutacao
                 cromo[i] = cromo[i] ? false : true;
                 tempInd.Cromossomo = cromo;
 
-                if (!tempInd.Atributos.Any(a => a.ValorReal < IndividuoBin.Minimo || a.ValorReal > IndividuoBin.Maximo))
+                if (!tempInd.Atributos.Any(a => a.ValorReal < IndividuoBin.Minimo || a > IndividuoBin.Maximo))
                 {
-                    double aptidaoNova = funcAptidao(tempInd.Atributos.Select(n => n.ValorReal).ToList());
+                    double aptidaoNova = funcAptidao(tempInd.Atributos);
 
                     if (aptidaoNova < aptidaoInicial)
                     {
@@ -40,4 +41,5 @@ namespace LocalCore.BuscaMutacao
             return ind;
         }
     }
+    */
 }

@@ -50,7 +50,7 @@ namespace LocalCore.LSChains
                         if ((j == 2 || j == 3) && novoIndiv.DirecaoBusca[i] == -1) continue;
 
                         // atributos para serem comparados
-                        List<double> atts = novoIndiv.Atributos.Select(at => at.ValorReal).ToList();
+                        List<double> atts = novoIndiv.Atributos.Select(at => at).ToList();
 
                         atts[i] += candidatos[j];
                         double apt = FuncApt(atts);
@@ -65,7 +65,7 @@ namespace LocalCore.LSChains
                     // escolha do melhor fator entre os "candidatos"
                     if (melhor != -1)
                     {
-                        novoIndiv.Atributos[i].ValorReal = novoIndiv.Atributos[i].ValorReal + candidatos[melhor];
+                        novoIndiv.Atributos[i] = novoIndiv.Atributos[i] + candidatos[melhor];
                         novoIndiv.Aptidao = melhorApt;
 
                         // construindo o vetor direcao

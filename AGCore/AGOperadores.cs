@@ -39,15 +39,10 @@ namespace AGCore
                 // aleatorio, entre 0 e 1
                 double prob = rand.NextDouble();
 
-                for (int j = 0; j < probsAcum.Count; j++)
+                if (prob <= probsAcum[i])
                 {
-                    if (prob <= probsAcum[j])
-                    {
-                        // selecao do individuo
-                        popIntermediaria.Add(individuos[j].Clone());
-                        // encerrando o "for"
-                        break;
-                    }
+                    // selecao do individuo
+                    popIntermediaria.Add(individuos[i].Clone());
                 }
             }
 
@@ -57,6 +52,7 @@ namespace AGCore
         // pc => prob. de cross over, [0,1]
         public static void Crossover(List<IndividuoBin> pop, double pc, CrossType crossType)
         {
+            List<IndividuoBin> filhos = new List<IndividuoBin>();
             Random rand = new Random(DateTime.Now.Millisecond);
 
             // iniciando lista de indicação de cruzamento
@@ -92,10 +88,11 @@ namespace AGCore
                         switch (crossType)
                         {
                             default:
+                                /*
                                 CruzamentoUmPonto(ind1, ind2);
                                 break;
-                            case CrossType.Aritmetico:
-                                CruzamentoReal(ind1, ind2);
+                            case CrossType.Aritmetico:*/
+                                filhos.Add(CruzamentoReal(ind1, ind2));
                                 break;
                             case CrossType.Heuristico:
                                 CruzamentoHeuristico(ind1, ind2);
@@ -108,7 +105,42 @@ namespace AGCore
                 }
 
             } while (controle.Sum() != 0); // até todos serem escolhidos
+            pop.InsertRange(0, filhos);
         }
+
+        public static void MutacaoReal(List<IndividuoBin> pop, double pm, double rangeMut)
+        {
+            Random rand = new Random(DateTime.Now.Millisecond);
+            for (int i = 0; i < pop.Count; i++)
+            {
+                IndividuoBin ind = pop[i];
+                bool mutated = false;
+                for (int j = 0; j < ind.Atributos.Count; j++)
+                {
+                    if (rand.NextDouble() < pm)
+                    {
+                        //http://www.geatbx.com/docu/algindex-04.html
+                        double signal = rand.NextDouble() > 0.5 ? -1 : 1;
+                        double mutVal = rand.NextDouble() * rangeMut * (IndividuoBin.Maximo - IndividuoBin.Minimo) * Math.Pow(2, rand.NextDouble() * (-20));
+
+                        double novoVal = ind.Atributos[j] + signal * mutVal;
+                        if (novoVal <= IndividuoBin.Maximo && novoVal >= IndividuoBin.Minimo)
+                        {
+                            ind.Atributos[j] = novoVal;
+                            mutated = true;
+                        }
+                        /*
+
+                        double novoVal = (IndividuoBin.Maximo - IndividuoBin.Minimo) * rand.NextDouble() + IndividuoBin.Minimo;
+                        ind.Atributos[j] = novoVal;
+                        mutated = true;
+                        */
+                    }
+                }
+                if (mutated) ind.Aptidao = double.MaxValue;
+            }
+        }
+        /*
 
         public static void Mutacao(List<IndividuoBin> pop, double pm)
         {
@@ -130,7 +162,6 @@ namespace AGCore
                 }
             }
         }
-
         public static void CruzamentoUmPonto(IndividuoBin ind1, IndividuoBin ind2)
         {
             List<bool> cromo1 = ind1.Cromossomo;
@@ -145,20 +176,38 @@ namespace AGCore
             ind1.AtualizarCromo(novo1);
             ind2.AtualizarCromo(novo2);
         }
-
-        public static void CruzamentoReal(IndividuoBin ind1, IndividuoBin ind2)
-        {
-            List<Numero> cromo1 = ind1.Atributos;
-            List<Numero> cromo2 = ind2.Atributos;
+        */
+        public static IndividuoBin CruzamentoReal(IndividuoBin ind1, IndividuoBin ind2)
+        {/*
+            List<double> cromo1 = ind1.Atributos;
+            List<double> cromo2 = ind2.Atributos;
 
             int nCromo = cromo1.Count;
             int ptoCorte = new Random(DateTime.Now.Millisecond).Next(1, nCromo);
 
-            List<Numero> novo1 = cromo1.Take(ptoCorte).Concat(cromo2.Skip(ptoCorte)).ToList();
-            List<Numero> novo2 = cromo2.Take(ptoCorte).Concat(cromo1.Skip(ptoCorte)).ToList();
+            List<double> novo1 = cromo1.Take(ptoCorte).Concat(cromo2.Skip(ptoCorte)).ToList();
+            List<double> novo2 = cromo2.Take(ptoCorte).Concat(cromo1.Skip(ptoCorte)).ToList();
 
             ind1.Atributos = novo1;
             ind2.Atributos = novo2;
+          * */
+
+            //http://www.geatbx.com/docu/algindex-03.html
+
+            Random rand = new Random(DateTime.Now.Millisecond);
+
+            IndividuoBin filho = new IndividuoBin();
+
+            for (int i = 0; i < ind1.Atributos.Count; i++)
+            {
+                double a = rand.NextDouble() * 1.5 - .25;
+                double val = a * ind1.Atributos[i] + (1 - a) * ind2.Atributos[i];
+                if (val > IndividuoBin.Maximo) val = IndividuoBin.Maximo;
+                else if (val < IndividuoBin.Minimo) val = IndividuoBin.Minimo;
+                filho.Atributos.Add(val);
+            }
+
+            return filho;
         }
 
         public static void CruzamentoHeuristico(IndividuoBin ind1, IndividuoBin ind2)
@@ -170,14 +219,14 @@ namespace AGCore
 
             ind2 = indMelhor;
 
-            List<Numero> atrb1 = new List<Numero>();
+            List<double> atrb1 = new List<double>();
             for (int i = 0; i < indMelhor.Atributos.Count; i++)
             {
-                double vMelhor = indMelhor.Atributos[i].ValorReal;
-                double valor = vMelhor+ ptoCorte *(vMelhor - indPior.Atributos[i].ValorReal);
-                if(valor> IndividuoBin.Maximo) valor = IndividuoBin.Maximo;
-                else if(valor<IndividuoBin.Minimo) valor = IndividuoBin.Minimo;
-                atrb1.Add(new Numero(IndividuoBin.Precisao) { ValorReal = valor });
+                double vMelhor = indMelhor.Atributos[i];
+                double valor = vMelhor + ptoCorte * (vMelhor - indPior.Atributos[i]);
+                if (valor > IndividuoBin.Maximo) valor = IndividuoBin.Maximo;
+                else if (valor < IndividuoBin.Minimo) valor = IndividuoBin.Minimo;
+                atrb1.Add(valor);
             }
 
             ind1.Atributos = atrb1;

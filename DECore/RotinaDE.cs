@@ -15,7 +15,6 @@ namespace DECore
 
     public class RotinaDE : RotinaAlgo
     {
-        private Random rand = new Random(DateTime.Now.Millisecond);
         private SelecaoDE _tipoSelecao;
         private double _probCross;
         private double _fatorF;
@@ -49,25 +48,34 @@ namespace DECore
                 {
                     if (rand.NextDouble() < _probCross || j == jRand)
                     {
-                        Numero atributo = new Numero(IndividuoBin.Precisao);
+                        double atributo = 0;
                         //ui,j,G+1 = xr3,j,G + F(xr1,j,G − xr2,j,G)
-                        atributo.ValorReal = selecao[2].Valor(j) - _fatorF * (selecao[0].Valor(j) - selecao[1].Valor(j));
+                        atributo = selecao[2].Atributos[j] - _fatorF * (selecao[0].Atributos[j] - selecao[1].Atributos[j]);
 
                         // tratamento de restrição
-                        if (atributo.ValorReal >= _min && atributo.ValorReal <= _max)
+                        if (atributo >= _min && atributo <= _max)
                         {
                             individuoTemp.Atributos.Add(atributo);
                             continue;
                         }
                     }
 
-                    individuoTemp.Atributos.Add(new Numero(IndividuoBin.Precisao) { ValorReal = populacao[i].Valor(j) });
+                    individuoTemp.Atributos.Add(populacao[i].Atributos[j]);
                 }
 
-                individuoTemp.Aptidao = FuncaoAptidao(individuoTemp.Atributos.Select(n => n.ValorReal).ToList());
+                individuoTemp.Aptidao = FuncaoAptidao(individuoTemp.Atributos);
                 if (individuoTemp.Aptidao < populacao[i].Aptidao)
                     populacao[i] = individuoTemp;
             }
+        }
+
+        protected override bool CriterioDeParada(AlgoInfo agInfo)
+        {
+            return false;
+        }
+
+        protected override void InicializarAlgoritmo(List<IndividuoBin> populacao)
+        {
         }
     }
 }

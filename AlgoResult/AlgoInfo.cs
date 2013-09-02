@@ -15,6 +15,7 @@ namespace AlgoResult
         public List<AlgoInfoGeracao> Informacoes { get; set; }
         public IndividuoBin MelhorIndividuo { get; set; }
         public int GerDoMelhor { get; set; }
+        public int AvalParaMelhor { get; set; }
 
         public void AdicionarInfo(List<IndividuoBin> populacao, int geracao, int avaliacoes)
         {
@@ -33,6 +34,7 @@ namespace AlgoResult
             {
                 MelhorIndividuo = melhorGer.Clone();
                 GerDoMelhor = geracao;
+                AvalParaMelhor = avaliacoes;
             }
 
         }

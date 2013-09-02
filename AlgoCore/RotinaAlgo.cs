@@ -30,6 +30,7 @@ namespace AlgoCore
         protected double _margemComp;
         protected Random rand = new Random(DateTime.Now.Millisecond);
         protected List<IndividuoBin> individuosTabu = new List<IndividuoBin>();
+        protected AlgoInfo _agInfo;
 
         protected RotinaAlgo(FuncAptidao aptidao)
         {
@@ -49,7 +50,7 @@ namespace AlgoCore
         {
             IndividuoBin.Precisao = precisao;
             _maxAval = maxAvaliacoes;
-            _geracoesMAx = geracoesMAx;
+            _geracoesMAx = geracoesMAx == 0 ? int.MaxValue : geracoesMAx;
             _tamanhoPop = tamanhoPop;
             _min = min;
             _max = max;
@@ -58,14 +59,14 @@ namespace AlgoCore
             _margemComp = margemComp;
             _gerSemMelhorar = gerSemMelhorar;
 
-            AlgoInfo agInfo = new AlgoInfo();
+            _agInfo = new AlgoInfo();
             List<IndividuoBin> populacao = PopulacaoAleatoria(tamanhoPop, min, max, nAtributos, precisao, lsChains != null);
 
             InicializarAlgoritmo(populacao);
 
             // avaliação da população inicial
             foreach (IndividuoBin individuo in populacao)
-                individuo.Aptidao = FuncaoAptidao(individuo.Atributos.Select(n => n.ValorReal).ToList());
+                individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
 
             for (int g = 0; g < geracoesMAx || geracoesMAx == 0; g++)
             {
@@ -73,7 +74,7 @@ namespace AlgoCore
 
                 // avaliará individuos novos
                 foreach (IndividuoBin individuo in populacao.Where(p => p.Aptidao == double.MaxValue))
-                    individuo.Aptidao = FuncaoAptidao(individuo.Atributos.Select(n => n.ValorReal).ToList());
+                    individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
 
                 ExecutarAlgoritmo(populacao);
 
@@ -86,7 +87,7 @@ namespace AlgoCore
                 //criterio de repopulação, evitar mínimos locais devido ao elitismo
                 if (usarTabu)
                 {
-                    if (!CriterioRepopular(agInfo, ultimaRepop)) continue;
+                    if (!CriterioRepopular(_agInfo, ultimaRepop)) continue;
                     // criterio de parada: repopular n vezes
                     if (nRepopulacao >= nMaxRepop) break;
                     nRepopulacao++;
@@ -105,12 +106,16 @@ namespace AlgoCore
                 else
                 {
                     // criterio de parada
-                    if (CriterioDeParada(agInfo)) break;
+                    if (CriterioDeParada(_agInfo)) break;
                 }
 
-                agInfo.AdicionarInfo(populacao, g, _avaliacoes);
+                _agInfo.AdicionarInfo(populacao, g, _avaliacoes);
+
+                // se todos os individuos convergirem 
+                int gr = populacao.GroupBy(ind => ind.Aptidao).Count();
+                if (g > 400 && gr == 1) break;
             }
-            return agInfo;
+            return _agInfo;
         }
 
         // método destinado a inserir algorítmos meméticos
@@ -121,8 +126,8 @@ namespace AlgoCore
             // busca local
             for (int z = 0; z < qtdMutLocal; z++)
             {
-                populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
-                populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
+                //populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
+                //populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
 
                 // +- 5% -> alta convergencia
                 populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, (max - min) / 20);
@@ -182,7 +187,7 @@ namespace AlgoCore
 
             // avaliação da população inicial
             foreach (T individuo in populacao)
-                individuo.Aptidao = FuncaoAptidao(individuo.Atributos.Select(n => n.ValorReal).ToList());
+                individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
 
             List<IndividuoBin> populacaoRetorno = new List<IndividuoBin>();
             foreach (T ind in populacao)

@@ -38,9 +38,11 @@ namespace AlgoView
             FuncAptidao funcao = null;
             double min = 0, max = 0;
             int nGeracoes = 0;
+            double minGlobal;
+            double erro;
 
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;
-            Func.SelecionarFuncao(out funcao, out min, out max, out nGeracoes, FuncaoCombo.Text);
+            Func.SelecionarFuncao(out funcao, out min, out max, out nGeracoes, out minGlobal, out erro, FuncaoCombo.Text);
 
             List<PointDouble> avaliacoes = new List<PointDouble>();
 
@@ -51,7 +53,7 @@ namespace AlgoView
                 for (int i = 0; i < 30; i++) chr.Add(x);
 
                 avaliacoes.Add(new PointDouble { X = x, Y = funcao(chr) });
-                
+
                 x += 0.25;
             }
 

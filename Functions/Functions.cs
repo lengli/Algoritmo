@@ -7,24 +7,25 @@ namespace Functions
 {
     public static class Functions
     {
-        public static void SelecionarFuncao(out FuncAptidao funcao, out double min, out double max, out int nGeracoes,
+        public static void SelecionarFuncao(out FuncAptidao funcao,
+            out double min, out double max, out int nGeracoes, out double minGlobal, out double erro,
             string selecao)
         {
             switch (selecao)
             {
-                default: { funcao = F1; min = -100; max = 100; nGeracoes = 1500; break; }
-                case "F2": { funcao = F2; min = -10; max = 10; nGeracoes = 2000; break; }
-                case "F3": { funcao = F3; min = -100; max = 100; nGeracoes = 5000; break; }
-                case "F4": { funcao = F4; min = -100; max = 100; nGeracoes = 5000; break; }
-                case "F5": { funcao = F5; min = -30; max = 30; nGeracoes = 20000; break; }
-                case "F6": { funcao = F6; min = -100; max = 100; nGeracoes = 1500; break; }
-                case "F7": { funcao = F7; min = -1.28; max = 1.28; nGeracoes = 3000; break; }
-                case "F8": { funcao = F8; min = -500; max = 500; nGeracoes = 9000; break; }
-                case "F9": { funcao = F9; min = -5.12; max = 5.12; nGeracoes = 5000; break; }
-                case "F10": { funcao = F10; min = -32; max = 32; nGeracoes = 1500; break; }
-                case "F11": { funcao = F11; min = -600; max = 600; nGeracoes = 2000; break; }
-                case "F12": { funcao = F12; min = -50; max = 50; nGeracoes = 1500; break; }
-                case "F13": { funcao = F13; min = -50; max = 50; nGeracoes = 1500; break; }
+                default: { erro = 1E-6; funcao = F1; min = -100; max = 100; nGeracoes = 1500; minGlobal = 0; break; }
+                case "F2": { erro = 1E-6; funcao = F2; min = -10; max = 10; nGeracoes = 2000; minGlobal = 0; break; }
+                case "F3": { erro = 1E-4; funcao = F3; min = -100; max = 100; nGeracoes = 5000; minGlobal = 0; break; }
+                case "F4": { erro = 1E-4; funcao = F4; min = -100; max = 100; nGeracoes = 5000; minGlobal = 0; break; }
+                case "F5": { erro = 1E-4; funcao = F5; min = -30; max = 30; nGeracoes = 20000; minGlobal = 0; break; }
+                case "F6": { erro = 1E-6; funcao = F6; min = -100; max = 100; nGeracoes = 1500; minGlobal = 0; break; }
+                case "F7": { erro = 1E-4; funcao = F7; min = -1.28; max = 1.28; nGeracoes = 3000; minGlobal = 0; break; }
+                case "F8": { erro = 1E-4; funcao = F8; min = -500; max = 500; nGeracoes = 9000; minGlobal = -.125694866181649E05; break; }
+                case "F9": { erro = 1E-6; funcao = F9; min = -5.12; max = 5.12; nGeracoes = 5000; minGlobal = 0; break; }
+                case "F10": { erro = 1E-6; funcao = F10; min = -32; max = 32; nGeracoes = 1500; minGlobal = 0; break; }
+                case "F11": { erro = 1E-4; funcao = F11; min = -600; max = 600; nGeracoes = 2000; minGlobal = 0; break; }
+                case "F12": { erro = 1E-4; funcao = F12; min = -50; max = 50; nGeracoes = 1500; minGlobal = 0; break; }
+                case "F13": { erro = 1E-4; funcao = F13; min = -50; max = 50; nGeracoes = 1500; minGlobal = 0; break; }
             }
         }
 
@@ -80,14 +81,16 @@ namespace Functions
             return chromo.Sum(c => Math.Pow(Math.Floor(c + .5), 2));
         }
 
+        private static int F7Seed = 0;
         // [-1.28,1.28]
         public static double F7(IList<double> chromo)
         {
             double res = 0;
-            Random rand = new Random(DateTime.Now.Millisecond);
+            Random rand = new Random(F7Seed++);
             for (int i = 0; i < chromo.Count; i++)
                 res += (i + 1) * Math.Pow(chromo[i], 4);
-            return res + rand.NextDouble();
+            res *= rand.NextDouble();
+            return res;
         }
 
         // [-500,500]

@@ -26,6 +26,8 @@ namespace AlgoView
 {
     public partial class AlgoWindow : Window
     {
+        private double _minGlobal;
+        private double _erroAceitavel;
         public AlgoWindow()
         {
             InitializeComponent();
@@ -40,7 +42,7 @@ namespace AlgoView
             int nGeracoes = 0;
 
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;
-            Func.SelecionarFuncao(out funcao, out min, out max, out nGeracoes, FuncaoCombo.Text);
+            Func.SelecionarFuncao(out funcao, out min, out max, out nGeracoes, out _minGlobal, out _erroAceitavel, FuncaoCombo.Text);
 
             #region parametro genéricos
 
@@ -55,6 +57,8 @@ namespace AlgoView
             if (!int.TryParse(MaxAval.Text, out maxAval)) return;
             int nVezes;
             if (!int.TryParse(NVezes.Text, out nVezes)) return;
+            int dimensao;
+            if (!int.TryParse(Dim.Text, out dimensao)) return;
 
             // tabu
             bool usarTabu = UsarTabu.IsChecked.Value;
@@ -107,9 +111,11 @@ namespace AlgoView
                     algo = RotinaPSO(funcao);
                 if (AlgoCombo.Text == "AG")
                     algo = RotinaAG(funcao);
+                if (AlgoCombo.Text == "DE")
+                    algo = RotinaDE(funcao);
                 if (algo == null) return;
 
-                infos.Add(algo.Rodar(maxGer, nPop, min, max, 30, precisao, maxAval, usarTabu, distTabu, maxRepop, gerSem, margemComp, tabuNaPop, hillClimbing, lsChains, nPopMutLocal));
+                infos.Add(algo.Rodar(maxGer, nPop, min, max, dimensao, precisao, maxAval, usarTabu, distTabu, maxRepop, gerSem, margemComp, tabuNaPop, hillClimbing, lsChains, nPopMutLocal));
             }
 
             if (infos.Count == 1)
@@ -153,38 +159,27 @@ namespace AlgoView
 
         private void ExibirNRodadas(List<AlgoInfo> infos)
         {
-            NGerMedio.Text = infos.Average(x => x.GerDoMelhor).ToString("0.00000000");
-            MediaMelhores.Text = infos.Average(x => x.MelhorIndividuo.Aptidao).ToString("0.00000000");
-            STDMelhores.Text = Std(infos.Select(info => info.MelhorIndividuo.Aptidao).ToList()).ToString("0.00000000");
-            NAval.Text = infos.Average(x => x.Informacoes.First(info => info.Geracao == x.GerDoMelhor).Avaliacoes).ToString("0.00000000");
+            AlgoInfo melhorRodada = infos.OrderBy(info => info.MelhorIndividuo.Aptidao).First();
+            AlgoInfo piorRodada = infos.OrderByDescending(info => info.MelhorIndividuo.Aptidao).First();
+            double mediaMelhores = infos.Average(info => info.MelhorIndividuo.Aptidao);
+            double mediaAval = infos.Average(info => info.AvalParaMelhor);
+            double txSucesso = infos.Count(info => Math.Abs(info.MelhorIndividuo.Aptidao - _minGlobal) <= _erroAceitavel) / infos.Count();
 
-            int rodadaDoMelhor = 0;
-            int gerDoMelhor = 0;
-            double melhorAptidao = double.MaxValue;
-            double melhor = infos.Min(info => info.MelhorIndividuo.Aptidao);
-            for (; rodadaDoMelhor < infos.Count; rodadaDoMelhor++)
-            {
-                if (infos[rodadaDoMelhor].MelhorIndividuo.Aptidao <= melhor)
-                {
-                    melhorAptidao = infos[rodadaDoMelhor].MelhorIndividuo.Aptidao;
-                    gerDoMelhor = infos[rodadaDoMelhor].Informacoes.Last().Geracao;
-                    break;
-                }
-            }
-
-            GerDoMelhor.Text = gerDoMelhor.ToString();
-            MelhorAptidão.Text = melhorAptidao.ToString("0.00000000");
+            Melhor_Aval.Text = string.Format("{0} ({1})", melhorRodada.MelhorIndividuo.Aptidao, melhorRodada.AvalParaMelhor);
+            Pior_Aval.Text = string.Format("{0} ({1})", piorRodada.MelhorIndividuo.Aptidao, piorRodada.AvalParaMelhor);
+            MediaMelhor_MediaAval.Text = string.Format("{0} ({1})", mediaMelhores, mediaAval);
+            TxSucesso.Text = string.Format("{0:0.00%}", txSucesso);
         }
 
         private void ExibirUmaRodada(AlgoInfo agInfo)
         {
-            NGerMedio.Text = agInfo.Informacoes.Last().Geracao.ToString("0.00000000");
-            MediaMelhores.Text = agInfo.Informacoes.Average(info => info.MelhorAptidao).ToString("0.00000000");
-            STDMelhores.Text = Std(agInfo.Informacoes.Select(info => info.MelhorAptidao).ToList()).ToString("0.00000000");
-            MelhorEntre30.Text = agInfo.Informacoes.Take(30).Min(info => info.MelhorAptidao).ToString("0.00000000");
+            NGerMedio.Text = agInfo.Informacoes.Last().Geracao.ToString();
+            MediaMelhores.Text = agInfo.Informacoes.Average(info => info.MelhorAptidao).ToString();
+            STDMelhores.Text = Std(agInfo.Informacoes.Select(info => info.MelhorAptidao).ToList()).ToString();
+            MelhorEntre30.Text = agInfo.Informacoes.Take(30).Min(info => info.MelhorAptidao).ToString();
 
             GerDoMelhor.Text = agInfo.GerDoMelhor.ToString();
-            MelhorAptidão.Text = agInfo.MelhorIndividuo.Aptidao.ToString("0.00000000");
+            MelhorAptidão.Text = agInfo.MelhorIndividuo.Aptidao.ToString();
 
             List<Point> medias = new List<Point>();
             List<Point> melhores = new List<Point>();
@@ -205,7 +200,7 @@ namespace AlgoView
             SerieMelhor.ItemsSource = melhores;
             SerieAvaliacoes.ItemsSource = avaliacoes;
 
-            NAval.Text = agInfo.Informacoes.First(info => info.Geracao == agInfo.GerDoMelhor).Avaliacoes.ToString();
+            NAval.Text = agInfo.AvalParaMelhor.ToString();
         }
 
         #region Construir objeto algoritmo
@@ -235,6 +230,8 @@ namespace AlgoView
             if (!double.TryParse(ProbCrossover.Text.Replace(".", ","), out probCrossover)) return null;
             double probMutacao;
             if (!double.TryParse(ProbMutacao.Text.Replace(".", ","), out probMutacao)) return null;
+            double rangeMutacao;
+            if (!double.TryParse(RangeMutacao.Text.Replace(".", ","), out rangeMutacao)) return null;
             int critParada;
             if (!int.TryParse(CritParada.Text, out critParada)) return null;
             double deltaMedApt;
@@ -243,7 +240,7 @@ namespace AlgoView
             ComboBoxItem item = CrossType.SelectedItem as ComboBoxItem;
             if (item == null || !Enum.TryParse(item.Tag.ToString(), out crossType)) return null;
 
-            return new AGClassico(funcao, probCrossover, probMutacao, deltaMedApt, critParada, crossType);
+            return new AGClassico(funcao, probCrossover, probMutacao, rangeMutacao / 100, deltaMedApt, critParada, crossType);
         }
 
         private RotinaAlgo RotinaDE(FuncAptidao funcao)

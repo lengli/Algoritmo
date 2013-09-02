@@ -11,6 +11,8 @@ namespace PSOCore
 {
     public class RotinaPSO : RotinaAlgo
     {
+        private const string MelhorApt = "MelhorApt";
+        private const string MelhorCromo = "MelhorCromo";
 
         public RotinaPSO(FuncAptidao apt, double fatorPond, double fi1, double fi2,
             bool usarRand1, bool usarRand2, double coefKConstr, bool usarCoefConstr, int nVizinhos)
@@ -38,27 +40,51 @@ namespace PSOCore
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-
             foreach (IndividuoBin individuo in populacao)
             {
-                IndividuoBin pi = populacao.OrderBy(p => p.Aptidao).First();
+                List<double> pi;
+                double piApt;
+                if (!individuo.ParamExtras.ContainsKey(MelhorApt))
+                {
+                    pi = individuo.Atributos.Select(n => n).ToList();
+                    piApt = individuo.Aptidao;
+                    individuo.ParamExtras.Add(MelhorApt, piApt);
+                    individuo.ParamExtras.Add(MelhorCromo, pi);
+                }
+                else
+                {
+                    piApt = (double)individuo.ParamExtras[MelhorApt];
+                    pi = (List<double>)individuo.ParamExtras[MelhorCromo];
+                }
 
-                var vizinhos = populacao.OrderBy(ind => ind.DistEuclidiana(individuo)).Take(_nVizinhos);
-                IndividuoBin pg = vizinhos.OrderBy(v => v.Aptidao).First();
+                IndividuoBin pg;
+
+                if (_nVizinhos > 0)
+                {
+                    var vizinhos = populacao.OrderBy(ind => ind.DistEuclidiana(individuo)).Take(_nVizinhos);
+                    pg = vizinhos.OrderBy(v => v.Aptidao).First();
+                }
+                else pg = populacao.OrderBy(ind => ind.Aptidao).FirstOrDefault();
 
                 List<double> velocidade = ((List<double>)individuo.ParamExtras[propVelocidade]);
                 for (int i = 0; i < _nAtributos; i++)
                 {
                     velocidade[i] = _fatorPond * velocidade[i];
-                    velocidade[i] += _fi1 * (pi.Valor(i) - individuo.Valor(i)) * (usarRand1 ? rand.NextDouble() : 1);
-                    velocidade[i] += _fi2 * (pg.Valor(i) - individuo.Valor(i)) * (usarRand2 ? rand.NextDouble() : 1);
+                    velocidade[i] += _fi1 * (pi[i] - individuo.Atributos[i]) * (usarRand1 ? rand.NextDouble() : 1);
+                    velocidade[i] += _fi2 * (pg.Atributos[i] - individuo.Atributos[i]) * (usarRand2 ? rand.NextDouble() : 1);
                     velocidade[i] *= CoefConstr();
-                    double novoValor = individuo.Valor(i) + velocidade[i];
+                    double novoValor = individuo.Atributos[i] + velocidade[i];
                     if (novoValor <= IndividuoBin.Minimo) novoValor = IndividuoBin.Minimo;
                     else if (novoValor >= IndividuoBin.Maximo) novoValor = IndividuoBin.Maximo;
-                    individuo.Atributos[i].ValorReal = novoValor;
+                    individuo.Atributos[i] = novoValor;
                 }
-                individuo.Aptidao = FuncaoAptidao(individuo.Atributos.Select(n => n.ValorReal).ToList());
+                individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
+
+                if (individuo.Aptidao < piApt)
+                {
+                    individuo.ParamExtras[MelhorApt] = piApt;
+                    individuo.ParamExtras[MelhorCromo] = pi;
+                }
             }
         }
 

@@ -28,19 +28,21 @@
                             <TextBlock Text="Prob Cross" Margin="10,3" Width="65" />
                             <TextBlock Text="Tipo de Cross" Margin="10,3" Width="70" />
                             <TextBlock Text="Prob Mut" Margin="10,3" Width="50" />
+                            <TextBlock Text="Range Mut (%)" Margin="10,3" Width="80" />
                             <TextBlock Text="Ind s/ melhoras" Margin="10,3" Width="85" />
                             <TextBlock Text="Media - Aptidao" Margin="10,3" Width="85" />
                         </StackPanel>
                         <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
                             <TextBox x:Name="ProbCrossover" Margin="10,3" Width="65" Text="0.9" />
                             <ComboBox Margin="10,3" Width="70" x:Name="CrossType" >
-                                <ComboBoxItem Content="Binário" Tag="0"/>
-                                <ComboBoxItem Content="Arimético" Tag="1"/>
+                                <ComboBoxItem Content="Binário" Tag="0" IsEnabled="False"/>
+                                <ComboBoxItem Content="Arimético" Tag="1" IsSelected="True"/>
                                 <ComboBoxItem Content="Heurístico" Tag="2"/>
                             </ComboBox>
                             <TextBox x:Name="ProbMutacao" Margin="10,3" Width="50" Text="0.05" />
-                            <TextBox x:Name="CritParada" Margin="10,3" Width="85" Text="20" ToolTip="Número de iterações sem melhoras do melhor indivíduo" />
-                            <TextBox x:Name="DeltaMedApt" Margin="10,3" Width="85" Text="0.00000001" />
+                            <TextBox x:Name="RangeMutacao" Margin="10,3" Width="80" Text="5" />
+                            <TextBox x:Name="CritParada" Margin="10,3" Width="85" Text="0" ToolTip="Número de iterações sem melhoras do melhor indivíduo" />
+                            <TextBox x:Name="DeltaMedApt" Margin="10,3" Width="85" Text="0" />
                         </StackPanel>
                     </StackPanel>
                     <StackPanel x:Name="PsoPanel" Visibility="Collapsed">
@@ -104,7 +106,8 @@
                 <TextBlock Text="N População" Margin="10,3" Width="65" />
                 <TextBlock Text="Precisão (int)" Margin="10,3" Width="70" />
                 <TextBlock Text="Max Gerações" Margin="10,3" Width="70" />
-                <TextBlock Text="Max Avaliações" Margin="10,3" Width="80" />
+                <TextBlock Text="Max Aval" Margin="10,3" Width="50" />
+                <TextBlock Text="Dimensão" Margin="10,3" Width="55" />
                 <TextBlock Text="Tabu" Margin="10,3" Width="30" />
                 <TextBlock Text="Ger s/ melhorar" Margin="10,3" Width="80" />
                 <TextBlock Text="Margem comp." Margin="10,3" Width="80" />
@@ -114,9 +117,10 @@
             </StackPanel>
             <StackPanel Margin="10,3,10,10" Orientation="Horizontal">
                 <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="100" />
-                <TextBox x:Name="Precisao" Margin="10,3" Width="70" Text="2" />
-                <TextBox x:Name="MaxGer" Margin="10,3" Width="70" Text="300" />
-                <TextBox x:Name="MaxAval" Margin="10,3" Width="80" Text="16000" />
+                <TextBox x:Name="Precisao" Margin="10,3" Width="70" Text="8" />
+                <TextBox x:Name="MaxGer" Margin="10,3" Width="70" Text="0" />
+                <TextBox x:Name="MaxAval" Margin="10,3" Width="50" Text="300000" />
+                <TextBox x:Name="Dim" Margin="10,3" Width="55" Text="30" />
                 <CheckBox x:Name="UsarTabu" Margin="10,5" Width="30" IsChecked="False"  />
                 <TextBox x:Name="GerSMelhor" Margin="10,3" Width="80" Text="5" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
                 <TextBox x:Name="MargemComp" Margin="10,3" Width="80" Text="0.0001" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
@@ -147,24 +151,42 @@
                 <TextBox x:Name="QtdMutLocal" Margin="10,3" Width="95" Text="0" />
             </StackPanel>
             <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
-                <TextBlock Text="No de Gerações" Margin="10,3" Width="119" />
-                <TextBlock Text="Média dos melhores" Margin="10,3" Width="102" />
-                <TextBlock Text="STD melhores" Margin="10,3" Width="74" />
+                <TextBlock Text="No de Ger." Margin="10,3" Width="85" />
+                <TextBlock Text="Média dos melhores" Margin="10,3" Width="110" />
+                <TextBlock Text="STD melhores" Margin="10,3" Width="110" />
                 <TextBlock Text="Melhor dentre 30" Margin="10,3" Width="89" />
-                <TextBlock Text="Melhor Aptidão" Margin="10,3" Width="85" />
+                <TextBlock Text="Melhor Aptidão" Margin="10,3" Width="130" />
                 <TextBlock Text="Geração do melhor" Margin="10,3" Width="95" />
                 <TextBlock Text="N Avaliações" Margin="10,3" Width="70" />
             </StackPanel>
             <StackPanel Margin="10,3,10,20" Orientation="Horizontal">
-                <TextBlock x:Name="NGerMedio" Margin="10,3" Width="119" />
-                <TextBlock x:Name="MediaMelhores" Margin="10,3" Width="102" />
-                <TextBlock x:Name="STDMelhores" Margin="10,3" Width="74" />
+                <TextBlock x:Name="NGerMedio" Margin="10,3" Width="85" />
+                <TextBlock x:Name="MediaMelhores" Margin="10,3" Width="110" />
+                <TextBlock x:Name="STDMelhores" Margin="10,3" Width="110" />
                 <TextBlock x:Name="MelhorEntre30" Margin="10,3" Width="89" />
-                <TextBlock x:Name="MelhorAptidão" Margin="10,3" Width="85" />
+                <TextBlock x:Name="MelhorAptidão" Margin="10,3" Width="130" />
                 <TextBlock x:Name="GerDoMelhor" Margin="10,3" Width="95" />
                 <TextBlock x:Name="NAval" Margin="10,3" Width="70" />
             </StackPanel>
-            <dvc:Chart Height="200">
+            <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
+                <TextBlock Text="Melhor (no. Aval)" Margin="10,3" Width="180" />
+                <TextBlock Text="Pior (no. Aval)" Margin="10,3" Width="180" />
+                <TextBlock Text="Media Melhor (Media Aval)" Margin="10,3" Width="180" />
+            </StackPanel>
+            <StackPanel Margin="10,3,10,0" Orientation="Horizontal">
+                <TextBlock x:Name="Melhor_Aval" Margin="10,3" Width="180" />
+                <TextBlock x:Name="Pior_Aval" Margin="10,3" Width="180" />
+                <TextBlock x:Name="MediaMelhor_MediaAval" Margin="10,3" Width="180" />
+            </StackPanel>
+            <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
+                <TextBlock Text="Std Melhor (std Aval)" Margin="10,3" Width="250" />
+                <TextBlock Text="Tx Sucesso %" Margin="10,3" Width="85" />
+            </StackPanel>
+            <StackPanel Margin="10,3,10,0" Orientation="Horizontal">
+                <TextBlock x:Name="StdMelhor_StdAval" Margin="10,3" Width="250" />
+                <TextBlock x:Name="TxSucesso" Margin="10,3" Width="85" />
+            </StackPanel>
+            <dvc:Chart Height="200" Visibility="Collapsed">
                 <dvc:Chart.Series>
                     <dvc:LineSeries Title="Média" x:Name="SerieMedia"
                                 IndependentValueBinding="{Binding Path=X}"
@@ -181,7 +203,7 @@
                     </dvc:LineSeries>
                 </dvc:Chart.Series>
             </dvc:Chart>
-            <dvc:Chart Height="200">
+            <dvc:Chart Height="200" Visibility="Collapsed">
                 <dvc:Chart.Series>
                     <dvc:LineSeries Title="Avaliacoes" x:Name="SerieAvaliacoes"
                                 IndependentValueBinding="{Binding Path=X}"

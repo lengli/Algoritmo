@@ -13,7 +13,7 @@ namespace AlgoCore
             double dist = 0;
 
             for (int i = 0; i < ind1.Atributos.Count; i++)
-                dist += Math.Pow(ind1.Atributos[i].ValorReal - ind2.Atributos[i].ValorReal, 2);
+                dist += Math.Pow(ind1.Atributos[i] - ind2.Atributos[i], 2);
 
             return Math.Sqrt(dist);
         }
