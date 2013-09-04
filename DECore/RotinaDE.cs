@@ -19,8 +19,10 @@ namespace DECore
         private double _probCross;
         private double _fatorF;
 
-        public RotinaDE(FuncAptidao aptidao, SelecaoDE tipoSelecao, double probCross, double fatorF)
-            : base(aptidao)
+        public RotinaDE(FuncAptidao aptidao, FuncRepopRestricao FuncRestr,
+            List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
+            SelecaoDE tipoSelecao, double probCross, double fatorF)
+            : base(aptidao, FuncRestr, gs, hs, validar)
         {
             _tipoSelecao = tipoSelecao;
             _probCross = probCross;
@@ -48,9 +50,8 @@ namespace DECore
                 {
                     if (rand.NextDouble() < _probCross || j == jRand)
                     {
-                        double atributo = 0;
                         //ui,j,G+1 = xr3,j,G + F(xr1,j,G − xr2,j,G)
-                        atributo = selecao[2].Atributos[j] - _fatorF * (selecao[0].Atributos[j] - selecao[1].Atributos[j]);
+                        double atributo = selecao[2].Atributos[j] - _fatorF * (selecao[0].Atributos[j] - selecao[1].Atributos[j]);
 
                         // tratamento de restrição
                         if (atributo >= _min && atributo <= _max)

@@ -62,5 +62,6 @@ namespace LocalCore.HillClimbing
         }
 
         public FuncAptidao FuncApt { get; set; }
+        public FuncRepopRestricao FuncRestr { get; set; }
     }
 }

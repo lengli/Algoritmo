@@ -19,6 +19,8 @@ namespace AlgoResult
 
         public void AdicionarInfo(List<IndividuoBin> populacao, int geracao, int avaliacoes)
         {
+            if (populacao.Count == 0) return;
+
             // pega o individuo com o valor aptidao menor possível
             IndividuoBin melhorGer = populacao.OrderBy(ind => ind.Aptidao).First();
             Informacoes.Add(new AlgoInfoGeracao

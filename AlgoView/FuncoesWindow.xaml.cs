@@ -36,13 +36,18 @@ namespace AlgoView
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             FuncAptidao funcao = null;
+            List<FuncAptidao> gs = null;
+            List<FuncAptidao> hs = null;
+            FuncValidarRestricao validar = null;
+            FuncRepopRestricao restricao = null;
             double min = 0, max = 0;
             int nGeracoes = 0;
             double minGlobal;
             double erro;
+            int dim = 1;
 
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;
-            Func.SelecionarFuncao(out funcao, out min, out max, out nGeracoes, out minGlobal, out erro, FuncaoCombo.Text);
+            Func.SelecionarFuncao(out funcao, out restricao, out gs, out hs, out validar, out min, out max, out nGeracoes, out minGlobal, out erro, FuncaoCombo.Text, ref dim);
 
             List<PointDouble> avaliacoes = new List<PointDouble>();
 

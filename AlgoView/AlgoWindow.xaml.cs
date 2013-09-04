@@ -28,6 +28,10 @@ namespace AlgoView
     {
         private double _minGlobal;
         private double _erroAceitavel;
+        private List<FuncAptidao> _gs;
+        private List<FuncAptidao> _hs;
+        private FuncValidarRestricao _validar;
+
         public AlgoWindow()
         {
             InitializeComponent();
@@ -38,11 +42,11 @@ namespace AlgoView
             DateTime inicio = DateTime.Now;
 
             FuncAptidao funcao = null;
+            FuncRepopRestricao restricao = null;
             double min = 0, max = 0;
             int nGeracoes = 0;
 
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;
-            Func.SelecionarFuncao(out funcao, out min, out max, out nGeracoes, out _minGlobal, out _erroAceitavel, FuncaoCombo.Text);
 
             #region parametro genéricos
 
@@ -102,17 +106,19 @@ namespace AlgoView
 
             #endregion
 
+            Func.SelecionarFuncao(out funcao, out restricao, out _gs, out _hs, out _validar, out min, out max, out nGeracoes, out _minGlobal, out _erroAceitavel, FuncaoCombo.Text, ref dimensao);
+
             List<AlgoInfo> infos = new List<AlgoInfo>();
 
             for (int i = 0; i < nVezes; i++)
             {
                 RotinaAlgo algo = null;
                 if (AlgoCombo.Text == "PSO")
-                    algo = RotinaPSO(funcao);
+                    algo = RotinaPSO(funcao, restricao);
                 if (AlgoCombo.Text == "AG")
-                    algo = RotinaAG(funcao);
+                    algo = RotinaAG(funcao, restricao);
                 if (AlgoCombo.Text == "DE")
-                    algo = RotinaDE(funcao);
+                    algo = RotinaDE(funcao, restricao);
                 if (algo == null) return;
 
                 infos.Add(algo.Rodar(maxGer, nPop, min, max, dimensao, precisao, maxAval, usarTabu, distTabu, maxRepop, gerSem, margemComp, tabuNaPop, hillClimbing, lsChains, nPopMutLocal));
@@ -163,7 +169,7 @@ namespace AlgoView
             AlgoInfo piorRodada = infos.OrderByDescending(info => info.MelhorIndividuo.Aptidao).First();
             double mediaMelhores = infos.Average(info => info.MelhorIndividuo.Aptidao);
             double mediaAval = infos.Average(info => info.AvalParaMelhor);
-            double txSucesso = infos.Count(info => Math.Abs(info.MelhorIndividuo.Aptidao - _minGlobal) <= _erroAceitavel) / infos.Count();
+            double txSucesso = (double)infos.Count(info => Math.Abs(info.MelhorIndividuo.Aptidao - _minGlobal) <= _erroAceitavel) / infos.Count();
 
             Melhor_Aval.Text = string.Format("{0} ({1})", melhorRodada.MelhorIndividuo.Aptidao, melhorRodada.AvalParaMelhor);
             Pior_Aval.Text = string.Format("{0} ({1})", piorRodada.MelhorIndividuo.Aptidao, piorRodada.AvalParaMelhor);
@@ -207,7 +213,7 @@ namespace AlgoView
 
         #region Construir objeto algoritmo
 
-        private RotinaAlgo RotinaPSO(FuncAptidao funcao)
+        private RotinaAlgo RotinaPSO(FuncAptidao funcao, FuncRepopRestricao restricao)
         {
             double fatorPond;
             if (!double.TryParse(FatorPond.Text.Replace(".", ","), out fatorPond)) return null;
@@ -223,10 +229,10 @@ namespace AlgoView
             int nVizinhos;
             if (!int.TryParse(NVizinhos.Text, out nVizinhos)) return null;
 
-            return new PSOCore.RotinaPSO(funcao, fatorPond, fi1, fi2, usarRand1, usarRand2, coefKConstr, usarCoefConstr, nVizinhos);
+            return new PSOCore.RotinaPSO(funcao, restricao, _gs, _hs, _validar, fatorPond, fi1, fi2, usarRand1, usarRand2, coefKConstr, usarCoefConstr, nVizinhos);
         }
 
-        private RotinaAlgo RotinaAG(FuncAptidao funcao)
+        private RotinaAlgo RotinaAG(FuncAptidao funcao, FuncRepopRestricao FuncRestr)
         {
             double probCrossover;
             if (!double.TryParse(ProbCrossover.Text.Replace(".", ","), out probCrossover)) return null;
@@ -242,10 +248,10 @@ namespace AlgoView
             ComboBoxItem item = CrossType.SelectedItem as ComboBoxItem;
             if (item == null || !Enum.TryParse(item.Tag.ToString(), out crossType)) return null;
 
-            return new AGClassico(funcao, probCrossover, probMutacao, rangeMutacao / 100, deltaMedApt, critParada, crossType);
+            return new AGClassico(funcao, FuncRestr, _gs, _hs, _validar, probCrossover, probMutacao, rangeMutacao / 100, deltaMedApt, critParada, crossType);
         }
 
-        private RotinaAlgo RotinaDE(FuncAptidao funcao)
+        private RotinaAlgo RotinaDE(FuncAptidao funcao, FuncRepopRestricao restricao)
         {
             double probCrossDE;
             if (!double.TryParse(ProbCrossDE.Text.Replace(".", ","), out probCrossDE)) return null;
@@ -254,7 +260,7 @@ namespace AlgoView
             SelecaoDE selecao;
             ComboBoxItem item = TipoSelecao.SelectedItem as ComboBoxItem;
             if (item == null || !Enum.TryParse(item.Content.ToString(), out selecao)) return null;
-            return new RotinaDE(funcao, selecao, probCrossDE, fatorF);
+            return new RotinaDE(funcao, restricao, _gs, _hs, _validar, selecao, probCrossDE, fatorF);
         }
 
         #endregion

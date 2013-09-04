@@ -14,9 +14,11 @@ namespace PSOCore
         private const string MelhorApt = "MelhorApt";
         private const string MelhorCromo = "MelhorCromo";
 
-        public RotinaPSO(FuncAptidao apt, double fatorPond, double fi1, double fi2,
+        public RotinaPSO(FuncAptidao apt, FuncRepopRestricao restricao,
+            List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
+            double fatorPond, double fi1, double fi2,
             bool usarRand1, bool usarRand2, double coefKConstr, bool usarCoefConstr, int nVizinhos)
-            : base(apt)
+            : base(apt, restricao, gs, hs, validar)
         {
             _fatorPond = fatorPond;
             _fi1 = fi1;
