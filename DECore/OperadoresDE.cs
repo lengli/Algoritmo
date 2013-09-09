@@ -34,7 +34,7 @@ namespace DECore
         public static List<IndividuoBin> SelecaoBest(List<IndividuoBin> populacao)
         {
             List<IndividuoBin> ind = SelecaoAleatoria(2, populacao);
-            ind.Add(populacao.OrderBy(p => p.Aptidao).First());
+            ind.Add(populacao.First());
             return ind;
         }
     }

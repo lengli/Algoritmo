@@ -28,6 +28,7 @@ namespace PSOCore
             _coefKConstr = coefKConstr;
             _usarCoefConstr = usarCoefConstr;
             _nVizinhos = nVizinhos;
+            _fatorPondUsado = _fatorPond;
         }
 
         protected override bool CriterioDeParada(AlgoInfo agInfo)
@@ -42,10 +43,13 @@ namespace PSOCore
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-            foreach (IndividuoBin individuo in populacao)
+            _fatorPondUsado = _fatorPond - (0.5 * _fatorPond * (double)_avaliacoes / _maxAval);
+            for (int j = populacao.Count - 1; j >= 0; j--)
             {
+                IndividuoBin individuo = populacao[j];
                 List<double> pi;
                 double piApt;
+
                 if (!individuo.ParamExtras.ContainsKey(MelhorApt))
                 {
                     pi = individuo.Atributos.Select(n => n).ToList();
@@ -71,11 +75,21 @@ namespace PSOCore
                 List<double> velocidade = ((List<double>)individuo.ParamExtras[propVelocidade]);
                 for (int i = 0; i < _nAtributos; i++)
                 {
-                    velocidade[i] = _fatorPond * velocidade[i];
-                    velocidade[i] += _fi1 * (pi[i] - individuo.Atributos[i]) * (usarRand1 ? rand.NextDouble() : 1);
-                    velocidade[i] += _fi2 * (pg.Atributos[i] - individuo.Atributos[i]) * (usarRand2 ? rand.NextDouble() : 1);
-                    velocidade[i] *= CoefConstr();
-                    double novoValor = individuo.Atributos[i] + velocidade[i];
+                    double vel = velocidade[i];
+                    vel = _fatorPondUsado * vel;
+                    vel += _fi1 * (pi[i] - individuo.Atributos[i]) * (usarRand1 ? rand.NextDouble() : 1);
+                    vel += _fi2 * (pg.Atributos[i] - individuo.Atributos[i]) * (usarRand2 ? rand.NextDouble() : 1);
+
+                    //double u = (1 - Math.Abs(pg.Atributos[i] - individuo.Atributos[i])) / (IndividuoBin.Maximo - IndividuoBin.Minimo);
+                    //vel += _fi2 * u * u * (usarRand2 ? rand.NextDouble() : 1);
+                    //vel *= CoefConstr();
+
+                    // velocidade limitada entre o mínimo e o máximo
+                    if (vel <= IndividuoBin.Minimo) vel = IndividuoBin.Minimo;
+                    else if (vel >= IndividuoBin.Maximo) vel = IndividuoBin.Maximo;
+                    velocidade[i] = vel;
+
+                    double novoValor = individuo.Atributos[i] + vel;
                     if (novoValor <= IndividuoBin.Minimo) novoValor = IndividuoBin.Minimo;
                     else if (novoValor >= IndividuoBin.Maximo) novoValor = IndividuoBin.Maximo;
                     individuo.Atributos[i] = novoValor;
@@ -84,8 +98,9 @@ namespace PSOCore
 
                 if (individuo.Aptidao < piApt)
                 {
-                    individuo.ParamExtras[MelhorApt] = piApt;
-                    individuo.ParamExtras[MelhorCromo] = pi;
+                    individuo.ParamExtras[MelhorApt] = individuo.Aptidao;
+                    for (int i = 0; i < individuo.Atributos.Count; i++)
+                        ((List<double>)individuo.ParamExtras[MelhorCromo])[i] = individuo.Atributos[i];
                 }
             }
         }
@@ -93,6 +108,7 @@ namespace PSOCore
         #region privates
 
         private double _fatorPond = 1;
+        private double _fatorPondUsado = 1;
         private double _fi1;
         private double _fi2;
         private bool usarRand1;
@@ -121,11 +137,9 @@ namespace PSOCore
 
                 for (int i = 0; i < nAtributos; i++)
                 {
-                    //double r = rand.NextDouble();
-                    //r *= (_max - _min);
-                    //r += _min;
-
+                    //((List<double>)individuo.ParamExtras[propVelocidade]).Add(rand.NextDouble()* (_max - _min)+ _min);
                     ((List<double>)individuo.ParamExtras[propVelocidade]).Add(0);
+                    //((List<double>)individuo.ParamExtras[propVelocidade]).Add((IndividuoBin.Maximo - IndividuoBin.Minimo) * .1);
                 }
             }
         }

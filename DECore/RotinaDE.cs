@@ -29,8 +29,12 @@ namespace DECore
             _fatorF = fatorF;
         }
 
+        double _fatorFUsado = 0;
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
+            if (_fatorF > 0)
+                _fatorFUsado = _fatorF / (Math.Pow(20, (double)_avaliacoes / _maxAval));
+            
             for (int i = 0; i < populacao.Count; i++)
             {
                 // selecionando 3 individuos aleatoriamente
@@ -51,7 +55,7 @@ namespace DECore
                     if (rand.NextDouble() < _probCross || j == jRand)
                     {
                         //ui,j,G+1 = xr3,j,G + F(xr1,j,G − xr2,j,G)
-                        double atributo = selecao[2].Atributos[j] - _fatorF * (selecao[0].Atributos[j] - selecao[1].Atributos[j]);
+                        double atributo = selecao[2].Atributos[j] - _fatorFUsado * (selecao[0].Atributos[j] - selecao[1].Atributos[j]);
 
                         // tratamento de restrição
                         if (atributo >= _min && atributo <= _max)

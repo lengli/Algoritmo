@@ -121,6 +121,8 @@ namespace AlgoView
                     algo = RotinaDE(funcao, restricao);
                 if (algo == null) return;
 
+                algo.MinGlogal = _minGlobal;
+                algo.ErroAceitavel = _erroAceitavel;
                 infos.Add(algo.Rodar(maxGer, nPop, min, max, dimensao, precisao, maxAval, usarTabu, distTabu, maxRepop, gerSem, margemComp, tabuNaPop, hillClimbing, lsChains, nPopMutLocal));
             }
 

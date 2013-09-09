@@ -29,14 +29,17 @@ namespace AGCore
             this.rangeMutacao = rangeMutacao;
             this.crossType = crossType;
             erroPrecisao = Math.Pow(10, -IndividuoBin.Precisao);
+            rangeMutUsada = rangeMutacao;
+            probMutUsada = probMutacao;
+            probCrossUsada = probCrossover;
         }
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             List<double> probAcum = AGOperadores.MetodoDaRoleta(populacao.Select(ind => ind.Aptidao).ToList());
             List<IndividuoBin> popInterm = AGOperadores.SelecaoPopulacaoIntermediaria(probAcum, populacao);
-            AGOperadores.Crossover(popInterm, probCrossover, crossType);
-            AGOperadores.MutacaoReal(popInterm, probMutacao, rangeMutacao);
+            AGOperadores.Crossover(popInterm, probCrossUsada, crossType);
+            AGOperadores.MutacaoReal(popInterm, probMutUsada, rangeMutUsada);
 
             foreach (IndividuoBin individuo in popInterm)
                 // não avalia individuos previamente avaliados
@@ -44,12 +47,26 @@ namespace AGCore
                     individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
 
             populacao.AddRange(popInterm);
+            /*
+            if (rangeMutacao > 0)
+                rangeMutUsada = rangeMutacao / (Math.Pow(10, (double)_avaliacoes / _maxAval));
+            
+            if (probMutacao > 0)
+                probMutUsada = probMutacao / (Math.Pow(10, (double)_avaliacoes / _maxAval));
+            
+            if (probCrossUsada > 0)
+                probMutUsada = probCrossover +
+                    (1 - probCrossover) * ((double)_avaliacoes / _maxAval);
+             */
         }
 
         #region private
 
         private double probCrossover;
+        private double probCrossUsada;
         private double probMutacao;
+        private double probMutUsada;
+        private double rangeMutUsada;
         private double rangeMutacao;
         private double deltaMedApt;
         private int critParada;

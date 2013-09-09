@@ -87,18 +87,16 @@ namespace AGCore
 
                         switch (crossType)
                         {
-                            default:
-                                /*
-                                CruzamentoUmPonto(ind1, ind2);
-                                break;
-                            case CrossType.Aritmetico:*/
+                            case CrossType.Aritmetico:
                                 filhos.Add(CruzamentoReal(ind1, ind2));
                                 break;
                             case CrossType.Heuristico:
-                                CruzamentoHeuristico(ind1, ind2);
+                                filhos.Add(CruzamentoHeuristico(ind1, ind2));
                                 break;
                         }
 
+                        //filhos.Add(CruzamentoReal(ind1, ind2));
+                        //filhos.Add(CruzamentoHeuristico(ind1, ind2));
 
                         break;
                     }
@@ -110,10 +108,11 @@ namespace AGCore
 
         public static void MutacaoReal(List<IndividuoBin> pop, double pm, double rangeMut)
         {
+            List<IndividuoBin> popIntermediaria = new List<IndividuoBin>();
             Random rand = new Random(DateTime.Now.Millisecond);
             for (int i = 0; i < pop.Count; i++)
             {
-                IndividuoBin ind = pop[i];
+                IndividuoBin ind = pop[i].Clone();
                 bool mutated = false;
                 for (int j = 0; j < ind.Atributos.Count; j++)
                 {
@@ -137,8 +136,14 @@ namespace AGCore
                         */
                     }
                 }
-                if (mutated) ind.Aptidao = double.MaxValue;
+                if (mutated)
+                {
+                    ind.Aptidao = double.MaxValue;
+                    popIntermediaria.Add(ind);
+                }
             }
+
+            pop.InsertRange(0, popIntermediaria);
         }
         /*
 
@@ -210,7 +215,7 @@ namespace AGCore
             return filho;
         }
 
-        public static void CruzamentoHeuristico(IndividuoBin ind1, IndividuoBin ind2)
+        public static IndividuoBin CruzamentoHeuristico(IndividuoBin ind1, IndividuoBin ind2)
         {
             int ptoCorte = new Random(DateTime.Now.Millisecond).Next(1, ind1.Atributos.Count);
 
@@ -229,7 +234,7 @@ namespace AGCore
                 atrb1.Add(valor);
             }
 
-            ind1.Atributos = atrb1;
+            return new IndividuoBin() { Atributos = atrb1 };
         }
 
         public static int SelecaoParaReproducao(List<int> controle, int nPop)

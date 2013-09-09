@@ -15,9 +15,9 @@
                             <TextBlock Text="Tipo de Seleção" Margin="10,3" Width="85" />
                         </StackPanel>
                         <StackPanel Margin="10,5,0,10" Orientation="Horizontal">
-                            <TextBox x:Name="ProbCrossDE" Margin="10,3" Width="65" Text="0.1" />
-                            <TextBox x:Name="FatorF" Margin="10,3" Width="65" Text="0.28" />
-                            <ComboBox x:Name="TipoSelecao" Margin="10,3" Width="85">
+                            <TextBox x:Name="ProbCrossDE" Margin="10,3" Width="65" Text="0.001" />
+                            <TextBox x:Name="FatorF" Margin="10,3" Width="65" Text="1" />
+                            <ComboBox x:Name="TipoSelecao" SelectedIndex="0" Margin="10,3" Width="85">
                                 <ComboBoxItem Content="Rand"/>
                                 <ComboBoxItem Content="Best"/>
                             </ComboBox>
@@ -62,7 +62,7 @@
                             <CheckBox IsChecked="True" x:Name="Rand1" Margin="10,5" Width="60"/>
                             <CheckBox IsChecked="True" x:Name="Rand2" Margin="10,5" Width="60"/>
                             <TextBox Text="0" x:Name="KConstr" Margin="10,3" Width="80"/>
-                            <TextBox Text="6" x:Name="NVizinhos" Margin="10,3" Width="60"/>
+                            <TextBox Text="0" x:Name="NVizinhos" Margin="10,3" Width="60"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel>
@@ -94,8 +94,9 @@
                                 <ComboBoxItem Content="G5"/>
                             </ComboBox>
                             <TextBlock Text="X" Margin="0,5,4,0"/>
-                            <ComboBox SelectedIndex="1" Margin="5,0" x:Name="NVezes">
+                            <ComboBox SelectedIndex="2" Margin="5,0" x:Name="NVezes">
                                 <ComboBoxItem Content="1"/>
+                                <ComboBoxItem Content="5"/>
                                 <ComboBoxItem Content="30"/>
                             </ComboBox>
                             <Button Content="Rodar Algoritmo" Width="95" Margin="4,0,0,0" Click="Button_Click" />
