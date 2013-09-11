@@ -19,8 +19,9 @@ namespace AGCore
     {
         public AGClassico(FuncAptidao funcao, FuncRepopRestricao restricao,
             List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
-            double probCrossover, double probMutacao, double rangeMutacao, double deltaMedApt, int critParada, CrossType crossType)
-            : base(funcao, restricao, gs, hs, validar)
+            double probCrossover, double probMutacao, double rangeMutacao, double deltaMedApt,
+            int critParada, CrossType crossType, FuncValidarFronteira valFront)
+            : base(funcao, restricao, gs, hs, validar, valFront)
         {
             this.probCrossover = probCrossover;
             this.probMutacao = probMutacao;

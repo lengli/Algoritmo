@@ -8,10 +8,12 @@ namespace Functions
     public static class Functions
     {
         public static void SelecionarFuncao(out FuncAptidao funcao, out FuncRepopRestricao restricao,
-            out List<FuncAptidao> gs, out List<FuncAptidao> hs, out FuncValidarRestricao validar,
+            out List<FuncAptidao> gs, out List<FuncAptidao> hs,
+            out FuncValidarRestricao validar, out FuncValidarFronteira validarFronteira,
             out double min, out double max, out int nGeracoes, out double minGlobal, out double erro,
             string selecao, ref int d)
         {
+            validarFronteira = null;
             restricao = null;
             gs = null;
             hs = null;
@@ -35,8 +37,8 @@ namespace Functions
                 case "F11": { erro = 1E-4; funcao = F11; min = -600; max = 600; nGeracoes = 2000; minGlobal = 0; break; }
                 case "F12": { erro = 1E-4; funcao = F12; min = -50; max = 50; nGeracoes = 1500; minGlobal = 0; break; }
                 case "F13": { erro = 1E-4; funcao = F13; min = -50; max = 50; nGeracoes = 1500; minGlobal = 0; break; }
-                case "G1": { erro = 1E-4; funcao = G1; restricao = G1_Bounds; min = 0; max = 100; nGeracoes = 1500; minGlobal = -15; d = G1_Dim; gs = G1_gs(); validar = G1_Valid; break; }
-                case "G5": { erro = 1E-4; funcao = G5; restricao = G5_Bounds; min = -0.55; max = 1200; nGeracoes = 1500; minGlobal = 5126.4967140071; d = G5_Dim; gs = G5_gs(); hs = G5_hs(); validar = G5_Valid; break; }
+                case "G1": { erro = 1E-4; funcao = G1; restricao = G1_Bounds; min = 0; max = 100; nGeracoes = 1500; minGlobal = -15; d = G1_Dim; gs = G1_gs(); validar = G1_Valid; validarFronteira = G1_Bounds; break; }
+                case "G5": { erro = 1E-4; funcao = G5; restricao = G5_Bounds; min = -0.55; max = 1200; nGeracoes = 1500; minGlobal = 5126.4967140071; d = G5_Dim; gs = G5_gs(); hs = G5_hs(); validar = G5_Valid; validarFronteira = G5_Bounds; break; }
             }
         }
 
@@ -240,12 +242,12 @@ namespace Functions
                 x.Skip(4).Sum();
         }
 
-        private static List<List<double>> G1_Bounds()
+        private static List<List<double>> G1_Bounds(int npop)
         {
             Random rand = new Random(DateTime.Now.Millisecond);
             List<List<double>> pop = new List<List<double>>();
 
-            while (pop.Count != G1_Dim)
+            while (pop.Count != npop)
             {
                 List<double> ind = new List<double>();
 
@@ -255,10 +257,20 @@ namespace Functions
                 ind.Add(rand.NextDouble() * 100);
                 ind.Add(rand.NextDouble() * 100);
                 ind.Add(rand.NextDouble());
+
+                if (!G1_Valid(ind)) continue;
+
                 pop.Add(ind);
             }
 
             return pop;
+        }
+
+        private static bool G1_Bounds(double parametro, int indice)
+        {
+            if (indice == 12 || indice < 9)
+                return parametro >= 0 && parametro <= 1;
+            return parametro >= 0 && parametro <= 100;
         }
 
         private static bool G1_Valid(IList<double> x)
@@ -323,12 +335,12 @@ namespace Functions
                 (0.000002 / 3) * Math.Pow(chromo[1], 3);
         }
 
-        private static List<List<double>> G5_Bounds()
+        private static List<List<double>> G5_Bounds(int npop)
         {
             Random rand = new Random(DateTime.Now.Millisecond);
             List<List<double>> pop = new List<List<double>>();
 
-            while (pop.Count != G5_Dim)
+            while (pop.Count != npop)
             {
                 List<double> ind = new List<double>();
 
@@ -337,10 +349,19 @@ namespace Functions
                 ind.Add(rand.NextDouble() * 1.1 - 0.55);
                 ind.Add(rand.NextDouble() * 1.1 - 0.55);
 
+                if (!G5_Valid(ind)) continue;
+
                 pop.Add(ind);
             }
 
             return pop;
+        }
+
+        private static bool G5_Bounds(double parametro, int indice)
+        {
+            if (indice <=1)
+                return parametro >= 0 && parametro <= 1200;
+            return parametro >= -.55 && parametro <= .55;
         }
 
         private static bool G5_Valid(IList<double> x)

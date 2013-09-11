@@ -32,11 +32,12 @@ namespace AlgoCore
         protected Random rand = new Random(DateTime.Now.Millisecond);
         protected List<IndividuoBin> individuosTabu = new List<IndividuoBin>();
         protected AlgoInfo _agInfo;
-        protected List<FuncAptidao> _gs;
-        protected List<FuncAptidao> _hs;
-        private List<double> _gmax;
-        private List<double> _hmax;
-        private FuncValidarRestricao _validarRestricao;
+        protected List<FuncAptidao> _gs = new List<FuncAptidao>();
+        protected List<FuncAptidao> _hs = new List<FuncAptidao>();
+        private List<double> _gmax = new List<double>();
+        private List<double> _hmax = new List<double>();
+        protected FuncValidarRestricao _validarRestricao;
+        protected FuncValidarFronteira _validarFronteira;
         private List<IndividuoBin> populacao;
         private int _popValida = 0;
         private double _popMax = 0;
@@ -46,45 +47,64 @@ namespace AlgoCore
         public double ErroAceitavel { get; set; }
 
         protected RotinaAlgo(FuncAptidao aptidao, FuncRepopRestricao restricao,
-            List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validarRestricao)
+            List<FuncAptidao> gs, List<FuncAptidao> hs,
+            FuncValidarRestricao validarRestricao, FuncValidarFronteira validarFronteira)
         {
             FuncApt = aptidao;
             FuncRestr = restricao;
             _gs = gs;
             _hs = hs;
             _validarRestricao = validarRestricao;
+            _validarFronteira = validarFronteira;
         }
 
+        double piorAval = double.MinValue;
         protected double FuncaoAptidao(List<double> atributos)
         {
             if (_maxAval != 0 && _avaliacoes >= _maxAval) return double.MaxValue;
             _avaliacoes++;
             double f = FuncApt(atributos);
-            if (_validarRestricao == null || _validarRestricao(atributos)) return f;
+            if (_validarRestricao == null || _validarRestricao(atributos))
+            {
+                // penalidade: deve garantir que os individuos invalidos 
+                // sejam piores do que qualquer individuo valido
 
-            List<double> gValues = _gs.Select(gi => Math.Max(0, gi(atributos))).ToList();
+                if (f > piorAval) piorAval = f;
+                return f;
+            }
+
+
+            List<double> gValues = _gs == null ? new List<double>() :
+                _gs.Select(gi => Math.Max(0, gi(atributos))).ToList();
 
             // δ = 1E-4
-            List<double> hValues = _hs.Select(hi => Math.Max(0, Math.Abs(hi(atributos)) - 1E-4)).ToList();
+            List<double> hValues = _hs == null ? new List<double>() :
+                _hs.Select(hi => Math.Max(0, Math.Abs(hi(atributos)) - 1E-4)).ToList();
 
             // v(X)
             double v = 1;
 
             // Gmax
-            for (int i = 0; i < _gs.Count; i++)
-            {
-                if (_gmax.Count < i + 1) _gmax.Add(0);
-                if (_gmax[i] < gValues[i]) _gmax[i] = gValues[i];
-                v += gValues[i] / _gmax[i];
-            }
-            for (int i = 0; i < _hs.Count; i++)
-            {
-                if (_hmax.Count < i + 1) _hmax.Add(0);
-                if (_hmax[i] < hValues[i]) _hmax[i] = hValues[i];
-                v += hValues[i] / _hmax[i];
-            }
+            if (_gs != null)
+                for (int i = 0; i < _gs.Count; i++)
+                {
+                    if (_gmax.Count < i + 1) _gmax.Add(0);
+                    if (_gmax[i] < gValues[i]) _gmax[i] = gValues[i];
+                    if (_gmax[i] == 0) continue;
+                    v += gValues[i] / _gmax[i];
+                }
+            if (_hs != null)
+                for (int i = 0; i < _hs.Count; i++)
+                {
+                    if (_hmax.Count < i + 1) _hmax.Add(0);
+                    if (_hmax[i] < hValues[i]) _hmax[i] = hValues[i];
+                    if (_hmax[i] == 0) continue;
+                    v += hValues[i] / _hmax[i];
+                }
 
-            v /= (_gmax.Sum(g => 1 / g) + _hmax.Sum(h => 1 / h));
+            double gSum = _gmax.Sum(g => g != 0 ? 1 / g : 0);
+            double hSum = _hmax.Sum(h => h != 0 ? 1 / h : 0);
+            v /= (gSum + hSum);
 
             double rf = (double)_popValida / _tamanhoPop;
 
@@ -96,7 +116,7 @@ namespace AlgoCore
 
             double p = (1 - rf) * v + rf * fc;
 
-            return d + p;
+            return d + p + piorAval;
         }
 
         public AlgoInfo Rodar(int geracoesMAx, int tamanhoPop, double min, double max, int nAtributos, int precisao, //double erroAceitavel, double minGlobal,
@@ -121,7 +141,7 @@ namespace AlgoCore
             InicializarAlgoritmo(populacao);
 
             // avaliação da população inicial
-            foreach (IndividuoBin individuo in populacao)
+            foreach (IndividuoBin individuo in populacao.Where(p => p.Aptidao == double.MaxValue))
                 individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
 
             for (int g = 0; g < geracoesMAx || geracoesMAx == 0; g++)
@@ -213,9 +233,8 @@ namespace AlgoCore
                 //populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
 
                 // adaptativo
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, mutReal);
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, mutReal * 0.5);
-
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, mutReal, _validarFronteira);
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, mutReal * 0.5, _validarFronteira);
 
                 // +- 5% -> alta convergencia
                 //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, (max - min) / 20);
@@ -279,7 +298,7 @@ namespace AlgoCore
 
             if (FuncRestr == null)
                 populacao = IndividuoBin.GerarPopulacao<T>(nPop, min, max, nAtributos, precisao, tabu, _distTabu);
-            else populacao = FuncRestr().Select(atrs => new T { Atributos = atrs }).ToList();
+            else populacao = FuncRestr(nPop).Select(atrs => new T { Atributos = atrs }).ToList();
 
             // avaliação da população inicial
             foreach (T individuo in populacao)

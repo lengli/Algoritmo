@@ -9,7 +9,8 @@ namespace LocalCore.BuscaMutacao
 {
     public class MutacaoReal
     {
-        public static IndividuoBin Executar(IndividuoBin ind, FuncAptidao funcAptidao, double mutReal)
+        public static IndividuoBin Executar(IndividuoBin ind, FuncAptidao funcAptidao, double mutReal,
+            FuncValidarFronteira _validarFronteira)
         {
             IndividuoBin tempInd = ind.Clone();
             double aptidaoInicial = ind.Aptidao;
@@ -19,7 +20,8 @@ namespace LocalCore.BuscaMutacao
                 double valorAntigo = tempInd.Atributos[i];
                 double novoValor = tempInd.Atributos[i] - mutReal;
 
-                if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo) continue;
+                if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo ||
+                    (_validarFronteira != null && !_validarFronteira(novoValor, i))) continue;
 
                 tempInd.Atributos[i] = novoValor;
                 double aptidaoNova = funcAptidao(tempInd.Atributos);
@@ -41,7 +43,8 @@ namespace LocalCore.BuscaMutacao
                 double valorAntigo = tempInd.Atributos[i];
                 double novoValor = tempInd.Atributos[i] + mutReal;
 
-                if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo) continue;
+                if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo ||
+                    (_validarFronteira != null && !_validarFronteira(novoValor, i))) continue;
 
                 tempInd.Atributos[i] = novoValor;
                 var list = tempInd.Atributos.Select(n => n).ToList();

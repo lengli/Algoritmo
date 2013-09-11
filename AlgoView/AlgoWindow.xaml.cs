@@ -31,6 +31,7 @@ namespace AlgoView
         private List<FuncAptidao> _gs;
         private List<FuncAptidao> _hs;
         private FuncValidarRestricao _validar;
+        private FuncValidarFronteira _validarFronteira;
 
         public AlgoWindow()
         {
@@ -106,7 +107,7 @@ namespace AlgoView
 
             #endregion
 
-            Func.SelecionarFuncao(out funcao, out restricao, out _gs, out _hs, out _validar, out min, out max, out nGeracoes, out _minGlobal, out _erroAceitavel, FuncaoCombo.Text, ref dimensao);
+            Func.SelecionarFuncao(out funcao, out restricao, out _gs, out _hs, out _validar, out _validarFronteira, out min, out max, out nGeracoes, out _minGlobal, out _erroAceitavel, FuncaoCombo.Text, ref dimensao);
 
             List<AlgoInfo> infos = new List<AlgoInfo>();
 
@@ -231,7 +232,7 @@ namespace AlgoView
             int nVizinhos;
             if (!int.TryParse(NVizinhos.Text, out nVizinhos)) return null;
 
-            return new PSOCore.RotinaPSO(funcao, restricao, _gs, _hs, _validar, fatorPond, fi1, fi2, usarRand1, usarRand2, coefKConstr, usarCoefConstr, nVizinhos);
+            return new PSOCore.RotinaPSO(funcao, restricao, _gs, _hs, _validar, fatorPond, fi1, fi2, usarRand1, usarRand2, coefKConstr, usarCoefConstr, nVizinhos, _validarFronteira);
         }
 
         private RotinaAlgo RotinaAG(FuncAptidao funcao, FuncRepopRestricao FuncRestr)
@@ -250,7 +251,7 @@ namespace AlgoView
             ComboBoxItem item = CrossType.SelectedItem as ComboBoxItem;
             if (item == null || !Enum.TryParse(item.Tag.ToString(), out crossType)) return null;
 
-            return new AGClassico(funcao, FuncRestr, _gs, _hs, _validar, probCrossover, probMutacao, rangeMutacao / 100, deltaMedApt, critParada, crossType);
+            return new AGClassico(funcao, FuncRestr, _gs, _hs, _validar, probCrossover, probMutacao, rangeMutacao / 100, deltaMedApt, critParada, crossType, _validarFronteira);
         }
 
         private RotinaAlgo RotinaDE(FuncAptidao funcao, FuncRepopRestricao restricao)
@@ -262,7 +263,7 @@ namespace AlgoView
             SelecaoDE selecao;
             ComboBoxItem item = TipoSelecao.SelectedItem as ComboBoxItem;
             if (item == null || !Enum.TryParse(item.Content.ToString(), out selecao)) return null;
-            return new RotinaDE(funcao, restricao, _gs, _hs, _validar, selecao, probCrossDE, fatorF);
+            return new RotinaDE(funcao, restricao, _gs, _hs, _validar, selecao, probCrossDE, fatorF, _validarFronteira);
         }
 
         #endregion

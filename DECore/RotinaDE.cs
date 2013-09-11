@@ -21,8 +21,8 @@ namespace DECore
 
         public RotinaDE(FuncAptidao aptidao, FuncRepopRestricao FuncRestr,
             List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
-            SelecaoDE tipoSelecao, double probCross, double fatorF)
-            : base(aptidao, FuncRestr, gs, hs, validar)
+            SelecaoDE tipoSelecao, double probCross, double fatorF, FuncValidarFronteira valFront)
+            : base(aptidao, FuncRestr, gs, hs, validar, valFront)
         {
             _tipoSelecao = tipoSelecao;
             _probCross = probCross;
@@ -34,7 +34,7 @@ namespace DECore
         {
             if (_fatorF > 0)
                 _fatorFUsado = _fatorF / (Math.Pow(20, (double)_avaliacoes / _maxAval));
-            
+
             for (int i = 0; i < populacao.Count; i++)
             {
                 // selecionando 3 individuos aleatoriamente
@@ -58,7 +58,8 @@ namespace DECore
                         double atributo = selecao[2].Atributos[j] - _fatorFUsado * (selecao[0].Atributos[j] - selecao[1].Atributos[j]);
 
                         // tratamento de restrição
-                        if (atributo >= _min && atributo <= _max)
+                        if (atributo >= _min && atributo <= _max
+                            && (_validarFronteira == null || _validarFronteira(atributo, j)))
                         {
                             individuoTemp.Atributos.Add(atributo);
                             continue;

@@ -17,8 +17,9 @@ namespace PSOCore
         public RotinaPSO(FuncAptidao apt, FuncRepopRestricao restricao,
             List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
             double fatorPond, double fi1, double fi2,
-            bool usarRand1, bool usarRand2, double coefKConstr, bool usarCoefConstr, int nVizinhos)
-            : base(apt, restricao, gs, hs, validar)
+            bool usarRand1, bool usarRand2, double coefKConstr,
+            bool usarCoefConstr, int nVizinhos, FuncValidarFronteira valFront)
+            : base(apt, restricao, gs, hs, validar, valFront)
         {
             _fatorPond = fatorPond;
             _fi1 = fi1;
