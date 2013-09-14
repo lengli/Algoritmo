@@ -22,6 +22,7 @@
                     <ComboBoxItem Content="F11"/>
                     <ComboBoxItem Content="F12"/>
                     <ComboBoxItem Content="F13"/>
+                    <ComboBoxItem Content="h5-G5"/>
                 </ComboBox>
                 <Button Content="Mostrar Função" Width="120" Margin="3,0,0,0" Click="Button_Click" />
                 <TextBlock Margin="30,3,0,0" x:Name="Tempo" />

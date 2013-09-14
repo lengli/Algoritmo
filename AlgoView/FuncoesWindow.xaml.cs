@@ -47,6 +47,20 @@ namespace AlgoView
             double erro;
             int dim = 1;
 
+            if (FuncaoCombo.Text.Contains("h5"))
+            {
+                List<PointDouble> aval = new List<PointDouble>();
+                for (double xh = -0.55; xh < 0.55; xh += 5E-4)
+                {
+                    double yh = xh - .25 - Math.Asin(-1 * Math.Sin(xh - 0.25) - 1.2948);
+                    if (double.IsNaN(yh)) continue;
+                    aval.Add(new PointDouble { X = xh, Y = yh });
+                }
+
+                Grafico.ItemsSource = aval;
+                return;
+            }
+
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;
             Func.SelecionarFuncao(out funcao, out restricao, out gs, out hs, out validar, out validarFronteira, out min, out max, out nGeracoes, out minGlobal, out erro, FuncaoCombo.Text, ref dim);
 

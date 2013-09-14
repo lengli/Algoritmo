@@ -344,14 +344,33 @@ namespace Functions
             {
                 List<double> ind = new List<double>();
 
-                ind.Add(rand.NextDouble() * 1200);
-                ind.Add(rand.NextDouble() * 1200);
-                ind.Add(rand.NextDouble() * 1.1 - 0.55);
-                ind.Add(rand.NextDouble() * 1.1 - 0.55);
+                ind.Add(0);
+                ind.Add(0);
+                ind.Add(0);
+                ind.Add(0);
 
-                if (!G5_Valid(ind)) continue;
+                for (int i = 0; i < 1000; i++)
+                {
+                    ind[3] = rand.NextDouble() * 1.1 - 0.55;
+                    ind[2] = X2Fromh5(ind[3]);
+                    if ((-ind[3] + ind[2] - 0.55 > 0) ||
+                        (-ind[2] + ind[3] - 0.55 > 0))
+                        continue;
 
-                pop.Add(ind);
+
+
+                    for (int j = 0; j < 2000; j++)
+                    {
+                        ind[1] = rand.NextDouble() * 1200;
+                        ind[0] = rand.NextDouble() * 1200;
+
+                        if ((1000 * Math.Sin(-ind[2] - 0.25) + 1000 * Math.Sin(-ind[3] - 0.25) + 894.8 - ind[0] != 0) ||
+                            (1000 * Math.Sin(ind[2] - 0.25) + 1000 * Math.Sin(ind[2] - ind[3] - 0.25) + 894.8 - ind[1] != 0))
+                            continue;
+
+                        pop.Add(ind);
+                    }
+                }
             }
 
             return pop;
@@ -359,7 +378,7 @@ namespace Functions
 
         private static bool G5_Bounds(double parametro, int indice)
         {
-            if (indice <=1)
+            if (indice <= 1)
                 return parametro >= 0 && parametro <= 1200;
             return parametro >= -.55 && parametro <= .55;
         }
@@ -412,6 +431,11 @@ namespace Functions
             return 1000 * Math.Sin(x[3] - 0.25) + 1000 * Math.Sin(x[3] - x[2] - 0.25) + 1294.8;
         }
 
+        // retorna x[2] usando x[3] e h5
+        public static double X2Fromh5(double x3)
+        {
+            return x3 - .25 - Math.Asin(-1 * Math.Sin(x3 - 0.25) - 1.2948);
+        }
 
         #endregion
     }
