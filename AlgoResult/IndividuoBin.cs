@@ -21,15 +21,16 @@ namespace AlgoResult
         }
 
         public static int Precisao { get; set; }
-        public static double Minimo { get; set; }
-        public static double Maximo { get; set; }
+        public static Functions.Functions.Bound Minimo { get; set; }
+        public static Functions.Functions.Bound Maximo { get; set; }
 
         public static Random rand = new Random(DateTime.Now.Millisecond);
-        public static List<T> GerarPopulacao<T>(int nPop, double min, double max, int nAtributos,
+        public static List<T> GerarPopulacao<T>(int nPop, Functions.Functions.Bound min,
+            Functions.Functions.Bound max, int nAtributos,
             int precisao, List<IndividuoBin> tabu = null, double tabuDist = 0)
             where T : IndividuoBin, new()
         {
-            if (tabuDist == 0) tabuDist = (max - min) / 1000;
+            if (tabuDist == 0) tabuDist = (max(0) - min(0)) / 1000;
 
             IndividuoBin.Maximo = max;
             IndividuoBin.Minimo = min;
@@ -43,8 +44,8 @@ namespace AlgoResult
                 for (int j = 0; j < nAtributos; j++)
                 {
                     double next = rand.NextDouble();
-                    next *= (max - min);
-                    next += min;
+                    next *= (max(j) - min(j));
+                    next += min(j);
                     ind.Atributos.Add(next);
                 }
 

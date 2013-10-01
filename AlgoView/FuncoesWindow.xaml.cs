@@ -41,7 +41,7 @@ namespace AlgoView
             FuncValidarRestricao validar = null;
             FuncValidarFronteira validarFronteira;
             FuncRepopRestricao restricao = null;
-            double min = 0, max = 0;
+            Functions.Functions.Bound min, max;
             int nGeracoes = 0;
             double minGlobal;
             double erro;
@@ -62,12 +62,13 @@ namespace AlgoView
             }
 
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;
-            Func.SelecionarFuncao(out funcao, out restricao, out gs, out hs, out validar, out validarFronteira, out min, out max, out nGeracoes, out minGlobal, out erro, FuncaoCombo.Text, ref dim);
+            Func.SelecionarFuncao(out funcao, out restricao, out gs, out hs, out validar, out validarFronteira, 
+                out min, out max, out nGeracoes, out minGlobal, out erro, FuncaoCombo.Text, ref dim);
 
             List<PointDouble> avaliacoes = new List<PointDouble>();
 
-            double x = min;
-            while (x <= max)
+            double x = min(0);
+            while (x <= max(0))
             {
                 List<double> chr = new List<double>(30);
                 for (int i = 0; i < 30; i++) chr.Add(x);

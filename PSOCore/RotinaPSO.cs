@@ -86,13 +86,13 @@ namespace PSOCore
                     //vel *= CoefConstr();
 
                     // velocidade limitada entre o mínimo e o máximo
-                    if (vel <= IndividuoBin.Minimo) vel = IndividuoBin.Minimo;
-                    else if (vel >= IndividuoBin.Maximo) vel = IndividuoBin.Maximo;
+                    if (vel <= IndividuoBin.Minimo(i)) vel = IndividuoBin.Minimo(i);
+                    else if (vel >= IndividuoBin.Maximo(i)) vel = IndividuoBin.Maximo(i);
                     velocidade[i] = vel;
 
                     double novoValor = individuo.Atributos[i] + vel;
-                    if (novoValor <= IndividuoBin.Minimo) novoValor = IndividuoBin.Minimo;
-                    else if (novoValor >= IndividuoBin.Maximo) novoValor = IndividuoBin.Maximo;
+                    if (novoValor <= IndividuoBin.Minimo(i)) novoValor = IndividuoBin.Minimo(i);
+                    else if (novoValor >= IndividuoBin.Maximo(i)) novoValor = IndividuoBin.Maximo(i);
                     individuo.Atributos[i] = novoValor;
                 }
                 individuo.Aptidao = FuncaoAptidao(individuo.Atributos);

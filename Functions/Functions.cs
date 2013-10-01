@@ -7,10 +7,17 @@ namespace Functions
 {
     public static class Functions
     {
+        public delegate double Bound(int index);
+
+        private static Bound StBound(double b)
+        {
+            return (ind) => { return b; };
+        }
+
         public static void SelecionarFuncao(out FuncAptidao funcao, out FuncRepopRestricao restricao,
             out List<FuncAptidao> gs, out List<FuncAptidao> hs,
             out FuncValidarRestricao validar, out FuncValidarFronteira validarFronteira,
-            out double min, out double max, out int nGeracoes, out double minGlobal, out double erro,
+            out Bound min, out Bound max, out int nGeracoes, out double minGlobal, out double erro,
             string selecao, ref int d)
         {
             validarFronteira = null;
@@ -18,27 +25,28 @@ namespace Functions
             gs = null;
             hs = null;
             validar = null;
+
             switch (selecao)
             {
-                default: { erro = 1E-6; funcao = F1; min = -100; max = 100; nGeracoes = 1500; minGlobal = 0; break; }
-                case "F2": { erro = 1E-6; funcao = F2; min = -10; max = 10; nGeracoes = 2000; minGlobal = 0; break; }
-                case "F3": { erro = 1E-4; funcao = F3; min = -100; max = 100; nGeracoes = 5000; minGlobal = 0; break; }
-                case "F4": { erro = 1E-4; funcao = F4; min = -100; max = 100; nGeracoes = 5000; minGlobal = 0; break; }
-                case "F5": { erro = 1E-4; funcao = F5; min = -30; max = 30; nGeracoes = 20000; minGlobal = 0; break; }
-                case "F6": { erro = 1E-6; funcao = F6; min = -100; max = 100; nGeracoes = 1500; minGlobal = 0; break; }
-                case "F7": { erro = 1E-4; funcao = F7; min = -1.28; max = 1.28; nGeracoes = 3000; minGlobal = 0; break; }
+                default: { erro = 1E-6; funcao = F1; min = StBound(-100); max = StBound(100); nGeracoes = 1500; minGlobal = 0; break; }
+                case "F2": { erro = 1E-6; funcao = F2; min = StBound(-10); max = StBound(10); nGeracoes = 2000; minGlobal = 0; break; }
+                case "F3": { erro = 1E-4; funcao = F3; min = StBound(-100); max = StBound(10); nGeracoes = 5000; minGlobal = 0; break; }
+                case "F4": { erro = 1E-4; funcao = F4; min = StBound(-100); max = StBound(100); nGeracoes = 5000; minGlobal = 0; break; }
+                case "F5": { erro = 1E-4; funcao = F5; min = StBound(-30); max = StBound(30); nGeracoes = 20000; minGlobal = 0; break; }
+                case "F6": { erro = 1E-6; funcao = F6; min = StBound(-100); max = StBound(100); nGeracoes = 1500; minGlobal = 0; break; }
+                case "F7": { erro = 1E-4; funcao = F7; min = StBound(-1.28); max = StBound(1.28); nGeracoes = 3000; minGlobal = 0; break; }
                 case "F8":
                     {
-                        erro = 1E-4; funcao = F8; min = -500; max = 500; nGeracoes = 9000;
+                        erro = 1E-4; funcao = F8; min = StBound(-500); max = StBound(500); nGeracoes = 9000;
                         minGlobal = d == 30 ? -.125694866181649E05 : -0.209491443636081E+05; break;
                     }
-                case "F9": { erro = 1E-6; funcao = F9; min = -5.12; max = 5.12; nGeracoes = 5000; minGlobal = 0; break; }
-                case "F10": { erro = 1E-6; funcao = F10; min = -32; max = 32; nGeracoes = 1500; minGlobal = 0; break; }
-                case "F11": { erro = 1E-4; funcao = F11; min = -600; max = 600; nGeracoes = 2000; minGlobal = 0; break; }
-                case "F12": { erro = 1E-4; funcao = F12; min = -50; max = 50; nGeracoes = 1500; minGlobal = 0; break; }
-                case "F13": { erro = 1E-4; funcao = F13; min = -50; max = 50; nGeracoes = 1500; minGlobal = 0; break; }
-                case "G1": { erro = 1E-4; funcao = G1; restricao = G1_Bounds; min = 0; max = 100; nGeracoes = 1500; minGlobal = -15; d = G1_Dim; gs = G1_gs(); validar = G1_Valid; validarFronteira = G1_Bounds; break; }
-                case "G5": { erro = 1E-4; funcao = G5; restricao = G5_Bounds; min = -0.55; max = 1200; nGeracoes = 1500; minGlobal = 5126.4967140071; d = G5_Dim; gs = G5_gs(); hs = G5_hs(); validar = G5_Valid; validarFronteira = G5_Bounds; break; }
+                case "F9": { erro = 1E-6; funcao = F9; min = StBound(-5.12); max = StBound(5.12); nGeracoes = 5000; minGlobal = 0; break; }
+                case "F10": { erro = 1E-6; funcao = F10; min = StBound(-32); max = StBound(32); nGeracoes = 1500; minGlobal = 0; break; }
+                case "F11": { erro = 1E-4; funcao = F11; min = StBound(-600); max = StBound(600); nGeracoes = 2000; minGlobal = 0; break; }
+                case "F12": { erro = 1E-4; funcao = F12; min = StBound(-50); max = StBound(50); nGeracoes = 1500; minGlobal = 0; break; }
+                case "F13": { erro = 1E-4; funcao = F13; min = StBound(-50); max = StBound(50); nGeracoes = 1500; minGlobal = 0; break; }
+                case "G1": { erro = 1E-4; funcao = G1; restricao = G1_Bounds; min = StBound(0); max = StBound(100); nGeracoes = 1500; minGlobal = -15; d = G1_Dim; gs = G1_gs(); validar = G1_Valid; validarFronteira = G1_Bounds; break; }
+                case "G5": { erro = 1E-4; funcao = G5; restricao = G5_Bounds; min = MinG5; max = MaxG5; nGeracoes = 1500; minGlobal = 5126.4967140071; d = G5_Dim; gs = G5_gs(); hs = G5_hs(); validar = G5_Valid; validarFronteira = G5_Bounds; break; }
             }
         }
 
@@ -246,21 +254,71 @@ namespace Functions
         {
             Random rand = new Random(DateTime.Now.Millisecond);
             List<List<double>> pop = new List<List<double>>();
-
+            
             while (pop.Count != npop)
             {
                 List<double> ind = new List<double>();
 
-                for (int i = 0; i < 9; i++)
-                    ind.Add(rand.NextDouble());
-                ind.Add(rand.NextDouble() * 100);
-                ind.Add(rand.NextDouble() * 100);
-                ind.Add(rand.NextDouble() * 100);
-                ind.Add(rand.NextDouble());
+                for (int i = 0; i < 13; i++)
+                    ind.Add(0);
 
-                if (!G1_Valid(ind)) continue;
+                for (int i = 0; i < 2000; i++)
+                {
+                    if (pop.Count == npop) break;
 
-                pop.Add(ind);
+                    #region [7] [8] [11]
+
+                    ind[7] = rand.NextDouble();
+                    ind[8] = rand.NextDouble();
+                    ind[11] = rand.NextDouble() * 100;
+                    if (-2 * ind[7] - ind[8] + ind[11] > 0) continue;
+
+                    #endregion
+
+                    #region [0] [2] [9]
+
+                    ind[0] = rand.NextDouble();
+                    ind[2] = rand.NextDouble();
+                    ind[9] = rand.NextDouble() * 100;
+                    if (2 * ind[0] + 2 * ind[2] + ind[9] + ind[11] - 10 > 0) continue;
+
+                    #endregion
+
+                    #region [1] [10]
+
+                    ind[1] = rand.NextDouble();
+                    ind[10] = rand.NextDouble() * 100;
+                    if (2 * ind[1] + 2 * ind[2] + ind[10] + ind[11] - 10 > 0) continue;
+
+                    #endregion
+
+                    #region
+
+                    if (2 * ind[0] + 2 * ind[1] + ind[9] + ind[10] - 10 > 0) continue;
+
+                    #endregion
+
+                    #region [3] [4]
+
+                    ind[3] = rand.NextDouble();
+                    ind[4] = rand.NextDouble();
+                    if (-2 * ind[3] - ind[4] + ind[9] > 0) continue;
+
+                    #endregion
+
+                    #region [5] [6]
+
+                    ind[5] = rand.NextDouble();
+                    ind[6] = rand.NextDouble();
+                    if (-2 * ind[5] - ind[6] + ind[10] > 0) continue;
+
+                    #endregion
+
+                    ind[12] = rand.NextDouble();
+
+                    pop.Add(ind);
+                    break;
+                }
             }
 
             return pop;
@@ -331,8 +389,10 @@ namespace Functions
 
         public static double G5(IList<double> chromo)
         {
-            return 3 * chromo[0] + 0.000001 * Math.Pow(chromo[0], 3) + 2 * chromo[1] +
+            double res = 3 * chromo[0] + 0.000001 * Math.Pow(chromo[0], 3) + 2 * chromo[1] +
                 (0.000002 / 3) * Math.Pow(chromo[1], 3);
+
+            return res;
         }
 
         private static List<List<double>> G5_Bounds(int npop)
@@ -349,27 +409,29 @@ namespace Functions
                 ind.Add(0);
                 ind.Add(0);
 
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 2000; i++)
                 {
+                    if (pop.Count == npop) break;
+
                     ind[3] = rand.NextDouble() * 1.1 - 0.55;
-                    ind[2] = X2Fromh5(ind[3]);
-                    if ((-ind[3] + ind[2] - 0.55 > 0) ||
-                        (-ind[2] + ind[3] - 0.55 > 0))
+                    if (pop.Any(p => Math.Abs(p[3] - ind[3]) <= 1E-4))
                         continue;
 
+                    ind[2] = X2Fromh5(ind[3]);
+                    if (!G5_Bounds(ind[2], 2))
+                        continue;
 
+                    if ((-ind[3] + ind[2] - 0.55 > 0) ||
+                        (-ind[2] + ind[3] - 0.55 > 0)) continue;
 
-                    for (int j = 0; j < 2000; j++)
-                    {
-                        ind[1] = rand.NextDouble() * 1200;
-                        ind[0] = rand.NextDouble() * 1200;
+                    ind[1] = 894.8 + 1000 * Math.Sin(ind[2] - .25) + 1000 * Math.Sin(ind[2] - ind[3] - .25);
+                    ind[0] = 894.8 + 1000 * Math.Sin(-ind[2] - .25) + 1000 * Math.Sin(-ind[3] - .25);
 
-                        if ((1000 * Math.Sin(-ind[2] - 0.25) + 1000 * Math.Sin(-ind[3] - 0.25) + 894.8 - ind[0] != 0) ||
-                            (1000 * Math.Sin(ind[2] - 0.25) + 1000 * Math.Sin(ind[2] - ind[3] - 0.25) + 894.8 - ind[1] != 0))
-                            continue;
+                    if (!G5_Bounds(ind[0], 0) || !G5_Bounds(ind[1], 1))
+                        continue;
 
-                        pop.Add(ind);
-                    }
+                    pop.Add(ind);
+                    break;
                 }
             }
 
@@ -383,6 +445,18 @@ namespace Functions
             return parametro >= -.55 && parametro <= .55;
         }
 
+        private static double MinG5(int indice)
+        {
+            if (indice <= 1) return 0;
+            return -.55;
+        }
+
+        private static double MaxG5(int indice)
+        {
+            if (indice <= 1) return 1200;
+            return .55;
+        }
+
         private static bool G5_Valid(IList<double> x)
         {
             // g1
@@ -390,12 +464,15 @@ namespace Functions
                 //g2
                 (-x[2] + x[3] - 0.55 <= 0) &&
                 //h3
-                (1000 * Math.Sin(-x[2] - 0.25) + 1000 * Math.Sin(-x[3] - 0.25) + 894.8 - x[0] == 0) &&
+                Math.Abs
+                (1000 * Math.Sin(-x[2] - 0.25) + 1000 * Math.Sin(-x[3] - 0.25) + 894.8 - x[0]) <= 1E-4 &&
                 //h4
-                (1000 * Math.Sin(x[2] - 0.25) + 1000 * Math.Sin(x[2] - x[3] - 0.25) + 894.8 - x[1] == 0) &&
+                Math.Abs
+                (1000 * Math.Sin(x[2] - 0.25) + 1000 * Math.Sin(x[2] - x[3] - 0.25) + 894.8 - x[1]) <= 1E-4 &&
                 //h5
-                (1000 * Math.Sin(x[3] - 0.25) + 1000 * Math.Sin(x[3] - x[2] - 0.25) + 1294.8 == 0) &&
-                x[0] >= 0 && x[1] >= 0 && x[2] >= -0.55 && x[3] >= 0.55 &&
+                Math.Abs
+                (1000 * Math.Sin(x[3] - 0.25) + 1000 * Math.Sin(x[3] - x[2] - 0.25) + 1294.8) <= 1E-4 &&
+                x[0] >= 0 && x[1] >= 0 && x[2] >= -0.55 && x[3] >= -0.55 &&
                 x[0] <= 1200 && x[1] <= 1200 && x[2] <= 0.55 && x[3] <= 0.55;
         }
 

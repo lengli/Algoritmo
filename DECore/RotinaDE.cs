@@ -58,7 +58,7 @@ namespace DECore
                         double atributo = selecao[2].Atributos[j] - _fatorFUsado * (selecao[0].Atributos[j] - selecao[1].Atributos[j]);
 
                         // tratamento de restrição
-                        if (atributo >= _min && atributo <= _max
+                        if (atributo >= _min(j) && atributo <= _max(j)
                             && (_validarFronteira == null || _validarFronteira(atributo, j)))
                         {
                             individuoTemp.Atributos.Add(atributo);

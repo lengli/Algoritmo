@@ -44,7 +44,7 @@ namespace AlgoView
 
             FuncAptidao funcao = null;
             FuncRepopRestricao restricao = null;
-            double min = 0, max = 0;
+            Functions.Functions.Bound min, max;
             int nGeracoes = 0;
 
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;

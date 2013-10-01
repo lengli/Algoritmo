@@ -9,51 +9,40 @@ namespace LocalCore.BuscaMutacao
 {
     public class MutacaoReal
     {
-        public static IndividuoBin Executar(IndividuoBin ind, FuncAptidao funcAptidao, double mutReal,
-            FuncValidarFronteira _validarFronteira)
+        public static IndividuoBin Executar(IndividuoBin ind,
+            FuncAptidao funcAptidao, FuncAptidao funcAptidaoVirtual, double mutReal,
+            FuncValidarRestricao _validarFronteira)
         {
             IndividuoBin tempInd = ind.Clone();
             double aptidaoInicial = ind.Aptidao;
 
             for (int i = 0; i < tempInd.Atributos.Count; i++)
             {
-                double valorAntigo = tempInd.Atributos[i];
-                double novoValor = tempInd.Atributos[i] - mutReal;
+                double max = IndividuoBin.Maximo(i);
+                double min = IndividuoBin.Minimo(i);
 
-                if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo ||
-                    (_validarFronteira != null && !_validarFronteira(novoValor, i))) continue;
+                double valorAntigo = tempInd.Atributos[i];
+                double novoValor = tempInd.Atributos[i] + (max - min) * mutReal + min;
+
+                if (novoValor < IndividuoBin.Minimo(i) || novoValor > IndividuoBin.Maximo(i)
+                    /*|| (_validarFronteira != null && !_validarFronteira(novoValor, i))*/)
+                    continue;
 
                 tempInd.Atributos[i] = novoValor;
-                double aptidaoNova = funcAptidao(tempInd.Atributos);
+                double aptidaoNova;
 
-                if (aptidaoNova < aptidaoInicial)
-                {
-                    ind = tempInd.Clone();
-                    ind.Aptidao = aptidaoNova;
-                    aptidaoInicial = aptidaoNova;
-                }
+                if (_validarFronteira != null && !_validarFronteira(tempInd.Atributos))
+                    aptidaoNova = funcAptidaoVirtual(tempInd.Atributos);
                 else
-                {
-                    tempInd.Atributos[i] = valorAntigo;
-                }
-            }
-
-            for (int i = 0; i < tempInd.Atributos.Count; i++)
-            {
-                double valorAntigo = tempInd.Atributos[i];
-                double novoValor = tempInd.Atributos[i] + mutReal;
-
-                if (novoValor < IndividuoBin.Minimo || novoValor > IndividuoBin.Maximo ||
-                    (_validarFronteira != null && !_validarFronteira(novoValor, i))) continue;
-
-                tempInd.Atributos[i] = novoValor;
-                var list = tempInd.Atributos.Select(n => n).ToList();
-                double aptidaoNova = funcAptidao(list);
+                    aptidaoNova = funcAptidao(tempInd.Atributos);
 
                 if (aptidaoNova < aptidaoInicial)
                 {
-                    ind = tempInd.Clone();
-                    ind.Aptidao = aptidaoNova;
+                    if (_validarFronteira == null || _validarFronteira(tempInd.Atributos))
+                    {
+                        ind = tempInd.Clone();
+                        ind.Aptidao = aptidaoNova;
+                    }
                     aptidaoInicial = aptidaoNova;
                 }
                 else

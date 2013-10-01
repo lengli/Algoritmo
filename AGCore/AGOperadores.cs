@@ -120,10 +120,10 @@ namespace AGCore
                     {
                         //http://www.geatbx.com/docu/algindex-04.html
                         double signal = rand.NextDouble() > 0.5 ? -1 : 1;
-                        double mutVal = rand.NextDouble() * rangeMut * (IndividuoBin.Maximo - IndividuoBin.Minimo) * Math.Pow(2, rand.NextDouble() * (-20));
+                        double mutVal = rand.NextDouble() * rangeMut * (IndividuoBin.Maximo(j) - IndividuoBin.Minimo(j)) * Math.Pow(2, rand.NextDouble() * (-20));
 
                         double novoVal = ind.Atributos[j] + signal * mutVal;
-                        if (novoVal <= IndividuoBin.Maximo && novoVal >= IndividuoBin.Minimo)
+                        if (novoVal <= IndividuoBin.Maximo(j) && novoVal >= IndividuoBin.Minimo(j))
                         {
                             ind.Atributos[j] = novoVal;
                             mutated = true;
@@ -207,8 +207,8 @@ namespace AGCore
             {
                 double a = rand.NextDouble() * 1.5 - .25;
                 double val = a * ind1.Atributos[i] + (1 - a) * ind2.Atributos[i];
-                if (val > IndividuoBin.Maximo) val = IndividuoBin.Maximo;
-                else if (val < IndividuoBin.Minimo) val = IndividuoBin.Minimo;
+                if (val > IndividuoBin.Maximo(i)) val = IndividuoBin.Maximo(i);
+                else if (val < IndividuoBin.Minimo(i)) val = IndividuoBin.Minimo(i);
                 filho.Atributos.Add(val);
             }
 
@@ -229,8 +229,8 @@ namespace AGCore
             {
                 double vMelhor = indMelhor.Atributos[i];
                 double valor = vMelhor + ptoCorte * (vMelhor - indPior.Atributos[i]);
-                if (valor > IndividuoBin.Maximo) valor = IndividuoBin.Maximo;
-                else if (valor < IndividuoBin.Minimo) valor = IndividuoBin.Minimo;
+                if (valor > IndividuoBin.Maximo(i)) valor = IndividuoBin.Maximo(i);
+                else if (valor < IndividuoBin.Minimo(i)) valor = IndividuoBin.Minimo(i);
                 atrb1.Add(valor);
             }
 
