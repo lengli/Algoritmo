@@ -28,7 +28,8 @@ namespace AlgoResult
                 Geracao = geracao,
                 Media = populacao.Sum(ind => ind.Aptidao) / populacao.Count,
                 MelhorAptidao = melhorGer.Aptidao,
-                Avaliacoes = avaliacoes
+                Avaliacoes = avaliacoes,
+                MelhorCromo = melhorGer.Atributos
             });
 
             // salva o melhor de todos os tempos

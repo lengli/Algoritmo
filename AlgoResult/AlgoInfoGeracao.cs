@@ -11,5 +11,6 @@ namespace AlgoResult
         public double Media { get; set; }
         public double MelhorAptidao { get; set; }
         public int Avaliacoes { get; set; }
+        public List<double> MelhorCromo { get; set; }
     }
 }
