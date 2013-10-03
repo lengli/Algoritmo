@@ -302,7 +302,6 @@ namespace AlgoCore
             List<IndividuoBin> tabu = null) where T : IndividuoBin, new()
         {
             List<T> populacao;
-            var sw = System.Diagnostics.Stopwatch.StartNew();
              
             if (FuncRestr == null)
                 populacao = IndividuoBin.GerarPopulacao<T>(nPop, min, max, nAtributos, precisao, tabu, _distTabu);
@@ -312,8 +311,6 @@ namespace AlgoCore
                 IndividuoBin.Minimo = min;
                 populacao = FuncRestr(nPop).Select(atrs => new T { Atributos = atrs }).ToList();
             }
-
-            sw.Stop();
 
             // n. de individuos validos, se for o caso
             if (_validarRestricao != null)
