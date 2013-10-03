@@ -23,14 +23,19 @@ namespace AlgoResult
 
             // pega o individuo com o valor aptidao menor possível
             IndividuoBin melhorGer = populacao.OrderBy(ind => ind.Aptidao).First();
-            Informacoes.Add(new AlgoInfoGeracao
-            {
-                Geracao = geracao,
-                Media = populacao.Sum(ind => ind.Aptidao) / populacao.Count,
-                MelhorAptidao = melhorGer.Aptidao,
-                Avaliacoes = avaliacoes,
-                MelhorCromo = melhorGer.Atributos
-            });
+            AlgoInfoGeracao infoGer = new AlgoInfoGeracao
+                {
+                    Geracao = geracao,
+                    Media = populacao.Sum(ind => ind.Aptidao) / populacao.Count,
+                    MelhorAptidao = melhorGer.Aptidao,
+                    Avaliacoes = avaliacoes
+                };
+
+            double[] atrs = new double[melhorGer.Atributos.Count];
+            melhorGer.Atributos.CopyTo(atrs);
+            infoGer.MelhorCromo = atrs.ToList();
+
+            Informacoes.Add(infoGer);
 
             // salva o melhor de todos os tempos
             if (MelhorIndividuo == null || MelhorIndividuo.Aptidao > melhorGer.Aptidao)

@@ -134,6 +134,31 @@ namespace AlgoView
 
             TimeSpan deltaTempo = DateTime.Now - inicio;
             Tempo.Text = deltaTempo.TotalSeconds.ToString();
+
+            if (FuncaoCombo.Text == "G5")
+            {
+                EvolGraph.AddSequencialPoints(
+                    infos[0].Informacoes.Select(info =>
+                        new PointDouble { X = info.MelhorCromo[0], Y = info.MelhorCromo[1] }).ToList());
+
+                List<double> xs0 =
+                    infos[0].Informacoes.Select(info => info.MelhorCromo[0]).ToList();
+                List<double> xs1 =
+                    infos[0].Informacoes.Select(info => info.MelhorCromo[1]).ToList();
+                List<double> xs2 =
+                    infos[0].Informacoes.Select(info => info.MelhorCromo[2]).ToList();
+                List<double> xs3 =
+                    infos[0].Informacoes.Select(info => info.MelhorCromo[3]).ToList();
+
+                Range0.Text = string.Format("{0:0.####} - {1:0.####}", xs0.Min(), xs0.Max());
+                Range1.Text = string.Format("{0:0.####} - {1:0.####}", xs1.Min(), xs1.Max());
+                
+                // range não muda
+                Range2.Text = string.Format("{0:0.####} - {1:0.####}", xs2.Min(), xs2.Max());
+                Range3.Text = string.Format("{0:0.####} - {1:0.####}", xs3.Min(), xs3.Max());
+
+                EvolGraph.AddValidArea(_validar, xs2.Min(), xs3.Min());
+            }
         }
 
         private double Std(List<double> els)
