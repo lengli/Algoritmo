@@ -1,32 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Func = Functions.Functions;
-using AGCore;
-using System.Threading;
-using AlgoResult;
 using Functions;
-using LocalCore.HillClimbing;
-using LocalCore.LSChains;
-using DECore;
-
 
 namespace AlgoView
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class FuncoesWindow : Window
+    public partial class FuncoesWindow
     {
         public FuncoesWindow()
         {
@@ -35,14 +19,14 @@ namespace AlgoView
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            FuncAptidao funcao = null;
-            List<FuncAptidao> gs = null;
-            List<FuncAptidao> hs = null;
-            FuncValidarRestricao validar = null;
+            FuncAptidao funcao;
+            ListAptidao gs;
+            ListAptidao hs;
+            FuncValidarRestricao validar ;
             FuncValidarFronteira validarFronteira;
-            FuncRepopRestricao restricao = null;
-            Functions.Functions.Bound min, max;
-            int nGeracoes = 0;
+            FuncRepopRestricao restricao;
+            Bound min, max;
+            int nGeracoes;
             double minGlobal;
             double erro;
             int dim = 1;

@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Diagnostics;
 using AlgoResult;
 using Functions;
-using LocalCore.HillClimbing;
-using LocalCore.LSChains;
-using LocalCore.BuscaMutacao;
 using AlgoCore;
 
 namespace AGCore
@@ -18,7 +12,7 @@ namespace AGCore
     public class AGClassico : RotinaAlgo
     {
         public AGClassico(FuncAptidao funcao, FuncRepopRestricao restricao,
-            List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
+            ListAptidao gs, ListAptidao hs, FuncValidarRestricao validar,
             double probCrossover, double probMutacao, double rangeMutacao, double deltaMedApt,
             int critParada, CrossType crossType, FuncValidarFronteira valFront)
             : base(funcao, restricao, gs, hs, validar, valFront)

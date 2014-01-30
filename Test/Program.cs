@@ -26,7 +26,7 @@ namespace Test
             ShowResult(Functions.Functions.F5, "F5", new List<double> { 1, 1 });
             ShowResult(Functions.Functions.F6, "F6", new List<double> { 0, 0 });
             ShowResult(Functions.Functions.F7, "F7", new List<double> { 0, 0 });
-            ShowResult(Functions.Functions.F8, "F8", new List<double> { 424.45, 424.45});
+            ShowResult(Functions.Functions.F8d30, "F8", new List<double> { 424.45, 424.45});
             ShowResult(Functions.Functions.F9, "F9", new List<double> { 0, 0 });
             ShowResult(Functions.Functions.F10, "F10", new List<double> { 0, 0 });
             ShowResult(Functions.Functions.F11, "F11", new List<double> { 0, 0 });

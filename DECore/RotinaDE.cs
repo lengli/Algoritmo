@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using AlgoResult;
 using Functions;
 using AlgoCore;
@@ -20,7 +18,7 @@ namespace DECore
         private double _fatorF;
 
         public RotinaDE(FuncAptidao aptidao, FuncRepopRestricao FuncRestr,
-            List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
+            ListAptidao gs, ListAptidao hs, FuncValidarRestricao validar,
             SelecaoDE tipoSelecao, double probCross, double fatorF, FuncValidarFronteira valFront)
             : base(aptidao, FuncRestr, gs, hs, validar, valFront)
         {
@@ -29,7 +27,7 @@ namespace DECore
             _fatorF = fatorF;
         }
 
-        double _fatorFUsado = 0;
+        double _fatorFUsado;
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             if (_fatorF > 0)

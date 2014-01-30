@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
+using Functions.Attributes;
 
 namespace Functions
 {
     public static class Functions
     {
-        public delegate double Bound(int index);
-
-        private static Bound StBound(double b)
-        {
-            return (ind) => { return b; };
-        }
-
         public static void SelecionarFuncao(out FuncAptidao funcao, out FuncRepopRestricao restricao,
-            out List<FuncAptidao> gs, out List<FuncAptidao> hs,
+            out ListAptidao gs, out ListAptidao hs,
             out FuncValidarRestricao validar, out FuncValidarFronteira validarFronteira,
             out Bound min, out Bound max, out int nGeracoes, out double minGlobal, out double erro,
             string selecao, ref int d)
@@ -25,38 +19,50 @@ namespace Functions
             gs = null;
             hs = null;
             validar = null;
+            funcao = null;
+            min = null;
+            max = null;
+            nGeracoes = 0;
+            minGlobal = 0;
+            erro = 0;
 
-            switch (selecao)
+            if (selecao == "F8") selecao += d == 30 ? "d30" : "d50";
+
+            MethodInfo method = typeof(Functions).GetMethod(selecao);
+            object att = method.GetCustomAttributes(false).FirstOrDefault();
+            if (att == null) return;
+
+            Delegate fDelegate = Delegate.CreateDelegate(typeof(FuncAptidao), typeof(Functions).GetMethod(selecao));
+            funcao = (FuncAptidao)fDelegate;
+
+            FunctionAtt fAtt = att as FunctionAtt;
+            if (fAtt != null)
             {
-                default: { erro = 1E-6; funcao = F1; min = StBound(-100); max = StBound(100); nGeracoes = 1500; minGlobal = 0; break; }
-                case "F2": { erro = 1E-6; funcao = F2; min = StBound(-10); max = StBound(10); nGeracoes = 2000; minGlobal = 0; break; }
-                case "F3": { erro = 1E-4; funcao = F3; min = StBound(-100); max = StBound(10); nGeracoes = 5000; minGlobal = 0; break; }
-                case "F4": { erro = 1E-4; funcao = F4; min = StBound(-100); max = StBound(100); nGeracoes = 5000; minGlobal = 0; break; }
-                case "F5": { erro = 1E-4; funcao = F5; min = StBound(-30); max = StBound(30); nGeracoes = 20000; minGlobal = 0; break; }
-                case "F6": { erro = 1E-6; funcao = F6; min = StBound(-100); max = StBound(100); nGeracoes = 1500; minGlobal = 0; break; }
-                case "F7": { erro = 1E-4; funcao = F7; min = StBound(-1.28); max = StBound(1.28); nGeracoes = 3000; minGlobal = 0; break; }
-                case "F8":
-                    {
-                        erro = 1E-4; funcao = F8; min = StBound(-500); max = StBound(500); nGeracoes = 9000;
-                        minGlobal = d == 30 ? -.125694866181649E05 : -0.209491443636081E+05; break;
-                    }
-                case "F9": { erro = 1E-6; funcao = F9; min = StBound(-5.12); max = StBound(5.12); nGeracoes = 5000; minGlobal = 0; break; }
-                case "F10": { erro = 1E-6; funcao = F10; min = StBound(-32); max = StBound(32); nGeracoes = 1500; minGlobal = 0; break; }
-                case "F11": { erro = 1E-4; funcao = F11; min = StBound(-600); max = StBound(600); nGeracoes = 2000; minGlobal = 0; break; }
-                case "F12": { erro = 1E-4; funcao = F12; min = StBound(-50); max = StBound(50); nGeracoes = 1500; minGlobal = 0; break; }
-                case "F13": { erro = 1E-4; funcao = F13; min = StBound(-50); max = StBound(50); nGeracoes = 1500; minGlobal = 0; break; }
-                case "G1": { erro = 1E-4; funcao = G1; restricao = G1_Bounds; min = StBound(0); max = StBound(100); nGeracoes = 1500; minGlobal = -15; d = G1_Dim; gs = G1_gs(); validar = G1_Valid; validarFronteira = G1_Bounds; break; }
-                case "G5": { erro = 1E-4; funcao = G5; restricao = G5_Bounds; min = MinG5; max = MaxG5; nGeracoes = 1500; minGlobal = 5126.4967140071; d = G5_Dim; gs = G5_gs(); hs = G5_hs(); validar = G5_Valid; validarFronteira = G5_Bounds; break; }
+                min = fAtt.MinBound;
+                max = fAtt.MaxBound;
+                nGeracoes = fAtt.MaxGen;
+                minGlobal = fAtt.MinGlobal;
+                erro = fAtt.Error;
+            }
+
+            FuncRestrAttr fRestrAtt = att as FuncRestrAttr;
+            if (fRestrAtt != null)
+            {
+                d = fRestrAtt.Dimension;
+                gs = fRestrAtt.Gs;
+                hs = fRestrAtt.Hs;
+                validar = fRestrAtt.Validate;
+                validarFronteira = fRestrAtt.ValidateBounds;
             }
         }
 
-        // [-100,100]
+        [FunctionAtt(1E-6, -100, 100, 1500, 0)]
         public static double F1(IList<double> chromo)
         {
             return chromo.Sum(c => c * c);
         }
 
-        // [-10,10]
+        [FunctionAtt(1E-6, -10, 10, 2000, 0)]
         public static double F2(IList<double> chromo)
         {
             double product = 1;
@@ -66,7 +72,7 @@ namespace Functions
             return chromo.Sum(c => Math.Abs(c)) + product;
         }
 
-        // [-100,100]
+        [FunctionAtt(1E-4, -100, 100, 5000, 0)]
         public static double F3(IList<double> chromo)
         {
             double sum = 0;
@@ -78,14 +84,13 @@ namespace Functions
             return sum;
         }
 
-        // [-100,100]
+        [FunctionAtt(1E-4, -100, 100, 5000, 0)]
         public static double F4(IList<double> chromo)
         {
-            return chromo.Select(c => Math.Abs(c)).OrderByDescending(c => c).First();
+            return chromo.Select(Math.Abs).OrderByDescending(c => c).First();
         }
 
-
-        // [-30,30]
+        [FunctionAtt(1E-4, -30, 30, 20000, 0)]
         public static double F5(IList<double> chromo)
         {
             double sum = 0;
@@ -96,14 +101,14 @@ namespace Functions
             return sum;
         }
 
-        // [-100,100]
+        [FunctionAtt(1E-6, -100, 100, 1500, 0)]
         public static double F6(IList<double> chromo)
         {
             return chromo.Sum(c => Math.Pow(Math.Floor(c + .5), 2));
         }
 
-        private static int F7Seed = 0;
-        // [-1.28,1.28]
+        private static int F7Seed;
+        [FunctionAtt(1E-4, -1.28, 1.28, 3000, 0)]
         public static double F7(IList<double> chromo)
         {
             double res = 0;
@@ -114,19 +119,22 @@ namespace Functions
             return res;
         }
 
-        // [-500,500]
-        public static double F8(IList<double> chromo)
+        [FunctionAtt(1E-4, -500, 500, 9000, -.125694866181649E05)]
+        public static double F8d30(IList<double> chromo)
         {
             return chromo.Sum(c => Math.Sin(Math.Sqrt(Math.Abs(c))) * (-c));
         }
 
-        // [-5.12,5.12]
+        [FunctionAtt(1E-4, -500, 500, 9000, -0.209491443636081E+05)]
+        public static double F8d50(IList<double> chromo) { return F8d30(chromo); }
+
+        [FunctionAtt(1E-6, -5.12, 5.12, 5000, 0)]
         public static double F9(IList<double> chromo)
         {
             return chromo.Sum(c => c * c - 10 * Math.Cos(2 * Math.PI * c) + 10);
         }
 
-        // [-32,32]
+        [FunctionAtt(1E-6, -32, 32, 1500, 0)]
         public static double F10(IList<double> chromo)
         {
             double sum1 = chromo.Sum(c => c * c);
@@ -135,7 +143,7 @@ namespace Functions
             return -20 * Math.Exp(-.2 * Math.Sqrt(sum1 / n)) - Math.Exp(sum2 / n) + 20 + Math.E;
         }
 
-        // [-600,600]
+        [FunctionAtt(1E-4, -600, 600, 2000, 0)]
         public static double F11(IList<double> chromo)
         {
             double res = chromo.Sum(c => c * c) / 4000;
@@ -148,7 +156,7 @@ namespace Functions
 
         #region F12
 
-        // [-50,50]
+        [FunctionAtt(1E-4, -50, 50, 1500, 0)]
         public static double F12(IList<double> chromo)
         {
             return (Math.PI / chromo.Count) * (Parte1(chromo[0]) + Parte2(chromo) +
@@ -194,16 +202,14 @@ namespace Functions
 
         private static double U(double x, double a, double k, double m)
         {
-            if (x > a)
-                return k * Math.Pow(x - a, m);
-            if (x < -a)
-                return k * Math.Pow(-x - a, m);
+            if (x > a) return k * Math.Pow(x - a, m);
+            if (x < -a) return k * Math.Pow(-x - a, m);
             return 0;
         }
 
         #region F13
 
-        // [-50,50]
+        [FunctionAtt(1E-4, -50, 50, 1500, 0)]
         public static double F13(IList<double> chromo)
         {
             return 0.1 * (F13_1(chromo.First()) + F13_2(chromo) + F13_3(chromo.Last()) + F13_4(chromo));
@@ -241,8 +247,7 @@ namespace Functions
 
         #region G1
 
-        public const int G1_Dim = 13;
-
+        [FuncRestrAttr(1E-4, 0, 100, 1500, -15, 13, "G1_gs", null, "G1_Valid", "G1_Bounds", "G1_Repop_Bounds")]
         public static double G1(IList<double> x)
         {
             return 5 * x.Take(4).Sum() -
@@ -250,11 +255,11 @@ namespace Functions
                 x.Skip(4).Sum();
         }
 
-        private static List<List<double>> G1_Bounds(int npop)
+        public static List<List<double>> G1_Repop_Bounds(int npop)
         {
             Random rand = new Random(DateTime.Now.Millisecond);
             List<List<double>> pop = new List<List<double>>();
-            
+
             while (pop.Count != npop)
             {
                 List<double> ind = new List<double>();
@@ -324,14 +329,14 @@ namespace Functions
             return pop;
         }
 
-        private static bool G1_Bounds(double parametro, int indice)
+        public static bool G1_Bounds(double parametro, int indice)
         {
             if (indice == 12 || indice < 9)
                 return parametro >= 0 && parametro <= 1;
             return parametro >= 0 && parametro <= 100;
         }
 
-        private static bool G1_Valid(IList<double> x)
+        public static bool G1_Valid(IList<double> x)
         {
             // g1
             return (2 * x[0] + 2 * x[1] + x[9] + x[10] - 10 <= 0) &&
@@ -385,8 +390,7 @@ namespace Functions
 
         #region G5
 
-        public const int G5_Dim = 4;
-
+        [FuncRestrAttr(1E-4, "MinG5", "MaxG5", 1500, -15, 4, "G5_gs", "G5_hs", "G5_Valid", "G5_Bounds", "G5_Repop_Bounds")]
         public static double G5(IList<double> chromo)
         {
             double res = 3 * chromo[0] + 0.000001 * Math.Pow(chromo[0], 3) + 2 * chromo[1] +
@@ -395,7 +399,7 @@ namespace Functions
             return res;
         }
 
-        private static List<List<double>> G5_Bounds(int npop)
+        public static List<List<double>> G5_Repop_Bounds(int npop)
         {
             Random rand = new Random(DateTime.Now.Millisecond);
             List<List<double>> pop = new List<List<double>>();
@@ -438,26 +442,26 @@ namespace Functions
             return pop;
         }
 
-        private static bool G5_Bounds(double parametro, int indice)
+        public static bool G5_Bounds(double parametro, int indice)
         {
             if (indice <= 1)
                 return parametro >= 0 && parametro <= 1200;
             return parametro >= -.55 && parametro <= .55;
         }
 
-        private static double MinG5(int indice)
+        public static double MinG5(int indice)
         {
             if (indice <= 1) return 0;
             return -.55;
         }
 
-        private static double MaxG5(int indice)
+        public static double MaxG5(int indice)
         {
             if (indice <= 1) return 1200;
             return .55;
         }
 
-        private static bool G5_Valid(IList<double> x)
+        public static bool G5_Valid(IList<double> x)
         {
             // g1
             return (-x[3] + x[2] - 0.55 <= 0) &&

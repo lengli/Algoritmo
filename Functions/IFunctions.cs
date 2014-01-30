@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Functions
 {
+    public delegate List<FuncAptidao> ListAptidao();
     public delegate double FuncAptidao(List<double> atributos);
     public delegate List<List<double>> FuncRepopRestricao(int nPop);
     public delegate bool FuncValidarRestricao(List<double> atributos);
     public delegate bool FuncValidarFronteira(double atributo, int indice);
+    public delegate double Bound(int index);
 
     public interface IFunctions
     {

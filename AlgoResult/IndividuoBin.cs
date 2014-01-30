@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Functions;
 
 namespace AlgoResult
 {
@@ -10,31 +10,22 @@ namespace AlgoResult
         #region static
 
         private static int NextID;
-
-        public static int GetNextID
-        {
-            get
-            {
-                return NextID++;
-            }
-
-        }
+        public static int GetNextID { get { return NextID++; } }
 
         public static int Precisao { get; set; }
-        public static Functions.Functions.Bound Minimo { get; set; }
-        public static Functions.Functions.Bound Maximo { get; set; }
+        public static Bound Minimo { get; set; }
+        public static Bound Maximo { get; set; }
 
         public static Random rand = new Random(DateTime.Now.Millisecond);
-        public static List<T> GerarPopulacao<T>(int nPop, Functions.Functions.Bound min,
-            Functions.Functions.Bound max, int nAtributos,
+        public static List<T> GerarPopulacao<T>(int nPop, Bound min, Bound max, int nAtributos,
             int precisao, List<IndividuoBin> tabu = null, double tabuDist = 0)
             where T : IndividuoBin, new()
         {
             if (tabuDist == 0) tabuDist = (max(0) - min(0)) / 1000;
 
-            IndividuoBin.Maximo = max;
-            IndividuoBin.Minimo = min;
-            IndividuoBin.Precisao = precisao;
+            Maximo = max;
+            Minimo = min;
+            Precisao = precisao;
 
             List<T> pop = new List<T>(nPop);
 
@@ -79,9 +70,7 @@ namespace AlgoResult
             // distancia euclidiana
             double sqrSum = 0;
             for (int i = 0; i < Atributos.Count; i++)
-            {
                 sqrSum += Math.Pow(Atributos[i] - ind2.Atributos[i], 2);
-            }
 
             sqrSum = Math.Sqrt(sqrSum);
 

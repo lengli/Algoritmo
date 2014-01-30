@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Functions;
 using AlgoResult;
 using LocalCore.HillClimbing;
@@ -19,12 +18,12 @@ namespace AlgoCore
 
         #endregion
 
-        protected int _avaliacoes = 0;
-        protected int _maxAval = 0;
+        protected int _avaliacoes;
+        protected int _maxAval;
         protected int _geracoesMAx;
         protected int _tamanhoPop;
-        protected Functions.Functions.Bound _min;
-        protected Functions.Functions.Bound _max;
+        protected Bound _min;
+        protected Bound _max;
         protected int _nAtributos;
         protected double _distTabu;
         protected int _gerSemMelhorar;
@@ -32,22 +31,22 @@ namespace AlgoCore
         protected Random rand = new Random(DateTime.Now.Millisecond);
         protected List<IndividuoBin> individuosTabu = new List<IndividuoBin>();
         protected AlgoInfo _agInfo;
-        protected List<FuncAptidao> _gs = new List<FuncAptidao>();
-        protected List<FuncAptidao> _hs = new List<FuncAptidao>();
+        protected ListAptidao _gs;
+        protected ListAptidao _hs;
         private List<double> _gmax = new List<double>();
         private List<double> _hmax = new List<double>();
         protected FuncValidarRestricao _validarRestricao;
         protected FuncValidarFronteira _validarFronteira;
         private List<IndividuoBin> populacao;
-        private int _popValida = 0;
-        private double _popMax = 0;
-        private double _popMin = 0;
+        private int _popValida;
+        private double _popMax;
+        private double _popMin;
 
         public double MinGlogal { get; set; }
         public double ErroAceitavel { get; set; }
 
         protected RotinaAlgo(FuncAptidao aptidao, FuncRepopRestricao restricao,
-            List<FuncAptidao> gs, List<FuncAptidao> hs,
+            ListAptidao gs, ListAptidao hs,
             FuncValidarRestricao validarRestricao, FuncValidarFronteira validarFronteira)
         {
             FuncApt = aptidao;
@@ -81,19 +80,18 @@ namespace AlgoCore
                 return f;
             }
 
-
             List<double> gValues = _gs == null ? new List<double>() :
-                _gs.Select(gi => Math.Max(0, gi(atributos))).ToList();
+                _gs().Select(gi => Math.Max(0, gi(atributos))).ToList();
 
             List<double> hValues = _hs == null ? new List<double>() :
-                _hs.Select(hi => Math.Abs(hi(atributos))).ToList();
+                _hs().Select(hi => Math.Abs(hi(atributos))).ToList();
 
             // v(X)
             double v = 1;
 
             // Gmax
             if (_gs != null)
-                for (int i = 0; i < _gs.Count; i++)
+                for (int i = 0; i < _gs().Count; i++)
                 {
                     if (_gmax.Count < i + 1) _gmax.Add(0);
                     if (_gmax[i] < gValues[i]) _gmax[i] = gValues[i];
@@ -101,7 +99,7 @@ namespace AlgoCore
                     v += gValues[i] / _gmax[i];
                 }
             if (_hs != null)
-                for (int i = 0; i < _hs.Count; i++)
+                for (int i = 0; i < _hs().Count; i++)
                 {
                     if (_hmax.Count < i + 1) _hmax.Add(0);
                     if (_hmax[i] < hValues[i]) _hmax[i] = hValues[i];
@@ -125,8 +123,8 @@ namespace AlgoCore
             return d + p + piorAval;
         }
 
-        public AlgoInfo Rodar(int geracoesMAx, int tamanhoPop, Functions.Functions.Bound min,
-            Functions.Functions.Bound max, int nAtributos, int precisao, //double erroAceitavel, double minGlobal,
+        public AlgoInfo Rodar(int geracoesMAx, int tamanhoPop, Bound min,
+            Bound max, int nAtributos, int precisao, //double erroAceitavel, double minGlobal,
             int maxAvaliacoes, bool usarTabu, double distTabu, int nMaxRepop, int gerSemMelhorar, double margemComp, bool tabuNaPop, ParametrosHillClimbing hillClimbing = null,
             ParametrosLSChains lsChains = null, int qtdMutLocal = 0)
         {
@@ -215,13 +213,13 @@ namespace AlgoCore
             return _agInfo;
         }
 
-        int falhas = 0;
+        int falhas;
         double ultAptidao = double.MaxValue;
         double mutReal;
         // método destinado a inserir algorítmos meméticos
         // considerando que a lista populacao já está ordenada por aptidao
         private void BuscaLocal(List<IndividuoBin> populacao,
-            Functions.Functions.Bound max, Functions.Functions.Bound min, int precisao, // parametros do algoritmo
+            Bound max, Bound min, int precisao, // parametros do algoritmo
             int qtdMutLocal, ParametrosHillClimbing hillClimbing, ParametrosLSChains lsChains) // parametros das buscas locais
         {
             // busca local
@@ -298,46 +296,46 @@ namespace AlgoCore
             return false;
         }
 
-        private List<IndividuoBin> PopulacaoAleatoria<T>(int nPop, Functions.Functions.Bound min, Functions.Functions.Bound max, int nAtributos, int precisao,
+        private List<IndividuoBin> PopulacaoAleatoria<T>(int nPop, Bound min, Bound max, int nAtributos, int precisao,
             List<IndividuoBin> tabu = null) where T : IndividuoBin, new()
         {
-            List<T> populacao;
+            List<T> _populacao;
              
             if (FuncRestr == null)
-                populacao = IndividuoBin.GerarPopulacao<T>(nPop, min, max, nAtributos, precisao, tabu, _distTabu);
+                _populacao = IndividuoBin.GerarPopulacao<T>(nPop, min, max, nAtributos, precisao, tabu, _distTabu);
             else
             {
                 IndividuoBin.Maximo = max;
                 IndividuoBin.Minimo = min;
-                populacao = FuncRestr(nPop).Select(atrs => new T { Atributos = atrs }).ToList();
+                _populacao = FuncRestr(nPop).Select(atrs => new T { Atributos = atrs }).ToList();
             }
 
             // n. de individuos validos, se for o caso
             if (_validarRestricao != null)
             {
-                _popValida = populacao.Count(ind => _validarRestricao(ind.Atributos));
-                _popMax = populacao.Max(ind => ind.Aptidao);
-                _popMin = populacao.Min(ind => ind.Aptidao);
+                _popValida = _populacao.Count(ind => _validarRestricao(ind.Atributos));
+                _popMax = _populacao.Max(ind => ind.Aptidao);
+                _popMin = _populacao.Min(ind => ind.Aptidao);
             }
 
             // avaliação da população inicial
-            foreach (T individuo in populacao)
+            foreach (T individuo in _populacao)
                 individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
 
             List<IndividuoBin> populacaoRetorno = new List<IndividuoBin>();
-            foreach (T ind in populacao)
+            foreach (T ind in _populacao)
                 populacaoRetorno.Add(ind);
-            populacao.Clear();
+            _populacao.Clear();
 
             return populacaoRetorno;
         }
 
-        private List<IndividuoBin> PopulacaoAleatoria(int nPop, Functions.Functions.Bound min, Functions.Functions.Bound max, int nAtributos, int precisao,
+        private List<IndividuoBin> PopulacaoAleatoria(int nPop, Bound min, Bound max, int nAtributos, int precisao,
             bool isLSChains, List<IndividuoBin> tabu = null)
         {
             if (isLSChains)
                 return PopulacaoAleatoria<IndividuoLSChains>(nPop, min, max, nAtributos, precisao, tabu);
-            else return PopulacaoAleatoria<IndividuoBin>(nPop, min, max, nAtributos, precisao, tabu);
+            return PopulacaoAleatoria<IndividuoBin>(nPop, min, max, nAtributos, precisao, tabu);
         }
     }
 }

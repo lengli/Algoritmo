@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Func = Functions.Functions;
 using AGCore;
-using System.Threading;
 using AlgoResult;
 using Functions;
 using LocalCore.HillClimbing;
@@ -24,12 +15,12 @@ using DECore;
 
 namespace AlgoView
 {
-    public partial class AlgoWindow : Window
+    public partial class AlgoWindow
     {
         private double _minGlobal;
         private double _erroAceitavel;
-        private List<FuncAptidao> _gs;
-        private List<FuncAptidao> _hs;
+        private ListAptidao _gs;
+        private ListAptidao _hs;
         private FuncValidarRestricao _validar;
         private FuncValidarFronteira _validarFronteira;
 
@@ -42,10 +33,10 @@ namespace AlgoView
         {
             DateTime inicio = DateTime.Now;
 
-            FuncAptidao funcao = null;
-            FuncRepopRestricao restricao = null;
-            Functions.Functions.Bound min, max;
-            int nGeracoes = 0;
+            FuncAptidao funcao;
+            FuncRepopRestricao restricao;
+            Bound min, max;
+            int nGeracoes;
 
             if (string.IsNullOrEmpty(FuncaoCombo.Text)) return;
 

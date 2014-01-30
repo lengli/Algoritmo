@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AlgoCore;
 using AlgoResult;
 using Functions;
-
 
 namespace PSOCore
 {
@@ -15,7 +13,7 @@ namespace PSOCore
         private const string MelhorCromo = "MelhorCromo";
 
         public RotinaPSO(FuncAptidao apt, FuncRepopRestricao restricao,
-            List<FuncAptidao> gs, List<FuncAptidao> hs, FuncValidarRestricao validar,
+            ListAptidao gs, ListAptidao hs, FuncValidarRestricao validar,
             double fatorPond, double fi1, double fi2,
             bool usarRand1, bool usarRand2, double coefKConstr,
             bool usarCoefConstr, int nVizinhos, FuncValidarFronteira valFront)
@@ -44,7 +42,7 @@ namespace PSOCore
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-            _fatorPondUsado = _fatorPond - (0.5 * _fatorPond * (double)_avaliacoes / _maxAval);
+            _fatorPondUsado = _fatorPond - (0.5 * _fatorPond * _avaliacoes / _maxAval);
             for (int j = populacao.Count - 1; j >= 0; j--)
             {
                 IndividuoBin individuo = populacao[j];
