@@ -53,6 +53,7 @@ namespace Functions
                 hs = fRestrAtt.Hs;
                 validar = fRestrAtt.Validate;
                 validarFronteira = fRestrAtt.ValidateBounds;
+                restricao = fRestrAtt.RepopBounds;
             }
         }
 
