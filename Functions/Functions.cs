@@ -78,12 +78,24 @@ namespace Functions
         [FunctionAtt(1E-8, -100, 100, 1500, -1300)]
         public static double ellips_func(List<double> x) /* Ellipsoidal */
         {
-            List<double> y = x.shiftfunc().rotatefunc().oszfunc();
+            List<double> y = x.shiftfunc().rotatefunc(0).oszfunc();
             int nx = x.Count;
             double ev = 0;
             for (int i = 0; i < nx; i++)
                 ev += Math.Pow(10.0, 6.0 * i / (nx - 1)) * y[i] * y[i];
             return ev - 1300;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -1200)]
+        public static double bent_cigar_func(List<double> x) /* Bent_Cigar */
+        {
+            double beta = 0.5;
+            List<double> z = x.shiftfunc().rotatefunc(0).asyfunc(beta).rotatefunc(1);
+            double f = z[0] * z[0];
+
+            for (int i = 1; i < x.Count; i++)
+                f += Math.Pow(10.0, 6.0) * z[i] * z[i];
+            return f - 1200;
         }
 
         private static List<double> _os = null;
@@ -112,16 +124,16 @@ namespace Functions
             }
         }
 
-        private static List<double> _mr = new List<double>();
-        private static List<double> Mr(int dim)
+        private static List<List<double>> _mr = new List<List<double>>();
+        private static List<double> Mr(int dim, int index)
         {
-            if (_mr.Count == dim * dim) return _mr;
+            while (_mr.Count <= index) _mr.Add(new List<double>());
+            if (_mr[index].Count == dim * dim) return _mr[index];
 
             using (StreamReader sr = new StreamReader("data/M_D" + dim + ".txt"))
             {
-                _mr = new List<double>();
-
-                for (int i = 0; i < dim; i++)
+                int shift = index * dim;
+                for (int i = 0 + shift; i < dim + shift; i++)
                 {
                     string line = sr.ReadLine();
 
@@ -132,12 +144,12 @@ namespace Functions
                     {
                         string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]);
                         double vDouble;
-                        if (double.TryParse(val, out vDouble)) _mr.Add(vDouble);
+                        if (double.TryParse(val, out vDouble)) _mr[index].Add(vDouble);
                         match = match.NextMatch();
                     }
                 }
             }
-            return _mr;
+            return _mr[index];
         }
 
         public static List<double> shiftfunc(this List<double> x)
@@ -148,7 +160,7 @@ namespace Functions
             return xshift;
         }
 
-        public static List<double> rotatefunc(this List<double> x)
+        public static List<double> rotatefunc(this List<double> x, int index)
         {
             List<double> xrot = new List<double>();
             int nx = x.Count;
@@ -156,7 +168,7 @@ namespace Functions
             {
                 xrot.Add(0);
                 for (int j = 0; j < nx; j++)
-                    xrot[i] = xrot[i] + x[j] * Mr(nx)[i * nx + j];
+                    xrot[i] += x[j] * Mr(nx, index)[i * nx + j];
             }
 
             return xrot;
