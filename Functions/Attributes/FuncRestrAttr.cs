@@ -12,20 +12,28 @@ namespace Functions.Attributes
         public FuncRepopRestricao RepopBounds;
 
         public FuncRestrAttr(double error, object minBound, object maxBound, int maxGen, double minGlobal,
-            int dimension, string gs, string hs, string validate, string validateBounds,string repopBounds)
+            int dimension, string gs, string hs, string validate, string validateBounds, string repopBounds)
         {
             Error = error;
             MaxGen = maxGen;
             MinGlobal = minGlobal;
             Dimension = dimension;
 
-            if (minBound is double) MinBound = StBound((double)minBound);
-            else if (minBound != null)
-                MinBound = (Bound)Delegate.CreateDelegate(typeof(Bound), typeof(Functions).GetMethod(minBound.ToString()));
+            if (minBound != null)
+            {
+                double minDouble;
+                if (double.TryParse(minBound.ToString(), out minDouble)) MinBound = StBound(minDouble);
+                else
+                    MinBound = (Bound)Delegate.CreateDelegate(typeof(Bound), typeof(Functions).GetMethod(minBound.ToString()));
+            }
 
-            if (maxBound is double) MaxBound = StBound((double)maxBound);
-            else if (maxBound != null)
-                MaxBound = (Bound)Delegate.CreateDelegate(typeof(Bound), typeof(Functions).GetMethod(maxBound.ToString()));
+            if (maxBound != null)
+            {
+                double maxDouble;
+                if (double.TryParse(maxBound.ToString(), out maxDouble)) MaxBound = StBound(maxDouble);
+                else
+                    MaxBound = (Bound)Delegate.CreateDelegate(typeof(Bound), typeof(Functions).GetMethod(maxBound.ToString()));
+            }
 
             if (!string.IsNullOrEmpty(gs))
                 Gs = (ListAptidao)Delegate.CreateDelegate(typeof(ListAptidao), typeof(Functions).GetMethod(gs));
