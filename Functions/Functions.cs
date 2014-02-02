@@ -75,6 +75,17 @@ namespace Functions
             return z.Sum(c => c * c) - 1400;
         }
 
+        [FunctionAtt(1E-8, -100, 100, 1500, -1300)]
+        public static double ellips_func(List<double> x) /* Ellipsoidal */
+        {
+            List<double> y = x.shiftfunc().rotatefunc().oszfunc();
+            int nx = x.Count;
+            double ev = 0;
+            for (int i = 0; i < nx; i++)
+                ev += Math.Pow(10.0, 6.0 * i / (nx - 1)) * y[i] * y[i];
+            return ev - 1300;
+        }
+
         private static List<double> _os = null;
         private static List<double> Os
         {
@@ -91,7 +102,7 @@ namespace Functions
                         Match match = reg.Match(firstLine);
                         while (match.Success)
                         {
-                            string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]); ;
+                            string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]);
                             double vDouble;
                             if (double.TryParse(val, out vDouble)) _os.Add(vDouble);
                             match = match.NextMatch();
@@ -104,7 +115,7 @@ namespace Functions
         private static List<double> _mr = new List<double>();
         private static List<double> Mr(int dim)
         {
-            if (_mr.Count == dim) return _mr;
+            if (_mr.Count == dim * dim) return _mr;
 
             using (StreamReader sr = new StreamReader("data/M_D" + dim + ".txt"))
             {
@@ -119,7 +130,7 @@ namespace Functions
                     Match match = reg.Match(line);
                     while (match.Success)
                     {
-                        string val = match.Groups[1].Value;
+                        string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]);
                         double vDouble;
                         if (double.TryParse(val, out vDouble)) _mr.Add(vDouble);
                         match = match.NextMatch();
@@ -140,18 +151,69 @@ namespace Functions
         public static List<double> rotatefunc(this List<double> x)
         {
             List<double> xrot = new List<double>();
-            int nx = xrot.Count;
+            int nx = x.Count;
             for (int i = 0; i < nx; i++)
             {
                 xrot.Add(0);
                 for (int j = 0; j < nx; j++)
                     xrot[i] = xrot[i] + x[j] * Mr(nx)[i * nx + j];
-
             }
 
             return xrot;
         }
 
+        public static List<double> oszfunc(this List<double> x)
+        {
+            List<double> xosz = new List<double>();
+            int nx = x.Count;
+
+            for (int i = 0; i < nx; i++)
+            {
+                if (i == 0 || i == nx - 1)
+                {
+                    double c1, c2,
+                        xx = 0;
+                    int sx; //signal
+                    if (x[i] != 0)
+                        xx = Math.Log(Math.Abs(x[i]));
+
+                    if (x[i] > 0)
+                    {
+                        c1 = 10;
+                        c2 = 7.9;
+                    }
+                    else
+                    {
+                        c1 = 5.5;
+                        c2 = 3.1;
+                    }
+
+                    if (x[i] > 0)
+                        sx = 1;
+                    else if (x[i] == 0)
+                        sx = 0;
+                    else
+                        sx = -1;
+
+                    xosz.Add(sx * Math.Exp(xx + 0.049 * (Math.Sin(c1 * xx) + Math.Sin(c2 * xx))));
+                }
+                else
+                    xosz.Add(x[i]);
+            }
+            return xosz;
+        }
+
+        public static List<double> asyfunc(this List<double> x, double beta)
+        {
+            int nx = x.Count;
+            List<double> xasy = new List<double>();
+            for (int i = 0; i < nx; i++)
+            {
+                if (x[i] > 0)
+                    xasy.Add(Math.Pow(x[i], 1.0 + beta * i / (nx - 1) * Math.Pow(x[i], 0.5)));
+            }
+            return xasy;
+        }
         #endregion
 
         #region F CEC 2005

@@ -183,11 +183,17 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="data\M_D10.txt" />
-    <Resource Include="data\M_D100.txt" />
+    <Content Include="data\M_D10.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\M_D100.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="data\M_D2.txt" />
     <Resource Include="data\M_D20.txt" />
-    <Resource Include="data\M_D30.txt" />
+    <Content Include="data\M_D30.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="data\M_D40.txt" />
     <Resource Include="data\M_D5.txt" />
     <Resource Include="data\M_D50.txt" />
