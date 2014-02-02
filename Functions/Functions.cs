@@ -5,6 +5,7 @@ using System.Reflection;
 using Functions.Attributes;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Functions
 {
@@ -67,11 +68,11 @@ namespace Functions
         // Mr: Rotation Matrix
         // Os: Shift Point
 
-        [FunctionAtt(1E-8, -100, 100, 1500, 0)]
+        [FunctionAtt(1E-8, -100, 100, 1500, -1400)]
         public static double sphere_func(List<double> x) /* Sphere */
         {
-            List<double> z = shiftfunc(x, Os);
-            return z.Sum(c => c * c - 1400);
+            List<double> z = x.shiftfunc();
+            return z.Sum(c => c * c) - 1400;
         }
 
         private static List<double> _os = null;
@@ -90,7 +91,7 @@ namespace Functions
                         Match match = reg.Match(firstLine);
                         while (match.Success)
                         {
-                            string val = match.Groups[1].Value;
+                            string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]); ;
                             double vDouble;
                             if (double.TryParse(val, out vDouble)) _os.Add(vDouble);
                             match = match.NextMatch();
@@ -100,19 +101,35 @@ namespace Functions
             }
         }
 
-        private static List<double> _mr = null;
-        private static List<double> Mr
+        private static List<double> _mr = new List<double>();
+        private static List<double> Mr(int dim)
         {
-            get
+            if (_mr.Count == dim) return _mr;
+
+            using (StreamReader sr = new StreamReader("data/M_D" + dim + ".txt"))
             {
-                if (_mr == null)
+                _mr = new List<double>();
+
+                for (int i = 0; i < dim; i++)
                 {
+                    string line = sr.ReadLine();
+
+                    Regex reg = new Regex("([\\-0-9.e+]+)");
+
+                    Match match = reg.Match(line);
+                    while (match.Success)
+                    {
+                        string val = match.Groups[1].Value;
+                        double vDouble;
+                        if (double.TryParse(val, out vDouble)) _mr.Add(vDouble);
+                        match = match.NextMatch();
+                    }
                 }
-                return _mr;
             }
+            return _mr;
         }
 
-        public static List<double> shiftfunc(List<double> x, List<double> Os)
+        public static List<double> shiftfunc(this List<double> x)
         {
             List<double> xshift = new List<double>();
             for (int i = 0; i < x.Count; i++)
@@ -120,7 +137,7 @@ namespace Functions
             return xshift;
         }
 
-        public static List<double> rotatefunc(List<double> x, List<double> Mr)
+        public static List<double> rotatefunc(this List<double> x)
         {
             List<double> xrot = new List<double>();
             int nx = xrot.Count;
@@ -128,7 +145,7 @@ namespace Functions
             {
                 xrot.Add(0);
                 for (int j = 0; j < nx; j++)
-                    xrot[i] = xrot[i] + x[j] * Mr[i * nx + j];
+                    xrot[i] = xrot[i] + x[j] * Mr(nx)[i * nx + j];
 
             }
 
