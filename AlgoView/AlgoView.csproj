@@ -192,7 +192,7 @@
     <Resource Include="data\M_D2.txt" />
     <Resource Include="data\M_D20.txt" />
     <Content Include="data\M_D30.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="data\M_D40.txt" />
     <Resource Include="data\M_D5.txt" />

@@ -223,6 +223,7 @@ namespace Functions
             {
                 if (x[i] > 0)
                     xasy.Add(Math.Pow(x[i], 1.0 + beta * i / (nx - 1) * Math.Pow(x[i], 0.5)));
+                else xasy.Add(x[i]);
             }
             return xasy;
         }
