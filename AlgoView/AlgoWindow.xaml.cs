@@ -27,6 +27,7 @@ namespace AlgoView
         public AlgoWindow()
         {
             InitializeComponent();
+            FuncaoCombo.ItemsSource = Functions.Functions.Funcoes();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Functions.Attributes;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Functions
 {
@@ -25,8 +27,6 @@ namespace Functions
             nGeracoes = 0;
             minGlobal = 0;
             erro = 0;
-
-            if (selecao == "F8") selecao += d == 30 ? "d30" : "d50";
 
             MethodInfo method = typeof(Functions).GetMethod(selecao);
             object att = method.GetCustomAttributes(false).FirstOrDefault();
@@ -56,6 +56,88 @@ namespace Functions
                 restricao = fRestrAtt.RepopBounds;
             }
         }
+
+        public static List<string> Funcoes()
+        {
+            return typeof(Functions).GetMethods().Where(m => m.GetCustomAttributes(false).Any(at => at is FunctionAtt || at is FuncRestrAttr)).Select(x => x.Name).ToList();
+        }
+
+        #region F CEC 2013
+        // CEC 2013 - http://www.ntu.edu.sg/home/EPNSugan/index_files/CEC2013/CEC2013.htm
+        // Mr: Rotation Matrix
+        // Os: Shift Point
+
+        [FunctionAtt(1E-8, -100, 100, 1500, 0)]
+        public static double sphere_func(List<double> x) /* Sphere */
+        {
+            List<double> z = shiftfunc(x, Os);
+            return z.Sum(c => c * c - 1400);
+        }
+
+        private static List<double> _os = null;
+        private static List<double> Os
+        {
+            get
+            {
+                if (_os == null)
+                    using (StreamReader sr = new StreamReader("data/shifted_data.txt"))
+                    {
+                        _os = new List<double>();
+                        string firstLine = sr.ReadLine();
+
+                        Regex reg = new Regex("([\\-0-9.e+]+)");
+
+                        Match match = reg.Match(firstLine);
+                        while (match.Success)
+                        {
+                            string val = match.Groups[1].Value;
+                            double vDouble;
+                            if (double.TryParse(val, out vDouble)) _os.Add(vDouble);
+                            match = match.NextMatch();
+                        }
+                    }
+                return _os;
+            }
+        }
+
+        private static List<double> _mr = null;
+        private static List<double> Mr
+        {
+            get
+            {
+                if (_mr == null)
+                {
+                }
+                return _mr;
+            }
+        }
+
+        public static List<double> shiftfunc(List<double> x, List<double> Os)
+        {
+            List<double> xshift = new List<double>();
+            for (int i = 0; i < x.Count; i++)
+                xshift.Add(x[i] - Os[i]);
+            return xshift;
+        }
+
+        public static List<double> rotatefunc(List<double> x, List<double> Mr)
+        {
+            List<double> xrot = new List<double>();
+            int nx = xrot.Count;
+            for (int i = 0; i < nx; i++)
+            {
+                xrot.Add(0);
+                for (int j = 0; j < nx; j++)
+                    xrot[i] = xrot[i] + x[j] * Mr[i * nx + j];
+
+            }
+
+            return xrot;
+        }
+
+        #endregion
+
+        #region F CEC 2005
 
         [FunctionAtt(1E-6, -100, 100, 1500, 0)]
         public static double F1(IList<double> chromo)
@@ -243,6 +325,10 @@ namespace Functions
         }
 
         #endregion
+
+        #endregion
+
+        #region G
 
         private const double Epsilon = 0.0001;
 
@@ -518,6 +604,8 @@ namespace Functions
         {
             return x3 - .25 - Math.Asin(-1 * Math.Sin(x3 - 0.25) - 1.2948);
         }
+
+        #endregion
 
         #endregion
     }
