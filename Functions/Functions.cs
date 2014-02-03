@@ -292,10 +292,10 @@ namespace Functions
         }
 
         [FunctionAtt(1E-8, -100, 100, 1500, -100)]
-        public static double schwefel_func(List<double> x) { return schwefel_func(x, false) - 100; }
-        
+        public static double nonrotated_schwefel_func(List<double> x) { return schwefel_func(x, false) - 100; }
+
         [FunctionAtt(1E-8, -100, 100, 1500, 100)]
-        public static double schwefel_func(List<double> x) { return schwefel_func(x, true) + 100; }
+        public static double rotated_schwefel_func(List<double> x) { return schwefel_func(x, true) + 100; }
 
         private static double schwefel_func(List<double> x, bool r_flag) /* Schwefel's  */
         {
@@ -340,7 +340,7 @@ namespace Functions
             double temp, tmp1, tmp2,
                 tmp3 = pow(1.0 * nx, 1.2);
 
-            x=x.shiftfunc();
+            x = x.shiftfunc();
 
             for (int i = 0; i < nx; i++)//shrink to the orginal search range
                 x[i] *= 5.0 / 100.0;
@@ -362,6 +362,98 @@ namespace Functions
 
             tmp1 = 10.0 / nx / nx;
             return f * tmp1 - tmp1 + 200;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, 300)]
+        public static double nonrotated_bi_rastrigin_func(List<double> x) { return bi_rastrigin_func(x, false) + 300; }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, 400)]
+        public static double rotated_bi_rastrigin_func(List<double> x) { return bi_rastrigin_func(x, true) + 400; }
+
+        private static double bi_rastrigin_func(List<double> x, bool r_flag) /* Lunacek Bi_rastrigin Function */
+        {
+            double mu0 = 2.5, d = 1.0, tmp, tmp1, tmp2;
+            List<double> tmpx = new List<double>();
+            int nx = x.Count;
+            double s = 1.0 - 1.0 / (2.0 * pow(nx + 20.0, 0.5) - 8.2);
+            double mu1 = -pow((mu0 * mu0 - d) / s, 0.5);
+
+            x = x.shiftfunc();
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] *= 10.0 / 100.0;
+
+            for (int i = 0; i < nx; i++)
+            {
+                tmpx.Add(2 * x[i]);
+                if (Os[i] < 0) tmpx[i] *= -1;
+            }
+
+            for (int i = 0; i < nx; i++)
+            {
+                x[i] = tmpx[i];
+                tmpx[i] += mu0;
+            }
+
+            if (r_flag) x = x.rotatefunc(0);
+            x = x.diagonalfunc(100);
+            if (r_flag) x = x.rotatefunc(1);
+
+            tmp1 = 0.0; tmp2 = 0.0;
+
+            for (int i = 0; i < nx; i++)
+            {
+                tmp = tmpx[i] - mu0;
+                tmp1 += tmp * tmp;
+                tmp = tmpx[i] - mu1;
+                tmp2 += tmp * tmp;
+            }
+
+            tmp2 *= s;
+            tmp2 += d * nx;
+            tmp = 0;
+            double f = 0;
+
+            for (int i = 0; i < nx; i++)
+                tmp += cos(2.0 * PI * x[i]);
+
+            if (tmp1 < tmp2) f = tmp1;
+            else f = tmp2;
+
+            f += 10.0 * (nx - tmp);
+            return f;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, 500)]
+        public static double grie_rosen_func(List<double> x) /* Griewank-Rosenbrock  */
+        {
+            double temp, tmp1, tmp2;
+            x = x.shiftfunc();
+            int nx = x.Count;
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] = x[i] * 5 / 100;
+
+            x = x.rotatefunc(0);
+
+            for (int i = 0; i < nx; i++)//shift to orgin
+                x[i] = x[i] + 1;
+
+            double f = 0.0;
+
+            for (int i = 0; i < nx - 1; i++)
+            {
+                tmp1 = x[i] * x[i] - x[i + 1];
+                tmp2 = x[i] - 1.0;
+                temp = 100.0 * tmp1 * tmp1 + tmp2 * tmp2;
+                f += (temp * temp) / 4000.0 - cos(temp) + 1.0;
+            }
+
+            tmp1 = x[nx - 1] * x[nx - 1] - x[0];
+            tmp2 = x[nx - 1] - 1.0;
+            temp = 100.0 * tmp1 * tmp1 + tmp2 * tmp2; ;
+            f += (temp * temp) / 4000.0 - cos(temp) + 1.0;
+            return f + 500;
         }
 
         private static List<double> _os = null;
