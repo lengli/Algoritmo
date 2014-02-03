@@ -60,7 +60,8 @@ namespace Functions
 
         public static List<string> Funcoes()
         {
-            return typeof(Functions).GetMethods().Where(m => m.GetCustomAttributes(false).Any(at => at is FunctionAtt)).Select(x => x.Name).ToList();
+            return typeof(Functions).GetMethods().Where(m => m.GetCustomAttributes(false).
+                Any(at => at is FunctionAtt)).Select(x => x.Name).OrderBy(x => x).ToList();
         }
 
         #region F CEC 2013
@@ -699,19 +700,35 @@ namespace Functions
 
         // Shift vector
         private static List<double> _os;
+        private static List<double> _firstOs;
         private static List<double> Os
         {
             get
             {
-                if (_os == null)
-                    using (StreamReader sr = new StreamReader("data/shifted_data.txt"))
-                    {
-                        _os = new List<double>();
-                        string firstLine = sr.ReadLine();
+                if (_firstOs == null)
+                    _firstOs = OsIndex(0, 100);
+                return _firstOs;
+            }
+        }
 
+        private static double OneO(int index)
+        {
+            return OsIndex(index, 1)[0];
+        }
+
+        private static List<double> OsIndex(int index, int dim)
+        {
+            if (_os == null)
+                using (StreamReader sr = new StreamReader("data/shifted_data.txt"))
+                {
+                    _os = new List<double>();
+                    string line = sr.ReadLine();
+
+                    while (line != null)
+                    {
                         Regex reg = new Regex("([\\-0-9.e+]+)");
 
-                        Match match = reg.Match(firstLine);
+                        Match match = reg.Match(line);
                         while (match.Success)
                         {
                             string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]);
@@ -719,9 +736,11 @@ namespace Functions
                             if (double.TryParse(val, out vDouble)) _os.Add(vDouble);
                             match = match.NextMatch();
                         }
+                        line = sr.ReadLine();
                     }
-                return _os;
-            }
+
+                }
+            return _os.Skip(index).Take(dim).ToList();
         }
 
         // Rotation matrix
@@ -848,10 +867,10 @@ namespace Functions
             for (i = 0; i < cf_num; i++)
             {
                 fit[i] += bias[i];
-                w[i] = 0;
+                w.Add(0);
 
                 for (j = 0; j < nx; j++)
-                    w[i] += pow(x[j] - Os[i * nx + j], 2.0);
+                    w[i] += pow(x[j] - OneO(i * nx + j), 2.0);
 
                 if (w[i] != 0)
                     w[i] = pow(1.0 / w[i], 0.5) * exp(-w[i] / 2.0 / nx / pow(delta[i], 2.0));
