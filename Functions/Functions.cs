@@ -73,7 +73,7 @@ namespace Functions
         /// f 01 - Unimodal; Separable
         /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1400)]
-        public static double sphere_func(List<double> x) /* Sphere */
+        public static double F01_sphere_func(List<double> x) /* Sphere */
         {
             List<double> z = x.shiftfunc();
             return z.Sum(c => c * c) - 1400;
@@ -83,7 +83,7 @@ namespace Functions
         /// f 02 - Unimodal; Non-separable; Quadratic ill-conditioned; Smooth local irregularities
         /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1300)]
-        public static double ellips_func(List<double> x) /* Ellipsoidal */
+        public static double F02_ellips_func(List<double> x) /* Ellipsoidal */
         {
             List<double> y = x.shiftfunc().rotatefunc(0).oszfunc();
             int nx = x.Count;
@@ -97,7 +97,7 @@ namespace Functions
         /// f 03 - Unimodal; Non-separable; Smooth but narrow ridge
         /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1200)]
-        public static double bent_cigar_func(List<double> x) /* Bent_Cigar */
+        public static double F03_bent_cigar_func(List<double> x) /* Bent_Cigar */
         {
             double beta = 0.5;
             List<double> z = x.shiftfunc().rotatefunc(0).asyfunc(beta).rotatefunc(1);
@@ -112,7 +112,7 @@ namespace Functions
         /// f 04 - Unimodal; Non-separable; Asymetrical; Smooth local irregularities; One sensitive direction
         /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1100)]
-        public static double discus_func(List<double> x) /* Discus */
+        public static double F01_discus_func(List<double> x) /* Discus */
         {
             List<double> y = x.shiftfunc().rotatefunc(0).oszfunc();
 
@@ -918,13 +918,13 @@ namespace Functions
         #region F CEC 2005
 
         [FunctionAtt(1E-6, -100, 100, 1500, 0)]
-        public static double F1(IList<double> chromo)
+        public static double F_2005_01(IList<double> chromo)
         {
             return chromo.Sum(c => c * c);
         }
 
         [FunctionAtt(1E-6, -10, 10, 2000, 0)]
-        public static double F2(IList<double> chromo)
+        public static double F_2005_02(IList<double> chromo)
         {
             double product = 1;
             foreach (double c in chromo)
@@ -934,7 +934,7 @@ namespace Functions
         }
 
         [FunctionAtt(1E-4, -100, 100, 5000, 0)]
-        public static double F3(IList<double> chromo)
+        public static double F_2005_03(IList<double> chromo)
         {
             double sum = 0;
             for (int i = 0; i < chromo.Count; i++)
@@ -946,31 +946,29 @@ namespace Functions
         }
 
         [FunctionAtt(1E-4, -100, 100, 5000, 0)]
-        public static double F4(IList<double> chromo)
+        public static double F_2005_04(IList<double> chromo)
         {
             return chromo.Select(Math.Abs).OrderByDescending(c => c).First();
         }
 
         [FunctionAtt(1E-4, -30, 30, 20000, 0)]
-        public static double F5(IList<double> chromo)
+        public static double F_2005_05(IList<double> chromo)
         {
             double sum = 0;
             for (int i = 0; i < chromo.Count - 1; i++)
-            {
                 sum += 100 * Math.Pow(chromo[i + 1] - (chromo[i] * chromo[i]), 2) + Math.Pow(chromo[i] - 1, 2);
-            }
             return sum;
         }
 
         [FunctionAtt(1E-6, -100, 100, 1500, 0)]
-        public static double F6(IList<double> chromo)
+        public static double F_2005_06(IList<double> chromo)
         {
             return chromo.Sum(c => Math.Pow(Math.Floor(c + .5), 2));
         }
 
         private static int F7Seed;
         [FunctionAtt(1E-4, -1.28, 1.28, 3000, 0)]
-        public static double F7(IList<double> chromo)
+        public static double F_2005_07(IList<double> chromo)
         {
             double res = 0;
             Random rand = new Random(F7Seed++);
@@ -981,22 +979,22 @@ namespace Functions
         }
 
         [FunctionAtt(1E-4, -500, 500, 9000, -.125694866181649E05)]
-        public static double F8d30(IList<double> chromo)
+        public static double F_2005_08d30(IList<double> chromo)
         {
             return chromo.Sum(c => Math.Sin(Math.Sqrt(Math.Abs(c))) * (-c));
         }
 
         [FunctionAtt(1E-4, -500, 500, 9000, -0.209491443636081E+05)]
-        public static double F8d50(IList<double> chromo) { return F8d30(chromo); }
+        public static double F_2005_08d50(IList<double> chromo) { return F_2005_08d30(chromo); }
 
         [FunctionAtt(1E-6, -5.12, 5.12, 5000, 0)]
-        public static double F9(IList<double> chromo)
+        public static double F_2005_09(IList<double> chromo)
         {
             return chromo.Sum(c => c * c - 10 * Math.Cos(2 * Math.PI * c) + 10);
         }
 
         [FunctionAtt(1E-6, -32, 32, 1500, 0)]
-        public static double F10(IList<double> chromo)
+        public static double F_2005_10(IList<double> chromo)
         {
             double sum1 = chromo.Sum(c => c * c);
             double sum2 = chromo.Sum(c => Math.Cos(2 * Math.PI * c));
@@ -1005,7 +1003,7 @@ namespace Functions
         }
 
         [FunctionAtt(1E-4, -600, 600, 2000, 0)]
-        public static double F11(IList<double> chromo)
+        public static double F_2005_11(IList<double> chromo)
         {
             double res = chromo.Sum(c => c * c) / 4000;
             double prod = 1;
@@ -1018,7 +1016,7 @@ namespace Functions
         #region F12
 
         [FunctionAtt(1E-4, -50, 50, 1500, 0)]
-        public static double F12(IList<double> chromo)
+        public static double F_2005_12(IList<double> chromo)
         {
             return (Math.PI / chromo.Count) * (Parte1(chromo[0]) + Parte2(chromo) +
                 Parte3(chromo.Last())) + Parte4(chromo);
@@ -1071,7 +1069,7 @@ namespace Functions
         #region F13
 
         [FunctionAtt(1E-4, -50, 50, 1500, 0)]
-        public static double F13(IList<double> chromo)
+        public static double F_2005_13(IList<double> chromo)
         {
             return 0.1 * (F13_1(chromo.First()) + F13_2(chromo) + F13_3(chromo.Last()) + F13_4(chromo));
         }
