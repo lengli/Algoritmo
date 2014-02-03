@@ -122,7 +122,7 @@ namespace Functions
         }
 
         [FunctionAtt(1E-8, -100, 100, 1500, -900)]
-        public static double rosenbrock_func(List<double> x) /* Rosenbrock's */
+        public static double rosenbrock_func(List<double> x) /* Rotated Rosenbrock's */
         {
             double tmp1, tmp2;
             List<double> z = x.shiftfunc().
@@ -456,6 +456,282 @@ namespace Functions
             return f + 500;
         }
 
+
+        public static double escaffer6_func(List<double> z) /* Expanded Scaffer°Øs F6  */
+        {
+            double temp1, temp2;
+            int nx = z.Count;
+            z = z.shiftfunc().rotatefunc(0).asyfunc(0.5)
+                .rotatefunc(1);
+
+            double f = 0.0;
+
+            for (int i = 0; i < nx - 1; i++)
+            {
+                temp1 = sin(sqrt(z[i] * z[i] + z[i + 1] * z[i + 1]));
+                temp1 = temp1 * temp1;
+                temp2 = 1.0 + 0.001 * (z[i] * z[i] + z[i + 1] * z[i + 1]);
+                f += 0.5 + (temp1 - 0.5) / (temp2 * temp2);
+            }
+
+            temp1 = sin(sqrt(z[nx - 1] * z[nx - 1] + z[0] * z[0]));
+            temp1 = temp1 * temp1;
+            temp2 = 1.0 + 0.001 * (z[nx - 1] * z[nx - 1] + z[0] * z[0]);
+            f += 0.5 + (temp1 - 0.5) / (temp2 * temp2);
+            return f;
+        }
+
+        public static double cf01(List<double> x) /* Composition Function 1 */
+        {
+            List<double> fit = new List<double>(5),
+                delta = new List<double> { 10, 20, 30, 40, 50 },
+                bias = new List<double> { 0, 100, 200, 300, 400 };
+
+            fit.Add(rosenbrock_func(x));
+            fit[0] = 10000 * fit[0] / 1e+4;
+
+            fit.Add(dif_powers_func(x));
+            fit[1] = 10000 * fit[1] / 1e+10;
+
+            fit.Add(bent_cigar_func(x));
+            fit[2] = 10000 * fit[2] / 1e+30;
+
+            fit.Add(discus_func(x));
+            fit[3] = 10000 * fit[3] / 1e+10;
+
+            fit.Add(sphere_func(x));
+            fit[4] = 10000 * fit[4] / 1e+5;
+
+            return cf_cal(x, delta, bias, fit);
+        }
+
+
+        public static double cf02(List<double> x) /* Composition Function 2 */
+        {
+            List<double> fit = new List<double>(3);
+            List<double> delta = new List<double> { 20, 20, 20 };
+            List<double> bias = new List<double> { 0, 100, 200 };
+
+            for (int i = 0; i < 3; i++)
+                fit.Add(schwefel_func(x, false));
+
+            return cf_cal(x, delta, bias, fit);
+        }
+
+
+        public static double cf03(List<double> x) /* Composition Function 3 */
+        {
+            List<double> fit = new List<double>();
+            List<double> delta = new List<double> { 20, 20, 20 };
+            List<double> bias = new List<double> { 0, 100, 200 };
+
+            for (int i = 0; i < 3; i++)
+                fit.Add(rotated_schwefel_func(x));
+
+            return cf_cal(x, delta, bias, fit);
+        }
+
+
+        public static double cf04(List<double> x) /* Composition Function 4 */
+        {
+            List<double> fit = new List<double>();
+            List<double> delta = new List<double> { 20, 20, 20 };
+            List<double> bias = new List<double> { 0, 100, 200 };
+
+            int i = 0;
+            fit.Add(rotated_schwefel_func(x));
+            fit[i] = 1000 * fit[i] / 4e+3;
+
+            i = 1;
+            fit.Add(rotated_rastrigin_func(x));
+            fit[i] = 1000 * fit[i] / 1e+3;
+
+            i = 2;
+            fit.Add(weierstrass_func(x));
+            fit[i] = 1000 * fit[i] / 400;
+
+            return cf_cal(x, delta, bias, fit);
+        }
+
+
+        public static double cf05(List<double> x) /* Composition Function 4 */
+{
+
+	int i,cf_num=3;
+
+	double fit[3];
+
+	double delta[3] = {10,30,50};
+
+	double bias[3] = {0, 100, 200};
+
+	i=0;
+
+	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/4e+3;
+
+	i=1;
+
+	rastrigin_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/1e+3;
+
+	i=2;
+
+	weierstrass_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/400;
+            
+            return cf_cal(x, delta, bias, fit);
+
+}
+
+
+
+        public static double cf06(List<double> x) /* Composition Function 6 */
+
+{
+
+	int i,cf_num=5;
+
+	double fit[5];
+
+	double delta[5] = {10,10,10,10,10};
+
+	double bias[5] = {0, 100, 200, 300, 400};
+
+	i=0;
+
+	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/4e+3;
+
+	i=1;
+
+	rastrigin_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/1e+3;
+
+	i=2;
+
+	ellips_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/1e+10;
+
+	i=3;
+
+	weierstrass_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/400;
+
+	i=4;
+
+	griewank_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=1000*fit[i]/100;
+            
+            return cf_cal(x, delta, bias, fit);
+
+
+
+}
+
+
+
+        public static double cf07(List<double> x) /* Composition Function 7 */
+
+{
+
+	int i,cf_num=5;
+
+	double fit[5];
+
+	double delta[5] = {10,10,10,20,20};
+
+	double bias[5] = {0, 100, 200, 300, 400};
+
+	i=0;
+
+	griewank_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/100;
+
+	i=1;
+
+	rastrigin_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/1e+3;
+
+	i=2;
+
+	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/4e+3;
+
+	i=3;
+
+	weierstrass_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/400;
+
+	i=4;
+
+	sphere_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],0);
+
+	fit[i]=10000*fit[i]/1e+5;
+            
+            return cf_cal(x, delta, bias, fit);
+
+}
+
+
+
+        public static double cf08(List<double> x) /* Composition Function 8 */
+
+{
+
+	int i,cf_num=5;
+
+	double fit[5];
+
+	double delta[5] = {10,20,30,40,50};
+
+	double bias[5] = {0, 100, 200, 300, 400};
+
+	i=0;
+
+	grie_rosen_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/4e+3;
+
+	i=1;
+
+	schaffer_F7_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/4e+6;
+
+	i=2;
+
+	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/4e+3;
+
+	i=3;
+
+	escaffer6_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
+
+	fit[i]=10000*fit[i]/2e+7;
+
+	i=4;
+
+	sphere_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],0);
+
+	fit[i]=10000*fit[i]/1e+5;
+            
+            return cf_cal(x, delta, bias, fit);
+
+}
         private static List<double> _os = null;
         private static List<double> Os
         {
@@ -594,6 +870,47 @@ namespace Functions
             return xasy;
         }
 
+        private static double cf_cal(List<double> x, List<double> delta, List<double> bias, List<double> fit)
+        {
+            int i, j, nx = x.Count, cf_num = fit.Count;
+            List<double> w = new List<double>();
+            double w_max = 0, w_sum = 0;
+
+            for (i = 0; i < cf_num; i++)
+            {
+                fit[i] += bias[i];
+                w[i] = 0;
+
+                for (j = 0; j < nx; j++)
+                    w[i] += pow(x[j] - Os[i * nx + j], 2.0);
+
+                if (w[i] != 0)
+                    w[i] = pow(1.0 / w[i], 0.5) * exp(-w[i] / 2.0 / nx / pow(delta[i], 2.0));
+                else
+                    w[i] = INF;
+
+                if (w[i] > w_max)
+                    w_max = w[i];
+            }
+
+            for (i = 0; i < cf_num; i++)
+                w_sum = w_sum + w[i];
+
+            if (w_max == 0)
+            {
+                for (i = 0; i < cf_num; i++)
+                    w[i] = 1;
+                w_sum = cf_num;
+            }
+
+            double f = 0.0;
+            for (i = 0; i < cf_num; i++)
+                f += w[i] / w_sum * fit[i];
+            return f;
+        }
+
+        private static double INF = 1.0e99;
+
         #endregion
 
         #region c++ -> c#
@@ -604,6 +921,7 @@ namespace Functions
         private static double sin(double x) { return Math.Sin(x); }
         private static double cos(double x) { return Math.Cos(x); }
         private static double pow(double x, double y) { return Math.Pow(x, y); }
+        private static double sqrt(double x) { return Math.Sqrt(x); }
 
         private static double PI = Math.PI;
 
