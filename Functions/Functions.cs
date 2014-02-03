@@ -98,6 +98,115 @@ namespace Functions
             return f - 1200;
         }
 
+        [FunctionAtt(1E-8, -100, 100, 1500, -1100)]
+        public static double discus_func(List<double> x) /* Discus */
+        {
+            List<double> y = x.shiftfunc().rotatefunc(0).oszfunc();
+
+            double f = Math.Pow(10.0, 6.0) * y[0] * y[0];
+            for (int i = 1; i < x.Count; i++)
+                f += y[i] * y[i];
+            return f - 1100;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -1000)]
+        public static double dif_powers_func(List<double> x) /* Different Powers */
+        {
+            List<double> z = x.shiftfunc();
+            double f = 0.0;
+            int nx = x.Count;
+            for (int i = 0; i < nx; i++)
+                f += Math.Pow(Math.Abs(z[i]), 2 + 4 * i / (nx - 1));
+
+            return Math.Pow(f, 0.5) - 1000;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -900)]
+        public static double rosenbrock_func(List<double> x) /* Rosenbrock's */
+        {
+            double tmp1, tmp2;
+            List<double> z = x.shiftfunc().
+                Select(yi => yi * 2.048 / 100.0).//shrink to the orginal search range
+                ToList().rotatefunc(0).
+                Select(zi => zi + 1).ToList();//shift to orgin
+
+            double f = 0.0;
+
+            for (int i = 0; i < x.Count - 1; i++)
+            {
+                tmp1 = z[i] * z[i] - z[i + 1];
+                tmp2 = z[i] - 1.0;
+                f += 100.0 * tmp1 * tmp1 + tmp2 * tmp2;
+            }
+            return f;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -800)]
+        public static double schaffer_F7_func(List<double> x) /* Schwefel's 1.2  */
+        {
+            double tmp;
+            List<double> y = x.shiftfunc().rotatefunc(0).asyfunc(0.5).rotatefunc(1);
+            int nx = x.Count;
+            List<double> z = new List<double>();
+
+            for (int i = 0; i < nx - 1; i++)
+                z[i] = Math.Pow(y[i] * y[i] + y[i + 1] * y[i + 1], 0.5);
+
+            double f = 0.0;
+
+            for (int i = 0; i < nx - 1; i++)
+            {
+                tmp = Math.Sin(50.0 * Math.Pow(z[i], 0.2));
+                f += Math.Pow(z[i], 0.5) + Math.Pow(z[i], 0.5) * tmp * tmp;
+            }
+
+            return f * f / (nx - 1) / (nx - 1) - 800;
+
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -700)]
+        public static double ackley_func(List<double> x) /* Ackley's  */
+        {
+            int nx = x.Count;
+            List<double> y = x.shiftfunc().rotatefunc(0).
+                asyfunc(0.5).diagonalfunc().rotatefunc(1);
+
+            double sum1 = 0.0, sum2 = 0.0;
+            for (int i = 0; i < nx; i++)
+            {
+                sum1 += y[i] * y[i];
+                sum2 += Math.Cos(2.0 * Math.PI * y[i]);
+            }
+
+            sum1 = -0.2 * Math.Sqrt(sum1 / nx);
+            sum2 /= nx;
+
+            return Math.E - 20.0 * Math.Exp(sum1) - Math.Exp(sum2) + 20.0 - 700;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -600)]
+        public static double weierstrass_func(List<double> x) /* Weierstrass's  */
+        {
+            int j, k_max = 20, nx = x.Count;
+            double sum = 0, sum2 = 0, a = 0.5, b = 3;
+
+            x = x.shiftfunc().
+                Select(yi => yi * 0.5 / 100). //shrink to the orginal search range
+                ToList().rotatefunc(0).asyfunc(0.5).diagonalfunc().rotatefunc(1);
+
+            double f = 0.0;
+            for (int i = 0; i < nx; i++)
+            {
+                for (j = 0; j <= k_max; j++)
+                {
+                    sum += Math.Pow(a, j) * Math.Cos(2.0 * Math.PI * Math.Pow(b, j) * (x[i] + 0.5));
+                    sum2 += Math.Pow(a, j) * Math.Cos(2.0 * Math.PI * Math.Pow(b, j) * 0.5);
+                }
+                f += sum;
+            }
+            return f - nx * sum2 - 600;
+        }
+
         private static List<double> _os = null;
         private static List<double> Os
         {
@@ -152,7 +261,15 @@ namespace Functions
             return _mr[index];
         }
 
-        public static List<double> shiftfunc(this List<double> x)
+        private static List<double> diagonalfunc(this List<double> x)
+        {
+            int nx = x.Count;
+            for (int i = 0; i < nx; i++)
+                x[i] *= Math.Pow(10.0, 1.0 * i / (nx - 1) / 2.0);
+            return x;
+        }
+
+        private static List<double> shiftfunc(this List<double> x)
         {
             List<double> xshift = new List<double>();
             for (int i = 0; i < x.Count; i++)
@@ -160,7 +277,7 @@ namespace Functions
             return xshift;
         }
 
-        public static List<double> rotatefunc(this List<double> x, int index)
+        private static List<double> rotatefunc(this List<double> x, int index)
         {
             List<double> xrot = new List<double>();
             int nx = x.Count;
@@ -174,7 +291,7 @@ namespace Functions
             return xrot;
         }
 
-        public static List<double> oszfunc(this List<double> x)
+        private static List<double> oszfunc(this List<double> x)
         {
             List<double> xosz = new List<double>();
             int nx = x.Count;
@@ -215,7 +332,7 @@ namespace Functions
             return xosz;
         }
 
-        public static List<double> asyfunc(this List<double> x, double beta)
+        private static List<double> asyfunc(this List<double> x, double beta)
         {
             int nx = x.Count;
             List<double> xasy = new List<double>();
@@ -227,6 +344,7 @@ namespace Functions
             }
             return xasy;
         }
+
         #endregion
 
         #region F CEC 2005
