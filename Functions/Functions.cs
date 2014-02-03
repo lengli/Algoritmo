@@ -60,7 +60,7 @@ namespace Functions
 
         public static List<string> Funcoes()
         {
-            return typeof(Functions).GetMethods().Where(m => m.GetCustomAttributes(false).Any(at => at is FunctionAtt || at is FuncRestrAttr)).Select(x => x.Name).ToList();
+            return typeof(Functions).GetMethods().Where(m => m.GetCustomAttributes(false).Any(at => at is FunctionAtt)).Select(x => x.Name).ToList();
         }
 
         #region F CEC 2013
@@ -68,6 +68,9 @@ namespace Functions
         // Mr: Rotation Matrix
         // Os: Shift Point
 
+        /// <summary>
+        /// f 01 - Unimodal; Separable
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1400)]
         public static double sphere_func(List<double> x) /* Sphere */
         {
@@ -75,6 +78,9 @@ namespace Functions
             return z.Sum(c => c * c) - 1400;
         }
 
+        /// <summary>
+        /// f 02 - Unimodal; Non-separable; Quadratic ill-conditioned; Smooth local irregularities
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1300)]
         public static double ellips_func(List<double> x) /* Ellipsoidal */
         {
@@ -86,6 +92,9 @@ namespace Functions
             return ev - 1300;
         }
 
+        /// <summary>
+        /// f 03 - Unimodal; Non-separable; Smooth but narrow ridge
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1200)]
         public static double bent_cigar_func(List<double> x) /* Bent_Cigar */
         {
@@ -98,6 +107,9 @@ namespace Functions
             return f - 1200;
         }
 
+        /// <summary>
+        /// f 04 - Unimodal; Non-separable; Asymetrical; Smooth local irregularities; One sensitive direction
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1100)]
         public static double discus_func(List<double> x) /* Discus */
         {
@@ -109,6 +121,9 @@ namespace Functions
             return f - 1100;
         }
 
+        /// <summary>
+        /// f 05 - Unimodal; Separable; Sensitivities of the Zi-variables are different
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -1000)]
         public static double dif_powers_func(List<double> x) /* Different Powers */
         {
@@ -121,6 +136,11 @@ namespace Functions
             return Math.Pow(f, 0.5) - 1000;
         }
 
+        // Basic modal functions
+
+        /// <summary>
+        /// f 06 - Multi-modal; Non-separable; Very narrow valley from local optimum to global optimum
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -900)]
         public static double rosenbrock_func(List<double> x) /* Rotated Rosenbrock's */
         {
@@ -141,6 +161,9 @@ namespace Functions
             return f;
         }
 
+        /// <summary>
+        /// f 07 - Multi-modal; Non-separable; Asymetrical; Local optima's number is huge
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -800)]
         public static double schaffer_F7_func(List<double> x) /* Schwefel's 1.2  */
         {
@@ -164,6 +187,9 @@ namespace Functions
 
         }
 
+        /// <summary>
+        /// f 08 - Multi-modal; Non-separable; Asymetrical
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -700)]
         public static double ackley_func(List<double> x) /* Ackley's  */
         {
@@ -184,6 +210,9 @@ namespace Functions
             return Math.E - 20.0 * Math.Exp(sum1) - Math.Exp(sum2) + 20.0 - 700;
         }
 
+        /// <summary>
+        /// f 09 - Multi-modal; Non-separable; Asymetrical; Continuous but differentiable only ona a set of points
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -600)]
         public static double weierstrass_func(List<double> x) /* Weierstrass's  */
         {
@@ -207,6 +236,9 @@ namespace Functions
             return f - nx * sum2 - 600;
         }
 
+        /// <summary>
+        /// f 10 - Multi-modal; Rotated; Non-separable;
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -500)]
         public static double griewank_func(List<double> x) /* Griewank's  */
         {
@@ -228,6 +260,9 @@ namespace Functions
             return 1.0 + s / 4000.0 - p - 500;
         }
 
+        /// <summary>
+        /// f 11 - Multi-modal; Separable; Asymetrical;  Local optima's number is huge
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -400)]
         public static double rastrigin_func(List<double> x) /* Rastrigin's  */
         {
@@ -246,6 +281,9 @@ namespace Functions
             return f - 400;
         }
 
+        /// <summary>
+        /// f 12 - Multi-modal; Non-separable; Asymetrical;  Local optima's number is huge
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -300)]
         public static double rotated_rastrigin_func(List<double> x) /* Rotated Rastrigin's  */
         {
@@ -265,6 +303,9 @@ namespace Functions
             return f - 300;
         }
 
+        /// <summary>
+        /// f 13 - Multi-modal; Rotated; Non-separable; Asymetrical;  Local optima's number is huge; Non-continuous
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -200)]
         public static double step_rastrigin_func(List<double> x) /* Noncontinuous Rastrigin's  */
         {
@@ -291,9 +332,15 @@ namespace Functions
             return f - 200;
         }
 
+        /// <summary>
+        /// f 14 - Multi-modal; Non-separable; Asymetrical;  Local optima's number is huge; Second better optimum is far from global
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, -100)]
         public static double nonrotated_schwefel_func(List<double> x) { return schwefel_func(x, false) - 100; }
 
+        /// <summary>
+        /// f 15 - Multi-modal; Rotated; Non-separable; Asymetrical;  Local optima's number is huge; Second better optimum is far from global
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, 100)]
         public static double rotated_schwefel_func(List<double> x) { return schwefel_func(x, true) + 100; }
 
@@ -333,6 +380,9 @@ namespace Functions
             return 4.189828872724338e+002 * nx + f;
         }
 
+        /// <summary>
+        /// f 16 - Multi-modal; Non-separable; Asymetrical; Continuous everywhere; Differentiable nowhere
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, 200)]
         public static double katsuura_func(List<double> x) /* Katsuura  */
         {
@@ -364,9 +414,15 @@ namespace Functions
             return f * tmp1 - tmp1 + 200;
         }
 
+        /// <summary>
+        /// f 17 - Multi-modal; Non-separable; Asymetrical; Continuous everywhere; Differentiable nowhere
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, 300)]
         public static double nonrotated_bi_rastrigin_func(List<double> x) { return bi_rastrigin_func(x, false) + 300; }
 
+        /// <summary>
+        /// f 18 - Multi-modal; Non-separable; Asymetrical; Continuous everywhere; Differentiable nowhere
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, 400)]
         public static double rotated_bi_rastrigin_func(List<double> x) { return bi_rastrigin_func(x, true) + 400; }
 
@@ -412,7 +468,7 @@ namespace Functions
             tmp2 *= s;
             tmp2 += d * nx;
             tmp = 0;
-            double f = 0;
+            double f;
 
             for (int i = 0; i < nx; i++)
                 tmp += cos(2.0 * PI * x[i]);
@@ -424,6 +480,9 @@ namespace Functions
             return f;
         }
 
+        /// <summary>
+        /// f 19 - Multi-modal; Non-separable;
+        /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, 500)]
         public static double grie_rosen_func(List<double> x) /* Griewank-Rosenbrock  */
         {
@@ -451,12 +510,15 @@ namespace Functions
 
             tmp1 = x[nx - 1] * x[nx - 1] - x[0];
             tmp2 = x[nx - 1] - 1.0;
-            temp = 100.0 * tmp1 * tmp1 + tmp2 * tmp2; ;
+            temp = 100.0 * tmp1 * tmp1 + tmp2 * tmp2;
             f += (temp * temp) / 4000.0 - cos(temp) + 1.0;
             return f + 500;
         }
 
-
+        /// <summary>
+        /// f 20 - Multi-modal; Non-separable; Asymetrical;
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 600)]
         public static double escaffer6_func(List<double> z) /* Expanded Scaffer°Øs F6  */
         {
             double temp1, temp2;
@@ -478,9 +540,15 @@ namespace Functions
             temp1 = temp1 * temp1;
             temp2 = 1.0 + 0.001 * (z[nx - 1] * z[nx - 1] + z[0] * z[0]);
             f += 0.5 + (temp1 - 0.5) / (temp2 * temp2);
-            return f;
+            return f + 600;
         }
 
+        // Composition functions
+
+        /// <summary>
+        /// f 21 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 700)]
         public static double cf01(List<double> x) /* Composition Function 1 */
         {
             List<double> fit = new List<double>(5),
@@ -502,10 +570,13 @@ namespace Functions
             fit.Add(sphere_func(x));
             fit[4] = 10000 * fit[4] / 1e+5;
 
-            return cf_cal(x, delta, bias, fit);
+            return cf_cal(x, delta, bias, fit) + 700;
         }
 
-
+        /// <summary>
+        /// f 22 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 800)]
         public static double cf02(List<double> x) /* Composition Function 2 */
         {
             List<double> fit = new List<double>(3);
@@ -515,10 +586,13 @@ namespace Functions
             for (int i = 0; i < 3; i++)
                 fit.Add(schwefel_func(x, false));
 
-            return cf_cal(x, delta, bias, fit);
+            return cf_cal(x, delta, bias, fit) + 800;
         }
 
-
+        /// <summary>
+        /// f 23 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 900)]
         public static double cf03(List<double> x) /* Composition Function 3 */
         {
             List<double> fit = new List<double>();
@@ -528,211 +602,103 @@ namespace Functions
             for (int i = 0; i < 3; i++)
                 fit.Add(rotated_schwefel_func(x));
 
-            return cf_cal(x, delta, bias, fit);
+            return cf_cal(x, delta, bias, fit) + 900;
         }
 
-
+        /// <summary>
+        /// f 24 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 1000)]
         public static double cf04(List<double> x) /* Composition Function 4 */
         {
+            return cf0405(x, new List<double> { 20, 20, 20 }) + 1000;
+        }
+
+        /// <summary>
+        /// f 25 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 1100)]
+        public static double cf05(List<double> x) /* Composition Function 5 */
+        {
+            return cf0405(x, new List<double> { 10, 30, 50 }) + 1100;
+        }
+
+        private static double cf0405(List<double> x, List<double> delta)
+        {
             List<double> fit = new List<double>();
-            List<double> delta = new List<double> { 20, 20, 20 };
+            List<double> lambdas = new List<double> { 0.25, 1, 2.5 };
             List<double> bias = new List<double> { 0, 100, 200 };
 
-            int i = 0;
-            fit.Add(rotated_schwefel_func(x));
-            fit[i] = 1000 * fit[i] / 4e+3;
-
-            i = 1;
-            fit.Add(rotated_rastrigin_func(x));
-            fit[i] = 1000 * fit[i] / 1e+3;
-
-            i = 2;
-            fit.Add(weierstrass_func(x));
-            fit[i] = 1000 * fit[i] / 400;
+            fit.Add(rotated_schwefel_func(x) * lambdas[0]);
+            fit.Add(rotated_rastrigin_func(x) * lambdas[1]);
+            fit.Add(weierstrass_func(x) * lambdas[2]);
 
             return cf_cal(x, delta, bias, fit);
         }
 
-
-        public static double cf05(List<double> x) /* Composition Function 4 */
-{
-
-	int i,cf_num=3;
-
-	double fit[3];
-
-	double delta[3] = {10,30,50};
-
-	double bias[3] = {0, 100, 200};
-
-	i=0;
-
-	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/4e+3;
-
-	i=1;
-
-	rastrigin_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/1e+3;
-
-	i=2;
-
-	weierstrass_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/400;
-            
-            return cf_cal(x, delta, bias, fit);
-
-}
-
-
-
+        /// <summary>
+        /// f 26 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 1200)]
         public static double cf06(List<double> x) /* Composition Function 6 */
+        {
+            List<double> fit = new List<double>();
+            List<double> delta = new List<double> { 10, 10, 10, 10, 10 };
+            List<double> lambdas = new List<double> { 0.25, 1, 1E-7, 2.5, 10 };
+            List<double> bias = new List<double> { 0, 100, 200, 300, 400 };
 
-{
+            fit.Add(rotated_schwefel_func(x) * lambdas[0]);
+            fit.Add(rotated_rastrigin_func(x) * lambdas[1]);
+            fit.Add(ellips_func(x) * lambdas[2]);
+            fit.Add(weierstrass_func(x) * lambdas[3]);
+            fit.Add(griewank_func(x) * lambdas[4]);
 
-	int i,cf_num=5;
+            return cf_cal(x, delta, bias, fit) + 1200;
+        }
 
-	double fit[5];
-
-	double delta[5] = {10,10,10,10,10};
-
-	double bias[5] = {0, 100, 200, 300, 400};
-
-	i=0;
-
-	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/4e+3;
-
-	i=1;
-
-	rastrigin_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/1e+3;
-
-	i=2;
-
-	ellips_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/1e+10;
-
-	i=3;
-
-	weierstrass_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/400;
-
-	i=4;
-
-	griewank_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=1000*fit[i]/100;
-            
-            return cf_cal(x, delta, bias, fit);
-
-
-
-}
-
-
-
+        /// <summary>
+        /// f 27 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 1300)]
         public static double cf07(List<double> x) /* Composition Function 7 */
+        {
+            List<double> fit = new List<double>();
+            List<double> delta = new List<double> { 10, 10, 10, 20, 20 };
+            List<double> lambdas = new List<double> { 100, 10, 2.5, 25, 0.1 };
+            List<double> bias = new List<double> { 0, 100, 200, 300, 400 };
 
-{
+            fit.Add(griewank_func(x) * lambdas[0]);
+            fit.Add(rotated_rastrigin_func(x) * lambdas[1]);
+            fit.Add(rotated_schwefel_func(x) * lambdas[2]);
+            fit.Add(weierstrass_func(x) * lambdas[3]);
+            fit.Add(sphere_func(x) * lambdas[4]);
 
-	int i,cf_num=5;
+            return cf_cal(x, delta, bias, fit) + 1300;
+        }
 
-	double fit[5];
-
-	double delta[5] = {10,10,10,20,20};
-
-	double bias[5] = {0, 100, 200, 300, 400};
-
-	i=0;
-
-	griewank_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/100;
-
-	i=1;
-
-	rastrigin_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/1e+3;
-
-	i=2;
-
-	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/4e+3;
-
-	i=3;
-
-	weierstrass_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/400;
-
-	i=4;
-
-	sphere_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],0);
-
-	fit[i]=10000*fit[i]/1e+5;
-            
-            return cf_cal(x, delta, bias, fit);
-
-}
-
-
-
+        /// <summary>
+        /// f 28 - Multi-modal; Non-separable; Asymetrical; Different proerties around local optima
+        /// </summary>
+        [FunctionAtt(1E-8, -100, 100, 1500, 1400)]
         public static double cf08(List<double> x) /* Composition Function 8 */
+        {
+            List<double> fit = new List<double>();
+            List<double> delta = new List<double> { 10, 20, 30, 40, 50 };
+            List<double> lambdas = new List<double> { 2.5, 2.5E-3, 2.5, 5E-4, 0.1 };
+            List<double> bias = new List<double> { 0, 100, 200, 300, 400 };
 
-{
+            fit.Add(grie_rosen_func(x) * lambdas[0]);
+            fit.Add(schaffer_F7_func(x) * lambdas[1]);
+            fit.Add(rotated_schwefel_func(x) * lambdas[2]);
+            fit.Add(escaffer6_func(x) * lambdas[3]);
+            fit.Add(sphere_func(x) * lambdas[4]);
 
-	int i,cf_num=5;
+            return cf_cal(x, delta, bias, fit) + 1400;
 
-	double fit[5];
+        }
 
-	double delta[5] = {10,20,30,40,50};
-
-	double bias[5] = {0, 100, 200, 300, 400};
-
-	i=0;
-
-	grie_rosen_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/4e+3;
-
-	i=1;
-
-	schaffer_F7_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/4e+6;
-
-	i=2;
-
-	schwefel_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/4e+3;
-
-	i=3;
-
-	escaffer6_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],r_flag);
-
-	fit[i]=10000*fit[i]/2e+7;
-
-	i=4;
-
-	sphere_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],0);
-
-	fit[i]=10000*fit[i]/1e+5;
-            
-            return cf_cal(x, delta, bias, fit);
-
-}
-        private static List<double> _os = null;
+        // Shift vector
+        private static List<double> _os;
         private static List<double> Os
         {
             get
@@ -758,6 +724,7 @@ namespace Functions
             }
         }
 
+        // Rotation matrix
         private static List<List<double>> _mr = new List<List<double>>();
         private static List<double> Mr(int dim, int index)
         {
@@ -785,6 +752,8 @@ namespace Functions
             }
             return _mr[index];
         }
+
+        // aux functions
 
         private static List<double> diagonalfunc(this List<double> x, double factor)
         {
@@ -917,7 +886,7 @@ namespace Functions
 
         private static double floor(double x) { return Math.Floor(x); }
         private static double fabs(double x) { return Math.Abs(x); }
-        private static double fmod(double x, double y) { return x % y; }
+        private static double exp(double x) { return Math.Exp(x); }
         private static double sin(double x) { return Math.Sin(x); }
         private static double cos(double x) { return Math.Cos(x); }
         private static double pow(double x, double y) { return Math.Pow(x, y); }
