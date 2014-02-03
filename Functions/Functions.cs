@@ -169,7 +169,7 @@ namespace Functions
         {
             int nx = x.Count;
             List<double> y = x.shiftfunc().rotatefunc(0).
-                asyfunc(0.5).diagonalfunc().rotatefunc(1);
+                asyfunc(0.5).diagonalfunc(10).rotatefunc(1);
 
             double sum1 = 0.0, sum2 = 0.0;
             for (int i = 0; i < nx; i++)
@@ -192,7 +192,7 @@ namespace Functions
 
             x = x.shiftfunc().
                 Select(yi => yi * 0.5 / 100). //shrink to the orginal search range
-                ToList().rotatefunc(0).asyfunc(0.5).diagonalfunc().rotatefunc(1);
+                ToList().rotatefunc(0).asyfunc(0.5).diagonalfunc(10).rotatefunc(1);
 
             double f = 0.0;
             for (int i = 0; i < nx; i++)
@@ -205,6 +205,163 @@ namespace Functions
                 f += sum;
             }
             return f - nx * sum2 - 600;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -500)]
+        public static double griewank_func(List<double> x) /* Griewank's  */
+        {
+            int nx = x.Count;
+            x = x.shiftfunc();
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] *= 600.0 / 100.0;
+
+            List<double> z = x.rotatefunc(0).diagonalfunc(100);
+
+            double s = 0, p = 1;
+            for (int i = 0; i < nx; i++)
+            {
+                s += z[i] * z[i];
+                p *= Math.Cos(z[i] / Math.Sqrt(1.0 + i));
+            }
+
+            return 1.0 + s / 4000.0 - p - 500;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -400)]
+        public static double rastrigin_func(List<double> x) /* Rastrigin's  */
+        {
+            double alpha = 10.0, beta = 0.2;
+            int nx = x.Count;
+            x = x.shiftfunc();
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] = x[i] * 5.12 / 100;
+
+            x = x.oszfunc().asyfunc(beta).diagonalfunc(alpha);
+
+            double f = 0;
+            for (int i = 0; i < nx; i++)
+                f += (x[i] * x[i] - 10.0 * Math.Cos(2.0 * Math.PI * x[i]) + 10.0);
+            return f - 400;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -300)]
+        public static double rotated_rastrigin_func(List<double> x) /* Rotated Rastrigin's  */
+        {
+            double alpha = 10.0, beta = 0.2;
+            int nx = x.Count;
+            x = x.shiftfunc();
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] = x[i] * 5.12 / 100;
+
+            x = x.rotatefunc(0).oszfunc().asyfunc(beta).
+                rotatefunc(1).diagonalfunc(alpha).rotatefunc(0);
+
+            double f = 0;
+            for (int i = 0; i < nx; i++)
+                f += (x[i] * x[i] - 10.0 * Math.Cos(2.0 * Math.PI * x[i]) + 10.0);
+            return f - 300;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -200)]
+        public static double step_rastrigin_func(List<double> x) /* Noncontinuous Rastrigin's  */
+        {
+            double alpha = 10.0, beta = 0.2;
+            int nx = x.Count;
+            x = x.shiftfunc();
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] *= 5.12 / 100;
+
+            x = x.rotatefunc(0);
+
+            for (int i = 0; i < nx; i++) // make step
+                if (Math.Abs(x[i]) > 0.5)
+                    x[i] = Math.Floor(2 * x[i] + 0.5) / 2;
+
+            x = x.oszfunc().asyfunc(beta).rotatefunc(1).diagonalfunc(alpha).rotatefunc(0);
+
+            double f = 0.0;
+
+            for (int i = 0; i < nx; i++)
+                f += (x[i] * x[i] - 10.0 * Math.Cos(2.0 * Math.PI * x[i]) + 10.0);
+
+            return f - 200;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, -100)]
+        public static double schwefel_func(List<double> x) { return schwefel_func(x, false) - 100; }
+        
+        [FunctionAtt(1E-8, -100, 100, 1500, 100)]
+        public static double schwefel_func(List<double> x) { return schwefel_func(x, true) + 100; }
+
+        private static double schwefel_func(List<double> x, bool r_flag) /* Schwefel's  */
+        {
+            double tmp;
+            int nx = x.Count;
+            x = x.shiftfunc();
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] *= 1000 / 100;
+            if (r_flag) x = x.rotatefunc(0);
+            x = x.diagonalfunc(10);
+
+            for (int i = 0; i < nx; i++)
+                x[i] += 4.209687462275036e+002;
+
+            double f = 0;
+
+            for (int i = 0; i < nx; i++)
+            {
+                if (x[i] > 500)
+                {
+                    f -= (500.0 - x[i] % 500) * Math.Sin(Math.Pow(500.0 - x[i] % 500, 0.5));
+                    tmp = (x[i] - 500.0) / 100;
+                    f += tmp * tmp / nx;
+                }
+                else if (x[i] < -500)
+                {
+                    f -= (-500.0 + (Math.Abs(x[i]) % 500)) * Math.Sin(Math.Pow(500.0 - (Math.Abs(x[i]) % 500), 0.5));
+                    tmp = (x[i] + 500.0) / 100;
+                    f += tmp * tmp / nx;
+                }
+                else
+                    f -= x[i] * Math.Sin(Math.Pow(Math.Abs(x[i]), 0.5));
+            }
+            return 4.189828872724338e+002 * nx + f;
+        }
+
+        [FunctionAtt(1E-8, -100, 100, 1500, 200)]
+        public static double katsuura_func(List<double> x) /* Katsuura  */
+        {
+            int nx = x.Count;
+            double temp, tmp1, tmp2,
+                tmp3 = pow(1.0 * nx, 1.2);
+
+            x=x.shiftfunc();
+
+            for (int i = 0; i < nx; i++)//shrink to the orginal search range
+                x[i] *= 5.0 / 100.0;
+
+            List<double> y = x.rotatefunc(0).diagonalfunc(100).rotatefunc(1);
+
+            double f = 1.0;
+            for (int i = 0; i < nx; i++)
+            {
+                temp = 0.0;
+                for (int j = 1; j <= 32; j++)
+                {
+                    tmp1 = pow(2.0, j);
+                    tmp2 = tmp1 * y[i];
+                    temp += fabs(tmp2 - floor(tmp2 + 0.5)) / tmp1;
+                }
+                f *= pow(1.0 + (i + 1) * temp, 10.0 / tmp3);
+            }
+
+            tmp1 = 10.0 / nx / nx;
+            return f * tmp1 - tmp1 + 200;
         }
 
         private static List<double> _os = null;
@@ -261,11 +418,11 @@ namespace Functions
             return _mr[index];
         }
 
-        private static List<double> diagonalfunc(this List<double> x)
+        private static List<double> diagonalfunc(this List<double> x, double factor)
         {
             int nx = x.Count;
             for (int i = 0; i < nx; i++)
-                x[i] *= Math.Pow(10.0, 1.0 * i / (nx - 1) / 2.0);
+                x[i] *= Math.Pow(factor, 1.0 * i / (nx - 1) / 2.0);
             return x;
         }
 
@@ -344,6 +501,19 @@ namespace Functions
             }
             return xasy;
         }
+
+        #endregion
+
+        #region c++ -> c#
+
+        private static double floor(double x) { return Math.Floor(x); }
+        private static double fabs(double x) { return Math.Abs(x); }
+        private static double fmod(double x, double y) { return x % y; }
+        private static double sin(double x) { return Math.Sin(x); }
+        private static double cos(double x) { return Math.Cos(x); }
+        private static double pow(double x, double y) { return Math.Pow(x, y); }
+
+        private static double PI = Math.PI;
 
         #endregion
 
