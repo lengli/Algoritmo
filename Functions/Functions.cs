@@ -731,7 +731,7 @@ namespace Functions
                         Match match = reg.Match(line);
                         while (match.Success)
                         {
-                            string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]);
+                            string val = match.Groups[1].Value.ToUpper().Replace('.', CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]);
                             double vDouble;
                             if (double.TryParse(val, out vDouble)) _os.Add(vDouble);
                             match = match.NextMatch();
@@ -762,7 +762,7 @@ namespace Functions
                     Match match = reg.Match(line);
                     while (match.Success)
                     {
-                        string val = match.Groups[1].Value.Replace('.', CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator[0]);
+                        string val = match.Groups[1].Value.ToUpper().Replace('.', CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]);
                         double vDouble;
                         if (double.TryParse(val, out vDouble)) _mr[index].Add(vDouble);
                         match = match.NextMatch();
