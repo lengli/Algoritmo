@@ -16,8 +16,8 @@
                             <TextBlock Text="Tipo de Seleção" Margin="10,3" Width="85" />
                         </StackPanel>
                         <StackPanel Margin="10,5,0,10" Orientation="Horizontal">
-                            <TextBox x:Name="ProbCrossDE" Margin="10,3" Width="65" Text="0.01" />
-                            <TextBox x:Name="FatorF" Margin="10,3" Width="65" Text="1.8" />
+                            <TextBox x:Name="ProbCrossDE" Margin="10,3" Width="65" Text="0.3" />
+                            <TextBox x:Name="FatorF" Margin="10,3" Width="65" Text="0.5" />
                             <ComboBox x:Name="TipoSelecao" SelectedIndex="0" Margin="10,3" Width="85">
                                 <ComboBoxItem Content="Rand"/>
                                 <ComboBoxItem Content="Best"/>
@@ -105,7 +105,7 @@
                 <TextBlock Text="Dist Tabu" Margin="10,3" Width="55" />
             </StackPanel>
             <StackPanel Margin="10,3,10,10" Orientation="Horizontal">
-                <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="40" />
+                <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="50" />
                 <TextBox x:Name="Precisao" Margin="10,3" Width="70" Text="8" />
                 <TextBox x:Name="MaxGer" Margin="10,3" Width="70" Text="0" />
                 <TextBox x:Name="MaxAval" Margin="10,3" Width="50" Text="300000" />

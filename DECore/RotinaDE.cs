@@ -30,8 +30,9 @@ namespace DECore
         double _fatorFUsado;
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-            if (_fatorF > 0)
-                _fatorFUsado = _fatorF / (Math.Pow(20, (double)_avaliacoes / _maxAval));
+            //if (_fatorF > 0)
+            //    _fatorFUsado = _fatorF / (Math.Pow(20, (double)_avaliacoes / _maxAval));
+            _fatorFUsado = _fatorF;
 
             for (int i = 0; i < populacao.Count; i++)
             {
