@@ -11,6 +11,7 @@ using LocalCore.HillClimbing;
 using LocalCore.LSChains;
 using AlgoCore;
 using DECore;
+using AlgoView.Helpers;
 
 
 namespace AlgoView
@@ -62,12 +63,10 @@ namespace AlgoView
             int maxRepop;
             if (!int.TryParse(MaxRepop.Text, out maxRepop)) return;
             bool tabuNaPop = TabuNaPop.IsChecked.Value;
-            double distTabu;
-            if (!double.TryParse(DistTabu.Text.Replace(".", ","), out distTabu)) return;
+            double distTabu = DistTabu.Text.ToDouble();
             int gerSem;
             if (!int.TryParse(GerSMelhor.Text, out gerSem)) return;
-            double margemComp;
-            if (!double.TryParse(MargemComp.Text.Replace(".", ","), out margemComp)) return;
+            double margemComp = MargemComp.Text.ToDouble();
 
             // busca por mutação
             int nPopMutLocal;
@@ -77,12 +76,11 @@ namespace AlgoView
             ParametrosHillClimbing hillClimbing = null;
             if (HillClimbing.IsChecked.Value)
             {
-                double aceleracao;
-                double epsilon;
+                double aceleracao = AceleHill.Text.ToDouble();
+                double epsilon = EpsilonHill.Text.ToDouble();
                 int step;
 
-                if (double.TryParse(AceleHill.Text.Replace(".", ","), out aceleracao) &&
-                    double.TryParse(EpsilonHill.Text.Replace(".", ","), out epsilon) && int.TryParse(StepHill.Text, out step))
+                if (aceleracao != 0 && epsilon > 0 && int.TryParse(StepHill.Text, out step) && step > 0)
                     hillClimbing = new ParametrosHillClimbing(aceleracao, epsilon, 30, step);
             }
 
@@ -90,10 +88,10 @@ namespace AlgoView
             ParametrosLSChains lsChains = null;
             if (LSChains.IsChecked.Value)
             {
-                double aceleracao;
+                double aceleracao = AceleLSChains.Text.ToDouble();
                 int nIteracoes;
 
-                if (double.TryParse(AceleLSChains.Text.Replace(".", ","), out aceleracao) && int.TryParse(NIterLSChains.Text, out nIteracoes))
+                if (int.TryParse(NIterLSChains.Text, out nIteracoes))
                     lsChains = new ParametrosLSChains(aceleracao, nIteracoes);
             }
 
@@ -144,7 +142,7 @@ namespace AlgoView
 
                 Range0.Text = string.Format("{0:0.####} - {1:0.####}", xs0.Min(), xs0.Max());
                 Range1.Text = string.Format("{0:0.####} - {1:0.####}", xs1.Min(), xs1.Max());
-                
+
                 // range não muda
                 Range2.Text = string.Format("{0:0.####} - {1:0.####}", xs2.Min(), xs2.Max());
                 Range3.Text = string.Format("{0:0.####} - {1:0.####}", xs3.Min(), xs3.Max());
@@ -235,35 +233,27 @@ namespace AlgoView
 
         private RotinaAlgo RotinaPSO(FuncAptidao funcao, FuncRepopRestricao restricao)
         {
-            double fatorPond;
-            if (!double.TryParse(FatorPond.Text.Replace(".", ","), out fatorPond)) return null;
-            double fi1;
-            if (!double.TryParse(Fi1.Text.Replace(".", ","), out fi1)) return null;
-            double fi2;
-            if (!double.TryParse(Fi2.Text.Replace(".", ","), out fi2)) return null;
+            double fatorPond = FatorPond.Text.ToDouble();
+            double fi1 = Fi1.Text.ToDouble();
+            double fi2 = Fi2.Text.ToDouble();
             bool usarRand1 = Rand1.IsChecked.Value;
             bool usarRand2 = Rand2.IsChecked.Value;
-            double coefKConstr;
-            double.TryParse(KConstr.Text, out coefKConstr);
+            double coefKConstr = KConstr.Text.ToDouble();
             bool usarCoefConstr = coefKConstr != 0;
             int nVizinhos;
-            if (!int.TryParse(NVizinhos.Text, out nVizinhos)) return null;
+            if (!int.TryParse(NVizinhos.Text, out nVizinhos) || nVizinhos < 0) return null;
 
             return new PSOCore.RotinaPSO(funcao, restricao, _gs, _hs, _validar, fatorPond, fi1, fi2, usarRand1, usarRand2, coefKConstr, usarCoefConstr, nVizinhos, _validarFronteira);
         }
 
         private RotinaAlgo RotinaAG(FuncAptidao funcao, FuncRepopRestricao FuncRestr)
         {
-            double probCrossover;
-            if (!double.TryParse(ProbCrossover.Text.Replace(".", ","), out probCrossover)) return null;
-            double probMutacao;
-            if (!double.TryParse(ProbMutacao.Text.Replace(".", ","), out probMutacao)) return null;
-            double rangeMutacao;
-            if (!double.TryParse(RangeMutacao.Text.Replace(".", ","), out rangeMutacao)) return null;
+            double probCrossover = ProbCrossover.Text.ToDouble();
+            double probMutacao = ProbMutacao.Text.ToDouble();
+            double rangeMutacao = RangeMutacao.Text.ToDouble();
             int critParada;
             if (!int.TryParse(CritParada.Text, out critParada)) return null;
-            double deltaMedApt;
-            if (!double.TryParse(DeltaMedApt.Text.Replace(".", ","), out deltaMedApt)) return null;
+            double deltaMedApt = DeltaMedApt.Text.ToDouble();
             CrossType crossType;
             ComboBoxItem item = CrossType.SelectedItem as ComboBoxItem;
             if (item == null || !Enum.TryParse(item.Tag.ToString(), out crossType)) return null;
@@ -273,10 +263,8 @@ namespace AlgoView
 
         private RotinaAlgo RotinaDE(FuncAptidao funcao, FuncRepopRestricao restricao)
         {
-            double probCrossDE;
-            if (!double.TryParse(ProbCrossDE.Text.Replace(".", ","), out probCrossDE)) return null;
-            double fatorF;
-            if (!double.TryParse(FatorF.Text.Replace(".", ","), out fatorF)) return null;
+            double probCrossDE = ProbCrossDE.Text.ToDouble();
+            double fatorF = FatorF.Text.ToDouble();
             SelecaoDE selecao;
             ComboBoxItem item = TipoSelecao.SelectedItem as ComboBoxItem;
             if (item == null || !Enum.TryParse(item.Content.ToString(), out selecao)) return null;
