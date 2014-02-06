@@ -270,8 +270,8 @@ namespace AlgoView
             double probCrossDE = ProbCrossDE.Text.ToDouble();
             double fatorF = FatorF.Text.ToDouble();
             SelecaoDE selecao;
-            ComboBoxItem item = TipoSelecao.SelectedItem as ComboBoxItem;
-            if (item == null || !Enum.TryParse(item.Content.ToString(), out selecao)) return null;
+            object tipoDE = TipoSelecao.SelectedValue;
+            if (tipoDE == null || !Enum.TryParse(tipoDE.ToString(), out selecao)) return null;
             return new RotinaDE(funcao, restricao, _gs, _hs, _validar, selecao, probCrossDE, fatorF, _validarFronteira);
         }
 

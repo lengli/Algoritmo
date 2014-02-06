@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AlgoResult;
 using Functions;
 using System.Linq;
@@ -33,12 +32,26 @@ namespace DECore
             _fatorF = fatorF;
         }
 
-        double _fatorFUsado;
+        //ui,j,G+1 = x1,j,G + F(x2,j,G − x3,j,G) + F(x4,j,G − x5,j,G) + ...
+        private double CalculoAtributo(List<IndividuoBin> selecao, int atr)
+        {
+            double atributo = selecao[0].Atributos[atr];
+
+            for (int i = 1; i < selecao.Count; i++)
+            {
+                int sinal = i%2 == 1 ? 1 : -1;
+                atributo += selecao[i].Atributos[atr] + _fatorF;
+                atributo *= sinal;
+            }
+            return atributo;
+        }
+
+        //double _fatorFUsado;
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             //if (_fatorF > 0)
             //    _fatorFUsado = _fatorF / (Math.Pow(20, (double)_avaliacoes / _maxAval));
-            _fatorFUsado = _fatorF;
+            //_fatorFUsado = _fatorF;
 
             for (int i = 0; i < populacao.Count; i++)
             {
@@ -48,6 +61,12 @@ namespace DECore
                     case SelecaoDE.Rand1Bin: selecao = OperadoresDE.SelecaoAleatoria(3, populacao); break;
                     case SelecaoDE.Best1Bin: selecao = OperadoresDE.SelecaoBest(populacao); break;
                     case SelecaoDE.Rand2Bin: selecao = OperadoresDE.SelecaoAleatoria(5, populacao); break;
+                    case SelecaoDE.RandToBest1Bin:
+                        selecao = OperadoresDE.SelecaoAleatoria(2, populacao);
+                        selecao.Insert(0, populacao[i]);
+                        selecao.Insert(0, populacao.First());
+                        selecao.Insert(0, populacao[i]);
+                        break;
                     case SelecaoDE.RandToBest2Bin:
                         selecao = OperadoresDE.SelecaoAleatoria(4, populacao);
                         selecao.Insert(0, populacao[i]);
@@ -69,8 +88,7 @@ namespace DECore
                 {
                     if (rand.NextDouble() < _probCross || j == jRand)
                     {
-                        //ui,j,G+1 = xr3,j,G + F(xr1,j,G − xr2,j,G)
-                        double atributo = selecao[0].Atributos[j] - _fatorFUsado * (selecao[1].Atributos[j] - selecao[2].Atributos[j]);
+                        double atributo = CalculoAtributo(selecao, j);
 
                         // tratamento de restrição
                         if (atributo >= _min(j) && atributo <= _max(j)
