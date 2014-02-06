@@ -18,10 +18,7 @@
                         <StackPanel Margin="10,5,0,10" Orientation="Horizontal">
                             <TextBox x:Name="ProbCrossDE" Margin="10,3" Width="65" Text="0.3" />
                             <TextBox x:Name="FatorF" Margin="10,3" Width="65" Text="0.5" />
-                            <ComboBox x:Name="TipoSelecao" SelectedIndex="0" Margin="10,3" Width="85">
-                                <ComboBoxItem Content="Rand"/>
-                                <ComboBoxItem Content="Best"/>
-                            </ComboBox>
+                            <ComboBox x:Name="TipoSelecao" SelectedIndex="0" Margin="10,3" Width="85"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel x:Name="AGPanel" Visibility="Collapsed">
@@ -187,7 +184,7 @@
                     <TextBlock Text="[3]: " Margin="30 0 0 0"/>
                     <TextBlock Text="0 - 0" x:Name="Range3"/>
                 </StackPanel>
-                    <algo:Evol x:Name="EvolGraph"/>
+                <algo:Evol x:Name="EvolGraph"/>
 
             </StackPanel>
 

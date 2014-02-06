@@ -30,7 +30,7 @@ namespace DECore
             return indSelecionados;
         }
 
-        // melhor na última posição da lista
+        // melhor na primeira posição da lista
         public static List<IndividuoBin> SelecaoBest(List<IndividuoBin> populacao)
         {
             List<IndividuoBin> ind = SelecaoAleatoria(2, populacao);

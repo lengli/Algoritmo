@@ -29,6 +29,10 @@ namespace AlgoView
         {
             InitializeComponent();
             FuncaoCombo.ItemsSource = Functions.Functions.Funcoes();
+
+            // Tipo de seleção DE
+            IEnumerable<SelecaoDE> values = Enum.GetValues(typeof(SelecaoDE)).Cast<SelecaoDE>();
+            TipoSelecao.ItemsSource = values;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
