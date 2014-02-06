@@ -756,7 +756,7 @@ namespace Functions
                 for (int i = 0 + shift; i < dim + shift; i++)
                 {
                     string line = sr.ReadLine();
-
+                    if(line==null) break;
                     Regex reg = new Regex("([\\-0-9.e+]+)");
 
                     Match match = reg.Match(line);

@@ -95,7 +95,6 @@ namespace AGCore
 
         protected override void InicializarAlgoritmo(List<IndividuoBin> populacao)
         {
-            return;
         }
     }
 }
