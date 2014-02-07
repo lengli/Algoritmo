@@ -1,0 +1,89 @@
+﻿<Window x:Class="AlgoView.MapaContorno"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MapaContorno" Height="450" Width="400">
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Margin="5">Função</TextBlock>
+            <ComboBox Height="20" Width="50" x:Name="FuncaoCombo"></ComboBox>
+            <TextBlock Margin="15 5 5 5">Precisão</TextBlock>
+            <TextBox Height="20" Width="50" x:Name="PontosTb"></TextBox>
+            <Button Margin="15 0" Padding="5 0" Click="Button_Click">Calcular</Button>
+        </StackPanel>
+        <Grid VerticalAlignment="Top">
+        <Canvas Height="300" Width="300" x:Name="ValidArea" Margin="0">
+
+        </Canvas>
+        <Canvas Height="360" Width="360">
+
+            <!-- Vertical lines -->
+            <Line X1="30" Y1="30"
+                  X2="30" Y2="335"
+                  Stroke="Gray"
+                  StrokeThickness="1" />
+            <Line X1="90" Y1="30"
+                  X2="90" Y2="335"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="150" Y1="30"
+                  X2="150" Y2="335"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="210" Y1="30"
+                  X2="210" Y2="335"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="270" Y1="30"
+                  X2="270" Y2="335"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="330" Y1="30"
+                  X2="330" Y2="335"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+
+
+            <!-- Horizontal lines -->
+            <Line X1="25" Y1="330"
+                  X2="330" Y2="330"
+                  Stroke="Gray"
+                  StrokeThickness="1" />
+            <Line X1="25" Y1="270"
+                  X2="330" Y2="270"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="25" Y1="210"
+                  X2="330" Y2="210"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="25" Y1="150"
+                  X2="330" Y2="150"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="25" Y1="90"
+                  X2="330" Y2="90"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+            <Line X1="25" Y1="30"
+                  X2="330" Y2="30"
+                  Stroke="LightGray"
+                  StrokeThickness="1" />
+
+        </Canvas>
+        <TextBlock Text="X" Margin="27,12,0,0" />
+        <TextBlock Text="y" Margin="340 320 0 0" />
+        <TextBlock Text="1200" Margin="280 335 0 0" x:Name="MaxYTB" />
+        <TextBlock Text="0" Margin="30 335 0 0" x:Name="MinYTB" />
+        <TextBlock Text="1200" Margin="10 35 0 0" Background="White" 
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Height="15" Width="50" TextAlignment="Center" x:Name="MaxXTB" />
+        <TextBlock Text="0" Margin="10 305 0 0" Background="White" 
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Height="15" Width="50" TextAlignment="Center" x:Name="MinXTB" />
+        <Canvas Height="360" Width="360" x:Name="CanvasGraph">
+        </Canvas>
+    </Grid>
+    </StackPanel>
+</Window>

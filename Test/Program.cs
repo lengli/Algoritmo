@@ -8,6 +8,7 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            byte blue = (byte)Math.Round(1234.123 / 255);
             TestMinGlobalFunctions();
 
             Console.ReadLine();
