@@ -83,6 +83,36 @@ namespace AlgoView
                     tabelaCores[i][j] = Color.FromRgb(red, 0, blue);
                 }
             }
+            Desenhar(tabelaCores);
+        }
+
+        private double minPx = 30;
+        private double maxPx = 330;
+        private void Desenhar(List<List<Color>> tabelaCores)
+        {
+            CanvasGraph.Children.Clear();
+            int nT = tabelaCores.Count;
+            double delta = maxPx - minPx;
+            double stepX = delta / nT;
+
+            for (int i = 0; i < nT; i++)
+            {
+                int iT = tabelaCores[i].Count;
+                double stepY = delta / iT;
+                double x = minPx + i * stepX;
+
+                for (int j = 0; j < iT; j++)
+                {
+                    double y = minPx + j * stepY;
+                    CanvasGraph.Children.Add(new Ellipse
+                    {
+                        Margin = new Thickness(x, y, 0, 0),
+                        Width = 1,
+                        Height = 1,
+                        Stroke = new SolidColorBrush(tabelaCores[i][j])
+                    });
+                }
+            }
         }
     }
 }
