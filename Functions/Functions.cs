@@ -174,7 +174,7 @@ namespace Functions
             List<double> z = new List<double>();
 
             for (int i = 0; i < nx - 1; i++)
-                z[i] = Math.Pow(y[i] * y[i] + y[i + 1] * y[i + 1], 0.5);
+                z.Add(Math.Pow(y[i] * y[i] + y[i + 1] * y[i + 1], 0.5));
 
             double f = 0.0;
 
@@ -756,7 +756,7 @@ namespace Functions
                 for (int i = 0 + shift; i < dim + shift; i++)
                 {
                     string line = sr.ReadLine();
-                    if(line==null) break;
+                    if (line == null) break;
                     Regex reg = new Regex("([\\-0-9.e+]+)");
 
                     Match match = reg.Match(line);
