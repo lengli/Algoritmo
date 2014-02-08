@@ -71,7 +71,7 @@
 
         </Canvas>
         <TextBlock Text="y" Margin="27,12,0,0" />
-        <TextBlock Text="x" Margin="340 320 0 0" />
+        <TextBlock Text="x" Margin="350 323 0 0" />
         <TextBlock Text="1200" Margin="0 35 0 0" x:Name="MaxYTB" />
         <TextBlock Text="0" Margin="0 305 0 0" x:Name="MinYTB" />
         <TextBlock Text="1200" Margin="310 340 0 0" Background="White" 
