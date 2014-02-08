@@ -222,7 +222,7 @@ namespace Functions
 
             x = x.shiftfunc().
                 Select(yi => yi * 0.5 / 100). //shrink to the orginal search range
-                ToList().rotatefunc(0).asyfunc(0.5).diagonalfunc(10).rotatefunc(1);
+                ToList().rotatefunc(0).asyfunc(0.5).rotatefunc(1).diagonalfunc(10);
 
             double f = 0.0;
             for (int i = 0; i < nx; i++)
@@ -426,6 +426,12 @@ namespace Functions
         /// </summary>
         [FunctionAtt(1E-8, -100, 100, 1500, 400)]
         public static double F18_rotated_bi_rastrigin(List<double> x) { return bi_rastrigin(x, true) + 400; }
+
+        /********************************************************************************************************/
+
+        // Verificar essa função!!
+
+        /*********************************************************************************************************/
 
         private static double bi_rastrigin(List<double> x, bool r_flag) /* Lunacek Bi_rastrigin Function */
         {
