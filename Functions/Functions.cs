@@ -169,7 +169,7 @@ namespace Functions
         public static double F07_schaffer_F7(List<double> x) /* Schwefel's 1.2  */
         {
             double tmp;
-            List<double> y = x.shiftfunc().rotatefunc(0).asyfunc(0.5).rotatefunc(1);
+            List<double> y = x.shiftfunc().rotatefunc(0).asyfunc(0.5).rotatefunc(1).diagonalfunc(10);
             int nx = x.Count;
             List<double> z = new List<double>();
 
@@ -196,7 +196,7 @@ namespace Functions
         {
             int nx = x.Count;
             List<double> y = x.shiftfunc().rotatefunc(0).
-                asyfunc(0.5).diagonalfunc(10).rotatefunc(1);
+                asyfunc(0.5).rotatefunc(1).diagonalfunc(10);
 
             double sum1 = 0.0, sum2 = 0.0;
             for (int i = 0; i < nx; i++)
@@ -208,7 +208,7 @@ namespace Functions
             sum1 = -0.2 * Math.Sqrt(sum1 / nx);
             sum2 /= nx;
 
-            return Math.E - 20.0 * Math.Exp(sum1) - Math.Exp(sum2) + 20.0 - 700;
+            return -20.0 * Math.Exp(sum1) - Math.Exp(sum2) + 20.0 + Math.E - 700;
         }
 
         /// <summary>
