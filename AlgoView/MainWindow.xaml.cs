@@ -18,5 +18,11 @@ namespace AlgoView
         {
             new AlgoWindow().Show();
         }
+
+        private void MapaFuncoesClick(object sender, RoutedEventArgs e)
+        {
+            new MapaContorno().Show();
+        }
+        
     }
 }

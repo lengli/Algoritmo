@@ -48,18 +48,22 @@ namespace AlgoView
             double min0 = min(0), min1 = min(1), max0 = max(0), max1 = max(1);
             double rangeI = max0 - min0, rangeJ = max1 - min1;
             double interI = rangeI / precisao, interJ = rangeJ / precisao;
+            MaxYTB.Text = string.Format("{0:#,0.00}", max0);
+            MaxXTB.Text = string.Format("{0:#,0.00}", max1);
+            MinYTB.Text = string.Format("{0:#,0.00}", min0);
+            MinXTB.Text = string.Format("{0:#,0.00}", min1);
 
             // cálculo da aptidão nos pontos a serem mapeados
             double menorApt = double.MaxValue, maiorApt = double.MinValue;
             for (int i = 0; i < precisao; i++)
             {
-                tabelaResultado[i] = new List<double>();
+                tabelaResultado.Add(new List<double>());
                 double atrI = min0 + interI * i;
                 for (int j = 0; j < precisao; j++)
                 {
                     double atrJ = min1 + interJ * j;
                     double res = aptidao(new List<double> { atrI, atrJ });
-                    tabelaResultado[i][j] = res;
+                    tabelaResultado[i].Add(res);
                     if (res < menorApt) menorApt = res;
                     if (res > maiorApt) maiorApt = res;
                 }
@@ -74,13 +78,13 @@ namespace AlgoView
 
             for (int i = 0; i < precisao; i++)
             {
-                tabelaCores[i] = new List<Color>();
+                tabelaCores.Add(new List<Color>());
                 for (int j = 0; j < precisao; j++)
                 {
-                    byte blue = (byte)Math.Round(rangeRes / 255);
-                    byte red = 255;
-                    red -= blue;
-                    tabelaCores[i][j] = Color.FromRgb(red, 0, blue);
+                    byte red = (byte)Math.Round((255 * tabelaResultado[i][j]) / rangeRes);
+                    byte blue = 255;
+                    blue -= red;
+                    tabelaCores[i].Add(Color.FromRgb(red, 0, blue));
                 }
             }
             Desenhar(tabelaCores);
@@ -104,12 +108,13 @@ namespace AlgoView
                 for (int j = 0; j < iT; j++)
                 {
                     double y = minPx + j * stepY;
-                    CanvasGraph.Children.Add(new Ellipse
+                    CanvasGraph.Children.Add(new Rectangle
                     {
                         Margin = new Thickness(x, y, 0, 0),
-                        Width = 1,
-                        Height = 1,
-                        Stroke = new SolidColorBrush(tabelaCores[i][j])
+                        Width = 300 / nT,
+                        Height = 300 / nT,
+                        Stroke = new SolidColorBrush(tabelaCores[i][j]),
+                        Fill = new SolidColorBrush(tabelaCores[i][j])
                     });
                 }
             }
