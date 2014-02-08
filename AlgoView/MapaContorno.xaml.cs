@@ -80,14 +80,40 @@ namespace AlgoView
             {
                 tabelaCores.Add(new List<Color>());
                 for (int j = 0; j < precisao; j++)
-                {
-                    byte red = (byte)Math.Round((255 * tabelaResultado[i][j]) / rangeRes);
-                    byte blue = 255;
-                    blue -= red;
-                    tabelaCores[i].Add(Color.FromRgb(red, 0, blue));
-                }
+                    tabelaCores[i].Add(CalculoCor(tabelaResultado[i][j], rangeRes));
             }
             Desenhar(tabelaCores);
+        }
+
+        private int RangeCor = 255 * 4 + 100;
+        private Color CalculoCor(double apt, double range)
+        {
+            double cor = (RangeCor * apt) / range;
+            if (cor >= RangeCor - 255)
+            {
+                double nC = Math.Round(RangeCor - cor);
+                return Color.FromRgb(255, (byte)nC, 0);
+            }
+            else if (cor >= RangeCor - 2 * 255)
+            {
+                double nC = 255 - Math.Round(RangeCor - cor - 255);
+                return Color.FromRgb((byte)nC, 255, 0);
+            }
+            else if (cor >= RangeCor - 3 * 255)
+            {
+                double nC = Math.Round(RangeCor - cor - 2 * 255);
+                return Color.FromRgb(0, 255, (byte)nC);
+            }
+            else if (cor >= RangeCor - 4 * 255)
+            {
+                double nC = 255 - Math.Round(RangeCor - cor - 3 * 255);
+                return Color.FromRgb(0, (byte)nC, 255);
+            }
+            else
+            {
+                double nC = 155 + Math.Round(cor);
+                return Color.FromRgb(0, 0, (byte)nC);
+            }
         }
 
         private double minPx = 30;
