@@ -427,12 +427,6 @@ namespace Functions
         [FunctionAtt(1E-8, -100, 100, 1500, 400)]
         public static double F18_rotated_bi_rastrigin(List<double> x) { return bi_rastrigin(x, true) + 400; }
 
-        /********************************************************************************************************/
-
-        // Verificar essa função!!
-
-        /*********************************************************************************************************/
-
         private static double bi_rastrigin(List<double> x, bool r_flag) /* Lunacek Bi_rastrigin Function */
         {
             double mu0 = 2.5, d = 1.0, tmp, tmp1, tmp2;
@@ -441,26 +435,29 @@ namespace Functions
             double s = 1.0 - 1.0 / (2.0 * pow(nx + 20.0, 0.5) - 8.2);
             double mu1 = -pow((mu0 * mu0 - d) / s, 0.5);
 
-            x = x.shiftfunc();
+            List<double> y = x.shiftfunc();
 
             for (int i = 0; i < nx; i++)//shrink to the orginal search range
-                x[i] *= 10.0 / 100.0;
+                y[i] *= 10.0 / 100.0;
 
             for (int i = 0; i < nx; i++)
             {
-                tmpx.Add(2 * x[i]);
+                tmpx.Add(2 * y[i]);
                 if (Os[i] < 0) tmpx[i] *= -1;
             }
 
+            List<double> z = new List<double>();
             for (int i = 0; i < nx; i++)
             {
-                x[i] = tmpx[i];
+                z.Add(tmpx[i]);
                 tmpx[i] += mu0;
             }
 
-            if (r_flag) x = x.rotatefunc(0);
-            x = x.diagonalfunc(100);
-            if (r_flag) x = x.rotatefunc(1);
+            if (r_flag) y = z.rotatefunc(0);
+            else y = z;
+            y = y.diagonalfunc(100);
+            if (r_flag) z = y.rotatefunc(1);
+            else z = y;
 
             tmp1 = 0.0; tmp2 = 0.0;
 
@@ -478,7 +475,7 @@ namespace Functions
             double f;
 
             for (int i = 0; i < nx; i++)
-                tmp += cos(2.0 * PI * x[i]);
+                tmp += cos(2.0 * PI * z[i]);
 
             if (tmp1 < tmp2) f = tmp1;
             else f = tmp2;
@@ -562,19 +559,19 @@ namespace Functions
                 delta = new List<double> { 10, 20, 30, 40, 50 },
                 bias = new List<double> { 0, 100, 200, 300, 400 };
 
-            fit.Add(F06_rosenbrock(x));
+            fit.Add(F06_rosenbrock(x) + 900);
             fit[0] = 10000 * fit[0] / 1e+4;
 
-            fit.Add(F05_dif_powers(x));
+            fit.Add(F05_dif_powers(x) + 1000);
             fit[1] = 10000 * fit[1] / 1e+10;
 
-            fit.Add(F03_bent_cigar(x));
+            fit.Add(F03_bent_cigar(x) + 1200);
             fit[2] = 10000 * fit[2] / 1e+30;
 
-            fit.Add(F04_discus(x));
+            fit.Add(F04_discus(x) + 1100);
             fit[3] = 10000 * fit[3] / 1e+10;
 
-            fit.Add(F01_sphere(x));
+            fit.Add(F01_sphere(x) + 1400);
             fit[4] = 10000 * fit[4] / 1e+5;
 
             return cf_cal(x, delta, bias, fit) + 700;
@@ -591,7 +588,7 @@ namespace Functions
             List<double> bias = new List<double> { 0, 100, 200 };
 
             for (int i = 0; i < 3; i++)
-                fit.Add(schwefel(x, false));
+                fit.Add(schwefel(x, false) + 100);
 
             return cf_cal(x, delta, bias, fit) + 800;
         }
@@ -636,9 +633,9 @@ namespace Functions
             List<double> lambdas = new List<double> { 0.25, 1, 2.5 };
             List<double> bias = new List<double> { 0, 100, 200 };
 
-            fit.Add(F15_rotated_schwefel(x) * lambdas[0]);
-            fit.Add(F12_rotated_rastrigin(x) * lambdas[1]);
-            fit.Add(F09_weierstrass(x) * lambdas[2]);
+            fit.Add((F15_rotated_schwefel(x) - 100) * lambdas[0]);
+            fit.Add((F12_rotated_rastrigin(x) + 300) * lambdas[1]);
+            fit.Add((F09_weierstrass(x) + 600) * lambdas[2]);
 
             return cf_cal(x, delta, bias, fit);
         }
@@ -654,11 +651,11 @@ namespace Functions
             List<double> lambdas = new List<double> { 0.25, 1, 1E-7, 2.5, 10 };
             List<double> bias = new List<double> { 0, 100, 200, 300, 400 };
 
-            fit.Add(F15_rotated_schwefel(x) * lambdas[0]);
-            fit.Add(F12_rotated_rastrigin(x) * lambdas[1]);
-            fit.Add(F02_ellips(x) * lambdas[2]);
-            fit.Add(F09_weierstrass(x) * lambdas[3]);
-            fit.Add(F10_griewank(x) * lambdas[4]);
+            fit.Add((F15_rotated_schwefel(x) - 100) * lambdas[0]);
+            fit.Add((F12_rotated_rastrigin(x) + 300) * lambdas[1]);
+            fit.Add((F02_ellips(x) + 1300) * lambdas[2]);
+            fit.Add((F09_weierstrass(x) + 600) * lambdas[3]);
+            fit.Add((F10_griewank(x) + 500) * lambdas[4]);
 
             return cf_cal(x, delta, bias, fit) + 1200;
         }
@@ -674,11 +671,11 @@ namespace Functions
             List<double> lambdas = new List<double> { 100, 10, 2.5, 25, 0.1 };
             List<double> bias = new List<double> { 0, 100, 200, 300, 400 };
 
-            fit.Add(F10_griewank(x) * lambdas[0]);
-            fit.Add(F12_rotated_rastrigin(x) * lambdas[1]);
-            fit.Add(F15_rotated_schwefel(x) * lambdas[2]);
-            fit.Add(F09_weierstrass(x) * lambdas[3]);
-            fit.Add(F01_sphere(x) * lambdas[4]);
+            fit.Add((F10_griewank(x) + 500) * lambdas[0]);
+            fit.Add((F12_rotated_rastrigin(x) + 300) * lambdas[1]);
+            fit.Add((F15_rotated_schwefel(x) - 100) * lambdas[2]);
+            fit.Add((F09_weierstrass(x) + 600) * lambdas[3]);
+            fit.Add((F01_sphere(x) + 1400) * lambdas[4]);
 
             return cf_cal(x, delta, bias, fit) + 1300;
         }
@@ -694,11 +691,11 @@ namespace Functions
             List<double> lambdas = new List<double> { 2.5, 2.5E-3, 2.5, 5E-4, 0.1 };
             List<double> bias = new List<double> { 0, 100, 200, 300, 400 };
 
-            fit.Add(F19_grie_rosen(x) * lambdas[0]);
-            fit.Add(F07_schaffer_F7(x) * lambdas[1]);
-            fit.Add(F15_rotated_schwefel(x) * lambdas[2]);
-            fit.Add(F20_escaffer6(x) * lambdas[3]);
-            fit.Add(F01_sphere(x) * lambdas[4]);
+            fit.Add((F19_grie_rosen(x) - 500) * lambdas[0]);
+            fit.Add((F07_schaffer_F7(x) + 800) * lambdas[1]);
+            fit.Add((F15_rotated_schwefel(x) - 100) * lambdas[2]);
+            fit.Add((F20_escaffer6(x) - 600) * lambdas[3]);
+            fit.Add((F01_sphere(x) + 1400) * lambdas[4]);
 
             return cf_cal(x, delta, bias, fit) + 1400;
 
