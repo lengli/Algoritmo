@@ -52,6 +52,8 @@ namespace AlgoView
             MaxXTB.Text = string.Format("{0:#,0.00}", max1);
             MinYTB.Text = string.Format("{0:#,0.00}", min0);
             MinXTB.Text = string.Format("{0:#,0.00}", min1);
+            int iMenor = 0;
+            int jMenor = 0;
 
             // cálculo da aptidão nos pontos a serem mapeados
             double menorApt = double.MaxValue, maiorApt = double.MinValue;
@@ -64,7 +66,12 @@ namespace AlgoView
                     double atrJ = min1 + interJ * j;
                     double res = aptidao(new List<double> { atrI, atrJ });
                     tabelaResultado[i].Add(res);
-                    if (res < menorApt) menorApt = res;
+                    if (res < menorApt)
+                    {
+                        iMenor = i;
+                        jMenor = j;
+                        menorApt = res;
+                    }
                     if (res > maiorApt) maiorApt = res;
                 }
             }
@@ -82,7 +89,7 @@ namespace AlgoView
                 for (int j = 0; j < precisao; j++)
                     tabelaCores[i].Add(CalculoCor(tabelaResultado[i][j], rangeRes));
             }
-            Desenhar(tabelaCores);
+            Desenhar(tabelaCores, iMenor, jMenor);
         }
 
         private int RangeCor = 255 * 4 + 100;
@@ -118,12 +125,13 @@ namespace AlgoView
 
         private double minPx = 30;
         private double maxPx = 330;
-        private void Desenhar(List<List<Color>> tabelaCores)
+        private void Desenhar(List<List<Color>> tabelaCores, int iMenor, int jMenor)
         {
             CanvasGraph.Children.Clear();
             int nT = tabelaCores.Count;
             double delta = maxPx - minPx;
             double stepX = delta / nT;
+            double xMenor = 0, yMenor = 0;
 
             for (int i = 0; i < nT; i++)
             {
@@ -134,16 +142,30 @@ namespace AlgoView
                 for (int j = 0; j < iT; j++)
                 {
                     double y = minPx + j * stepY;
-                    CanvasGraph.Children.Add(new Rectangle
+                    if (i == iMenor && j == jMenor)
                     {
-                        Margin = new Thickness(x, y, 0, 0),
-                        Width = 300 / nT,
-                        Height = 300 / nT,
-                        Stroke = new SolidColorBrush(tabelaCores[i][j]),
-                        Fill = new SolidColorBrush(tabelaCores[i][j])
-                    });
+                        xMenor = x;
+                        yMenor = y;
+                    }
+                    else
+                        CanvasGraph.Children.Add(new Rectangle
+                        {
+                            Margin = new Thickness(x, y, 0, 0),
+                            Width = 300 / nT,
+                            Height = 300 / nT,
+                            Stroke = new SolidColorBrush(tabelaCores[i][j]),
+                            Fill = new SolidColorBrush(tabelaCores[i][j])
+                        });
                 }
             }
+            CanvasGraph.Children.Add(new Ellipse
+            {
+                Margin = new Thickness(xMenor - 5, yMenor - 5, 0, 0),
+                Width = 10,
+                Height = 10,
+                Stroke = new SolidColorBrush(Colors.Black),
+                Fill = new SolidColorBrush(Colors.White)
+            });
         }
     }
 }
