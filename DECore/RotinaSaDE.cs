@@ -11,9 +11,12 @@ namespace DECore
     public class RotinaSaDE : RotinaAlgo
     {
         private const string keyEstrategia = "Estrategia";
+        private const string keyF = "F";
+        private const string keyCR = "CR";
         private int _lp;
         private List<SelecaoDE> _selecoes;
         private int _nEstrategias;
+        private List<double> _crm = new List<double>();
 
         // para _lp gerações guarda o CR bem sucedidos de cada tipo de DE
         private List<List<double>> _crSucessos = new List<List<double>>();
@@ -30,10 +33,13 @@ namespace DECore
             _lp = learningPeriod;
             _selecoes = selecoes;
             _nEstrategias = selecoes.Count;
+            for (int k = 0; k < _nEstrategias; k++) _crm.Add(0.5);
         }
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
+            Random ran = new Random(DateTime.Now.Millisecond);
+
             #region 3.1
             List<double> pk = new List<double>();
             if (g > _lp)
@@ -69,7 +75,6 @@ namespace DECore
             }
 
             // seleçao da estratégia para o indivíduo
-            Random ran = new Random(DateTime.Now.Millisecond);
             foreach (IndividuoBin individuo in populacao)
             {
                 double random = ran.NextDouble();
@@ -82,10 +87,30 @@ namespace DECore
                 }
                 if (!individuo.ParamExtras.ContainsKey(keyEstrategia)) individuo.ParamExtras.Add(keyEstrategia, _selecoes[indiceEstrategia]);
                 else individuo.ParamExtras[keyEstrategia] = _selecoes[indiceEstrategia];
+
+                // F
+                double fNormal = ran.RandomNormal(0.5, 0.3);
+                if (!individuo.ParamExtras.ContainsKey(keyF)) individuo.ParamExtras.Add(keyF, fNormal);
+                else individuo.ParamExtras[keyF] = fNormal;
+
+                // CR
+                if (g >= _lp)
+                {
+                }
+                List<double> crs = new List<double>();
+                for (int k = 0; k < _nEstrategias; k++)
+                {
+                    double cr = -1;
+                    while (cr < 0 || cr > 1)
+                        cr = ran.RandomNormal(_crm[k], 0.1);
+                    crs.Add(cr);
+                }
+                if (!individuo.ParamExtras.ContainsKey(keyCR)) individuo.ParamExtras.Add(keyCR, crs);
+                else individuo.ParamExtras[keyCR] = crs;
+
             }
 
-            // random in normal distribution
-            // http://www.codeproject.com/Articles/25172/Simple-Random-Number-Generation
+
             #endregion
         }
 
