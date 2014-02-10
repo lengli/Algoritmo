@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AlgoResult;
 
 namespace AlgoCore
@@ -30,5 +29,21 @@ namespace AlgoCore
                          Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
             return mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
         }
+
+        public static double Median(this List<double> vector)
+        {
+            int count = vector.Count;
+            if (count == 0) return 0.5;
+
+            List<double> ordered = vector.OrderBy(x => x).ToList();
+            if (count % 2 == 0)
+            {
+                int lIndex = count / 2;
+                return (ordered[lIndex - 1] + ordered[lIndex]) / 2;
+            }
+            int index = (count - 1) / 2;
+            return ordered[index];
+        }
+
     }
 }
