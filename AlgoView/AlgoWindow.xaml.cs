@@ -107,14 +107,15 @@ namespace AlgoView
 
             for (int i = 0; i < nVezes; i++)
             {
-                RotinaAlgo algo = null;
-                if (AlgoCombo.Text == "PSO")
-                    algo = RotinaPSO(funcao, restricao);
-                if (AlgoCombo.Text == "AG")
-                    algo = RotinaAG(funcao, restricao);
-                if (AlgoCombo.Text == "DE")
-                    algo = RotinaDE(funcao, restricao);
-                if (algo == null) return;
+                RotinaAlgo algo;
+                switch (AlgoCombo.Text)
+                {
+                    case "PSO": algo = RotinaPSO(funcao, restricao); break;
+                    case "AG": algo = RotinaAG(funcao, restricao); break;
+                    case "DE": algo = RotinaDE(funcao, restricao); break;
+                    case "SaDE": algo = RotinaSaDE(funcao, restricao); break;
+                    default: return;
+                }
 
                 algo.MinGlogal = _minGlobal;
                 algo.ErroAceitavel = _erroAceitavel;
@@ -170,6 +171,7 @@ namespace AlgoView
             AGPanel.Visibility = Visibility.Collapsed;
             DEPanel.Visibility = Visibility.Collapsed;
             PsoPanel.Visibility = Visibility.Collapsed;
+            SaDEPanel.Visibility = Visibility.Collapsed;
 
             switch (item.Content.ToString())
             {
@@ -179,8 +181,8 @@ namespace AlgoView
                 case "DE":
                     DEPanel.Visibility = Visibility.Visible;
                     break;
-                case "PSO":
-                    PsoPanel.Visibility = Visibility.Visible;
+                case "SaDE":
+                    SaDEPanel.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -273,6 +275,24 @@ namespace AlgoView
             object tipoDE = TipoSelecao.SelectedValue;
             if (tipoDE == null || !Enum.TryParse(tipoDE.ToString(), out selecao)) return null;
             return new RotinaDE(funcao, restricao, _gs, _hs, _validar, selecao, probCrossDE, fatorF, _validarFronteira);
+        }
+
+        private RotinaAlgo RotinaSaDE(FuncAptidao funcao, FuncRepopRestricao restricao)
+        {
+            int lp;
+            if (!int.TryParse(LP.Text, out lp)) return null;
+
+            List<SelecaoDE> selecoes = new List<SelecaoDE>();
+            if (Rand1Check.IsChecked.HasValue && Rand1Check.IsChecked.Value) selecoes.Add(SelecaoDE.Rand1Bin);
+            if (Best1Check.IsChecked.HasValue && Best1Check.IsChecked.Value) selecoes.Add(SelecaoDE.Best1Bin);
+            if (Rand2Check.IsChecked.HasValue && Rand2Check.IsChecked.Value) selecoes.Add(SelecaoDE.Rand2Bin);
+            if (RandBest1Check.IsChecked.HasValue && RandBest1Check.IsChecked.Value) selecoes.Add(SelecaoDE.RandToBest1Bin);
+            if (RandBest2Check.IsChecked.HasValue && RandBest2Check.IsChecked.Value) selecoes.Add(SelecaoDE.RandToBest2Bin);
+            if (CurrentRand1Check.IsChecked.HasValue && CurrentRand1Check.IsChecked.Value) selecoes.Add(SelecaoDE.CurrentToRand1Bin);
+
+            if (selecoes.Count == 0) return null;
+
+            return new RotinaSaDE(funcao, restricao, _gs, _hs, _validar, selecoes, lp, _validarFronteira);
         }
 
         #endregion

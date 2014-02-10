@@ -3,12 +3,27 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dvc="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:algo="clr-namespace:AlgoView"
-        xmlns:dv="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         Title="Algoritmos" Height="720" Width="980">
     <ScrollViewer>
         <StackPanel>
             <Border BorderBrush="Gray" BorderThickness="0,0,0,1">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <StackPanel x:Name="SaDEPanel" Visibility="Collapsed">
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBlock Text="Período de Aprendizado" Margin="10,3" Width="135" />
+                            <TextBlock Text="Estratégias (Bin)" Margin="0,3" />
+                        </StackPanel>
+                        <StackPanel Margin="10,5,0,10" Orientation="Horizontal">
+                            <TextBox x:Name="LP" Margin="10,3" Width="40" Text="60"/>
+                            <TextBlock Text="Gerações" Margin="5 5 0 0" Width="80"/>
+                            <CheckBox x:Name="Rand1Check" Content="Rand/1" Margin="10 5 5 0" IsChecked="True"/>
+                            <CheckBox x:Name="Best1Check" Content="Best/1" Margin="3 5 5 0"/>
+                            <CheckBox x:Name="Rand2Check" Content="Rand/2" Margin="3 5 5 0" IsChecked="True"/>
+                            <CheckBox x:Name="RandBest1Check" Content="Rand-Best/1" Margin="3 5 5 0"/>
+                            <CheckBox x:Name="RandBest2Check" Content="Rand-Best/2" Margin="3 5 5 0" IsChecked="True"/>
+                            <CheckBox x:Name="CurrentRand1Check" Content="Current-Rnd/1" Margin="3 5 5 0" IsChecked="True"/>
+                        </StackPanel>
+                    </StackPanel>
                     <StackPanel x:Name="DEPanel" Visibility="Collapsed">
                         <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
                             <TextBlock Text="Prob Cross" Margin="10,3" Width="65" />
@@ -71,6 +86,7 @@
                         <StackPanel Margin="10,5,10,0" Orientation="Horizontal" HorizontalAlignment="Left">
                             <ComboBox x:Name="AlgoCombo" Margin="10,3" SelectedIndex="1" Width="60" SelectionChanged="AlgoComboSelectionChanged">
                                 <ComboBoxItem Content="AG"/>
+                                <ComboBoxItem Content="SaDE"/>
                                 <ComboBoxItem Content="DE"/>
                                 <ComboBoxItem Content="PSO"/>
                             </ComboBox>
