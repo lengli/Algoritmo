@@ -4,7 +4,7 @@
         Title="MainWindow" Height="300" Width="300">
     <StackPanel Width="150">
         <Button Content="Rodar Algoritmo" Margin="0,0,0,10" Click="PSOClick"/>
-        <Button Content="Maoa das Funções" Margin="0,0,0,10" Click="MapaFuncoesClick"/>
+        <Button Content="Mapa das Funções (2D)" Margin="0,0,0,10" Click="MapaFuncoesClick"/>
         <Button Content="Funções" Margin="0,0,0,10" Click="FuncoesClick"/>
     </StackPanel>
 </Window>
