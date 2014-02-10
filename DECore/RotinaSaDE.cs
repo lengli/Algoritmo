@@ -83,6 +83,9 @@ namespace DECore
                 if (!individuo.ParamExtras.ContainsKey(keyEstrategia)) individuo.ParamExtras.Add(keyEstrategia, _selecoes[indiceEstrategia]);
                 else individuo.ParamExtras[keyEstrategia] = _selecoes[indiceEstrategia];
             }
+
+            // random in normal distribution
+            // http://www.codeproject.com/Articles/25172/Simple-Random-Number-Generation
             #endregion
         }
 
