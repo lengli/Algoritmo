@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AlgoCore;
 using Functions;
 using AlgoResult;
@@ -47,7 +46,7 @@ namespace DECore
                 List<double> somaTodas = new List<double>();
                 for (int i = 0; i < _nEstrategias; i++)
                 {
-                    double eps = 0.01;
+                    const double eps = 0.01;
 
                     double somaSucesso = _estrSucessos.Sum(x => x[i]);
                     double somaFracasso = _estrFracassos.Sum(x => x[i]);
@@ -60,11 +59,10 @@ namespace DECore
             }
             else
                 for (int i = 0; i < _nEstrategias; i++)
-                    pk.Add(1 / _nEstrategias);
+                    pk.Add(1 / (double)_nEstrategias);
             #endregion
 
             #region 3.2
-
             // probabilidade acumulada
             List<double> probPk = new List<double>();
             double somaPk = 0;
@@ -96,6 +94,8 @@ namespace DECore
                 // CR
                 if (g >= _lp)
                 {
+                    for (int k = 0; k < _nEstrategias; k++)
+                        _crm[k] = _crSucessos.Select(x => x[k]).ToList().Median();
                 }
                 List<double> crs = new List<double>();
                 for (int k = 0; k < _nEstrategias; k++)
@@ -110,12 +110,23 @@ namespace DECore
 
             }
 
+            #endregion
+
+            #region 3.3 / 3.5
+
+            for (int i = 0; i < populacao.Count; i++)
+            {
+                IndividuoBin ind = populacao[i];
+                DEUtil.ExecutarMutacao(i, populacao, (SelecaoDE)ind.ParamExtras[keyEstrategia],
+                   (double)ind.ParamExtras[keyF], _nAtributos, (double)ind.ParamExtras[keyCR], _min, _max,
+                   _validarFronteira, FuncaoAptidao);
+            }
 
             #endregion
         }
 
-        protected override bool CriterioDeParada(AlgoResult.AlgoInfo agInfo) { return false; }
+        protected override bool CriterioDeParada(AlgoInfo agInfo) { return false; }
 
-        protected override void InicializarAlgoritmo(List<AlgoResult.IndividuoBin> populacao) { }
+        protected override void InicializarAlgoritmo(List<IndividuoBin> populacao) { }
     }
 }
