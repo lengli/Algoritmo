@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AlgoResult;
 using Functions;
-using System.Linq;
 using AlgoCore;
 
 namespace DECore

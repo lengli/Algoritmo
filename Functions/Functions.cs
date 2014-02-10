@@ -453,11 +453,9 @@ namespace Functions
                 tmpx[i] += mu0;
             }
 
-            if (r_flag) y = z.rotatefunc(0);
-            else y = z;
+            y = r_flag ? z.rotatefunc(0) : z;
             y = y.diagonalfunc(100);
-            if (r_flag) z = y.rotatefunc(1);
-            else z = y;
+            z = r_flag ? y.rotatefunc(1) : y;
 
             tmp1 = 0.0; tmp2 = 0.0;
 
