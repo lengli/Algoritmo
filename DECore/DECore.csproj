@@ -40,9 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DEUtil.cs" />
+    <Compile Include="SeleceaoDE.cs" />
     <Compile Include="OperadoresDE.cs" />
     <Compile Include="RotinaDE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RotinaSaDE.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlgoCore\AlgoCore.csproj">

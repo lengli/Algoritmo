@@ -18,6 +18,9 @@ namespace AlgoCore
 
         #endregion
 
+        // geração atual
+        protected int g;
+
         protected int _avaliacoes;
         protected int _maxAval;
         protected int _geracoesMAx;
@@ -55,6 +58,7 @@ namespace AlgoCore
             _hs = hs;
             _validarRestricao = validarRestricao;
             _validarFronteira = validarFronteira;
+            g = 0;
         }
 
         protected double FuncaoAptidaoVirtual(List<double> atributos)
@@ -145,7 +149,7 @@ namespace AlgoCore
 
             InicializarAlgoritmo(populacao);
 
-            for (int g = 0; g < geracoesMAx || geracoesMAx == 0; g++)
+            for (g = 0; g < geracoesMAx || geracoesMAx == 0; g++)
             {
                 // epidemia - mata 95% da população
                 //if (rand.NextDouble() <= 0.1)
