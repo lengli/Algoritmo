@@ -15,14 +15,14 @@ namespace DECore
         private int _lp;
         private List<SelecaoDE> _selecoes;
         private int _nEstrategias;
-        private List<double> _crm = new List<double>();
+        private Dictionary<SelecaoDE, double> _crm = new Dictionary<SelecaoDE, double>();
 
         // para _lp gerações guarda o CR bem sucedidos de cada tipo de DE
-        private List<List<double>> _crSucessos = new List<List<double>>();
+        private Dictionary<SelecaoDE, List<double>> _crSucessos = new Dictionary<SelecaoDE, List<double>>();
         // para _lp gerações guarda o número de sucessos de cada tipo de DE
-        private List<List<double>> _estrSucessos = new List<List<double>>();
+        private Dictionary<SelecaoDE, List<int>> _estrSucessos = new Dictionary<SelecaoDE, List<int>>();
         // para _lp gerações guarda o número de fracassos de cada tipo de DE
-        private List<List<double>> _estrFracassos = new List<List<double>>();
+        private Dictionary<SelecaoDE, List<int>> _estrFracassos = new Dictionary<SelecaoDE, List<int>>();
 
         public RotinaSaDE(FuncAptidao aptidao, FuncRepopRestricao FuncRestr,
             ListAptidao gs, ListAptidao hs, FuncValidarRestricao validar,
@@ -32,7 +32,7 @@ namespace DECore
             _lp = learningPeriod;
             _selecoes = selecoes;
             _nEstrategias = selecoes.Count;
-            for (int k = 0; k < _nEstrategias; k++) _crm.Add(0.5);
+            for (int k = 0; k < _nEstrategias; k++) _crm.Add(selecoes[k], 0.5);
         }
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
@@ -44,12 +44,12 @@ namespace DECore
             if (g > _lp)
             {
                 List<double> somaTodas = new List<double>();
-                for (int i = 0; i < _nEstrategias; i++)
+                for (int k = 0; k < _nEstrategias; k++)
                 {
                     const double eps = 0.01;
 
-                    double somaSucesso = _estrSucessos.Sum(x => x[i]);
-                    double somaFracasso = _estrFracassos.Sum(x => x[i]);
+                    double somaSucesso = _estrSucessos[_selecoes[k]].Sum();
+                    double somaFracasso = _estrFracassos[_selecoes[k]].Sum();
 
                     somaTodas.Add(somaSucesso / (somaSucesso + somaFracasso) + eps);
                 }
@@ -95,14 +95,14 @@ namespace DECore
                 if (g >= _lp)
                 {
                     for (int k = 0; k < _nEstrategias; k++)
-                        _crm[k] = _crSucessos.Select(x => x[k]).ToList().Median();
+                        _crm[_selecoes[k]] = _crSucessos[_selecoes[k]].Median();
                 }
                 List<double> crs = new List<double>();
                 for (int k = 0; k < _nEstrategias; k++)
                 {
                     double cr = -1;
                     while (cr < 0 || cr > 1)
-                        cr = ran.RandomNormal(_crm[k], 0.1);
+                        cr = ran.RandomNormal(_crm[_selecoes[k]], 0.1);
                     crs.Add(cr);
                 }
                 if (!individuo.ParamExtras.ContainsKey(keyCR)) individuo.ParamExtras.Add(keyCR, crs);
@@ -119,10 +119,29 @@ namespace DECore
                 IndividuoBin ind = populacao[i];
                 DEUtil.ExecutarMutacao(i, populacao, (SelecaoDE)ind.ParamExtras[keyEstrategia],
                    (double)ind.ParamExtras[keyF], _nAtributos, (double)ind.ParamExtras[keyCR], _min, _max,
-                   _validarFronteira, FuncaoAptidao);
+                   _validarFronteira, FuncaoAptidao, NoSucesso);
             }
 
             #endregion
+        }
+
+        private void NoSucesso(bool sucesso, double cr, SelecaoDE estrategia)
+        {
+            if (!sucesso)
+            {
+                List<int> frs = _estrFracassos[estrategia];
+                if (frs.Count < _lp) frs.Add(1);
+                else frs[frs.Count - 1]++;
+                return;
+            }
+            
+            List<int> scs = _estrSucessos[estrategia];
+            if (scs.Count < _lp) scs.Add(1);
+            else scs[scs.Count - 1]++;
+
+            List<double> crs = _crSucessos[estrategia];
+            if (crs.Count < _lp) crs.Add(cr);
+            else crs[crs.Count - 1] = cr;
         }
 
         protected override bool CriterioDeParada(AlgoInfo agInfo) { return false; }

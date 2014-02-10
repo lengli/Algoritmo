@@ -23,7 +23,8 @@ namespace DECore
         }
 
         internal static void ExecutarMutacao(int atualInd, List<IndividuoBin> populacao, SelecaoDE _tipoSelecao, double _fatorF,
-            int _nAtributos, double _probCross, Bound _min, Bound _max, FuncValidarFronteira valFront, FuncAptidao aptidao)
+            int _nAtributos, double _probCross, Bound _min, Bound _max, FuncValidarFronteira valFront, FuncAptidao aptidao,
+            Action<bool, double, SelecaoDE> noSucesso = null)
         {
             Random rand = new Random(DateTime.Now.Millisecond);
             List<IndividuoBin> selecao;
@@ -74,8 +75,10 @@ namespace DECore
             }
 
             individuoTemp.Aptidao = aptidao(individuoTemp.Atributos);
-            if (individuoTemp.Aptidao < populacao[atualInd].Aptidao)
+            bool sucesso = individuoTemp.Aptidao < populacao[atualInd].Aptidao;
+            if (sucesso)
                 populacao[atualInd] = individuoTemp;
+            if (noSucesso != null) noSucesso(sucesso, _probCross, _tipoSelecao);
         }
     }
 }
