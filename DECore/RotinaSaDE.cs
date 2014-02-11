@@ -46,7 +46,6 @@ namespace DECore
         {
             Random ran = new Random(DateTime.Now.Millisecond);
 
-            #region 3.1
             List<double> pk = new List<double>();
             if (g > _lp)
             {
@@ -69,9 +68,7 @@ namespace DECore
             else
                 for (int i = 0; i < _nEstrategias; i++)
                     pk.Add(1 / (double)_nEstrategias);
-            #endregion
 
-            #region 3.2
             // probabilidade acumulada
             List<double> probPk = new List<double>();
             double somaPk = 0;
@@ -81,8 +78,24 @@ namespace DECore
                 probPk.Add(somaPk);
             }
 
-            foreach (IndividuoBin individuo in populacao)
+            foreach (SelecaoDE estrategia in _selecoes)
             {
+                if (g >= _lp)
+                {
+                    // tamanho fixo
+                    _estrFracassos[estrategia].RemoveAt(_lp - 1);
+                    _estrSucessos[estrategia].RemoveAt(_lp - 1);
+                    _crSucessos[estrategia].RemoveAt(_lp - 1);
+                }
+
+                _estrFracassos[estrategia].Add(0);
+                _estrSucessos[estrategia].Add(0);
+                _crSucessos[estrategia].Add(new List<double>());
+            }
+
+            for (int i = 0; i < populacao.Count; i++)
+            {
+                IndividuoBin individuo = populacao[i];
                 // seleçao da estratégia para o indivíduo
                 double random = ran.NextDouble();
                 int indiceEstrategia = 0;
@@ -92,13 +105,9 @@ namespace DECore
                     indiceEstrategia = j;
                     break;
                 }
-                if (!individuo.ParamExtras.ContainsKey(keyEstrategia)) individuo.ParamExtras.Add(keyEstrategia, _selecoes[indiceEstrategia]);
-                else individuo.ParamExtras[keyEstrategia] = _selecoes[indiceEstrategia];
 
                 // F
                 double fNormal = ran.RandomNormal(0.5, 0.3);
-                if (!individuo.ParamExtras.ContainsKey(keyF)) individuo.ParamExtras.Add(keyF, fNormal);
-                else individuo.ParamExtras[keyF] = fNormal;
 
                 // CR
                 if (g >= _lp)
@@ -118,39 +127,9 @@ namespace DECore
                 while (cr < 0 || cr > 1)
                     cr = ran.RandomNormal(_crm[_selecoes[indiceEstrategia]], 0.1);
 
-                if (!individuo.ParamExtras.ContainsKey(keyCR)) individuo.ParamExtras.Add(keyCR, cr);
-                else individuo.ParamExtras[keyCR] = cr;
-
+                DEUtil.ExecutarMutacao(i, populacao, _selecoes[indiceEstrategia],
+                   fNormal, _nAtributos, cr, _min, _max, _validarFronteira, FuncaoAptidao, NoSucesso);
             }
-
-            #endregion
-
-            #region 3.3 / 3.5
-
-            foreach (SelecaoDE estrategia in _selecoes)
-            {
-                if (g >= _lp)
-                {
-                    // tamanho fixo
-                    _estrFracassos[estrategia].RemoveAt(_lp-1);
-                    _estrSucessos[estrategia].RemoveAt(_lp - 1);
-                    _crSucessos[estrategia].RemoveAt(_lp - 1);
-                }
-
-                _estrFracassos[estrategia].Add(0);
-                _estrSucessos[estrategia].Add(0);
-                _crSucessos[estrategia].Add(new List<double>());
-            }
-
-            for (int i = 0; i < populacao.Count; i++)
-            {
-                IndividuoBin ind = populacao[i];
-                DEUtil.ExecutarMutacao(i, populacao, (SelecaoDE)ind.ParamExtras[keyEstrategia],
-                   (double)ind.ParamExtras[keyF], _nAtributos, (double)ind.ParamExtras[keyCR], _min, _max,
-                   _validarFronteira, FuncaoAptidao, NoSucesso);
-            }
-
-            #endregion
         }
 
         private void NoSucesso(bool sucesso, double cr, SelecaoDE estrategia)
