@@ -18,7 +18,7 @@ namespace DECore
         private Dictionary<SelecaoDE, double> _crm = new Dictionary<SelecaoDE, double>();
 
         // para _lp gerações guarda o CR bem sucedidos de cada tipo de DE
-        private Dictionary<SelecaoDE, List<double>> _crSucessos = new Dictionary<SelecaoDE, List<double>>();
+        private Dictionary<SelecaoDE, List<List<double>>> _crSucessos = new Dictionary<SelecaoDE, List<List<double>>>();
         // para _lp gerações guarda o número de sucessos de cada tipo de DE
         private Dictionary<SelecaoDE, List<int>> _estrSucessos = new Dictionary<SelecaoDE, List<int>>();
         // para _lp gerações guarda o número de fracassos de cada tipo de DE
@@ -32,7 +32,14 @@ namespace DECore
             _lp = learningPeriod;
             _selecoes = selecoes;
             _nEstrategias = selecoes.Count;
-            for (int k = 0; k < _nEstrategias; k++) _crm.Add(selecoes[k], 0.5);
+
+            foreach (SelecaoDE estrategia in _selecoes)
+            {
+                _estrFracassos.Add(estrategia, new List<int>());
+                _estrSucessos.Add(estrategia, new List<int>());
+                _crSucessos.Add(estrategia, new List<List<double>>());
+                _crm.Add(estrategia, 0.5);
+            }
         }
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
@@ -43,6 +50,7 @@ namespace DECore
             List<double> pk = new List<double>();
             if (g > _lp)
             {
+                // eq. 14
                 List<double> somaTodas = new List<double>();
                 for (int k = 0; k < _nEstrategias; k++)
                 {
@@ -56,6 +64,7 @@ namespace DECore
                 double somatorio = somaTodas.Sum();
                 for (int i = 0; i < _nEstrategias; i++)
                     pk.Add(somaTodas[i] / somatorio);
+
             }
             else
                 for (int i = 0; i < _nEstrategias; i++)
@@ -72,9 +81,9 @@ namespace DECore
                 probPk.Add(somaPk);
             }
 
-            // seleçao da estratégia para o indivíduo
             foreach (IndividuoBin individuo in populacao)
             {
+                // seleçao da estratégia para o indivíduo
                 double random = ran.NextDouble();
                 int indiceEstrategia = 0;
                 for (int j = 0; j < probPk.Count; j++)
@@ -95,24 +104,43 @@ namespace DECore
                 if (g >= _lp)
                 {
                     for (int k = 0; k < _nEstrategias; k++)
-                        _crm[_selecoes[k]] = _crSucessos[_selecoes[k]].Median();
+                    {
+                        List<double> crsTemp = new List<double>();
+
+                        foreach (List<double> listCR in _crSucessos[_selecoes[k]])
+                            crsTemp.InsertRange(0, listCR);
+
+                        _crm[_selecoes[k]] = crsTemp.Median();
+                    }
                 }
-                List<double> crs = new List<double>();
-                for (int k = 0; k < _nEstrategias; k++)
-                {
-                    double cr = -1;
-                    while (cr < 0 || cr > 1)
-                        cr = ran.RandomNormal(_crm[_selecoes[k]], 0.1);
-                    crs.Add(cr);
-                }
-                if (!individuo.ParamExtras.ContainsKey(keyCR)) individuo.ParamExtras.Add(keyCR, crs);
-                else individuo.ParamExtras[keyCR] = crs;
+
+                double cr = -1;
+                while (cr < 0 || cr > 1)
+                    cr = ran.RandomNormal(_crm[_selecoes[indiceEstrategia]], 0.1);
+
+                if (!individuo.ParamExtras.ContainsKey(keyCR)) individuo.ParamExtras.Add(keyCR, cr);
+                else individuo.ParamExtras[keyCR] = cr;
 
             }
 
             #endregion
 
             #region 3.3 / 3.5
+
+            foreach (SelecaoDE estrategia in _selecoes)
+            {
+                if (g >= _lp)
+                {
+                    // tamanho fixo
+                    _estrFracassos[estrategia].RemoveAt(_lp-1);
+                    _estrSucessos[estrategia].RemoveAt(_lp - 1);
+                    _crSucessos[estrategia].RemoveAt(_lp - 1);
+                }
+
+                _estrFracassos[estrategia].Add(0);
+                _estrSucessos[estrategia].Add(0);
+                _crSucessos[estrategia].Add(new List<double>());
+            }
 
             for (int i = 0; i < populacao.Count; i++)
             {
@@ -130,18 +158,15 @@ namespace DECore
             if (!sucesso)
             {
                 List<int> frs = _estrFracassos[estrategia];
-                if (frs.Count < _lp) frs.Add(1);
-                else frs[frs.Count - 1]++;
+                frs[0]++;
                 return;
             }
-            
-            List<int> scs = _estrSucessos[estrategia];
-            if (scs.Count < _lp) scs.Add(1);
-            else scs[scs.Count - 1]++;
 
-            List<double> crs = _crSucessos[estrategia];
-            if (crs.Count < _lp) crs.Add(cr);
-            else crs[crs.Count - 1] = cr;
+            List<int> scs = _estrSucessos[estrategia];
+            scs[0]++;
+
+            List<List<double>> crs = _crSucessos[estrategia];
+            crs[0].Add(cr);
         }
 
         protected override bool CriterioDeParada(AlgoInfo agInfo) { return false; }
