@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DEUtil.cs" />
+    <Compile Include="RotinaJADE.cs" />
     <Compile Include="SeleceaoDE.cs" />
     <Compile Include="OperadoresDE.cs" />
     <Compile Include="RotinaDE.cs" />
