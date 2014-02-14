@@ -7,6 +7,7 @@
         Best1Bin,
         RandToBest1Bin,
         RandToBest2Bin,
-        CurrentToRand1Bin
+        CurrentToRand1Bin,
+        CurrentToPBest1BinArchive
     }
 }

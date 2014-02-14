@@ -16,14 +16,15 @@ namespace DECore
             {
                 int sinal = i % 2 == 1 ? 1 : -1;
                 int j = (i - 1 - ((i - 1) % 2)) / 2;
-                atributo += (selecao[i].Atributos[atr] * fs[j]) * sinal;
+                double f = fs.Count <= j ? fs.Last() : fs[j];
+                atributo += (selecao[i].Atributos[atr] * f) * sinal;
             }
             return atributo;
         }
 
         internal static void ExecutarMutacao(int atualInd, List<IndividuoBin> populacao, SelecaoDE _tipoSelecao, double _fatorF,
             int _nAtributos, double _probCross, Bound _min, Bound _max, FuncValidarFronteira valFront, FuncAptidao aptidao,
-            Action<bool, double, SelecaoDE> noSucesso = null)
+            Action<bool, double, SelecaoDE> noSucesso = null, Dictionary<string, object> extraParams = null)
         {
             Random rand = new Random(DateTime.Now.Millisecond);
             List<IndividuoBin> selecao;
@@ -38,26 +39,43 @@ namespace DECore
                 case SelecaoDE.Best1Bin: selecao = OperadoresDE.SelecaoBest(populacao);
                     fs = new List<double> { _fatorF }; break;
                 case SelecaoDE.Rand2Bin: selecao = OperadoresDE.SelecaoAleatoria(5, populacao);
-                    fs = new List<double> { _fatorF, _fatorF }; break;
+                    fs = new List<double> { _fatorF }; break;
                 case SelecaoDE.RandToBest1Bin:
                     selecao = OperadoresDE.SelecaoAleatoria(2, populacao);
                     selecao.Insert(0, populacao[atualInd]);
                     selecao.Insert(0, populacao.First());
                     selecao.Insert(0, populacao[atualInd]);
-                    fs = new List<double> { _fatorF, _fatorF };
+                    fs = new List<double> { _fatorF };
                     break;
                 case SelecaoDE.RandToBest2Bin:
                     selecao = OperadoresDE.SelecaoAleatoria(4, populacao);
                     selecao.Insert(0, populacao[atualInd]);
                     selecao.Insert(0, populacao.First());
                     selecao.Insert(0, populacao[atualInd]);
-                    fs = new List<double> { _fatorF, _fatorF, _fatorF };
+                    fs = new List<double> { _fatorF };
                     break;
                 case SelecaoDE.CurrentToRand1Bin:
                     selecao = OperadoresDE.SelecaoAleatoria(3, populacao);
                     selecao.Insert(0, populacao[atualInd]);
                     selecao.Insert(2, populacao[atualInd]);
                     fs = new List<double> { rand.NextDouble(), _fatorF };
+                    break;
+                case SelecaoDE.CurrentToPBest1BinArchive:
+                    if (extraParams == null || !extraParams.ContainsKey("pBest") || !extraParams.ContainsKey("archive"))
+                        throw new Exception("Extraparam precisa ser definido corretamente para pBest");
+
+                    selecao = OperadoresDE.SelecaoAleatoria(1, populacao);
+                    selecao.Insert(0, populacao[atualInd]);
+
+                    double pBest = (double)extraParams["pBest"];
+                    if (pBest > 1) pBest = 1;
+                    int nIndex = (int)Math.Round(pBest * (populacao.Count - 1) * rand.NextDouble());
+                    selecao.Insert(1, populacao[nIndex]);
+                    selecao.Insert(2, populacao[atualInd]);
+                    List<IndividuoBin> arquivo = (List<IndividuoBin>)extraParams["archive"];
+                    int arIndex = (int)Math.Round((populacao.Count - 1 + arquivo.Count - 1) * rand.NextDouble());
+                    selecao.Add(arIndex < populacao.Count - 1 ? populacao[arIndex] : arquivo[arIndex - populacao.Count - 1]);
+                    fs = new List<double> { _fatorF };
                     break;
                 default: return;
             }
