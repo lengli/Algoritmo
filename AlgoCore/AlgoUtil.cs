@@ -30,6 +30,16 @@ namespace AlgoCore
             return mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
         }
 
+        //http://en.wikipedia.org/wiki/Cauchy_distribution
+        /// <summary>
+        /// Selecionar um numero randomicamente, em uma distribuição de Cauchy
+        /// </summary>
+        public static double RandomCauchy(this Random rand, double mean, double stdDev)
+        {
+            double p = rand.NextDouble();
+            return mean + stdDev * (Math.Tan(Math.PI * (p - .5)));
+        }
+
         public static double Median(this List<double> vector)
         {
             int count = vector.Count;
@@ -43,6 +53,16 @@ namespace AlgoCore
             }
             int index = (count - 1) / 2;
             return ordered[index];
+        }
+
+        public static double Mean(this List<double> numbers)
+        {
+            return numbers.Sum() / numbers.Count;
+        }
+
+        public static double LehmerMean(this List<double> numbers)
+        {
+            return numbers.Sum(x => x * x) / numbers.Sum();
         }
 
     }

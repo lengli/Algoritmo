@@ -51,6 +51,10 @@
       <Project>{F8721596-EA7C-4461-932E-24B62096D842}</Project>
       <Name>AGCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AlgoCore\AlgoCore.csproj">
+      <Project>{9CCD02DB-7EF7-4482-B00B-A68F34548228}</Project>
+      <Name>AlgoCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Functions\Functions.csproj">
       <Project>{C59A0912-6A0A-4FAF-AABC-C3C7A3471643}</Project>
       <Name>Functions</Name>

@@ -7,11 +7,14 @@ namespace DECore
 {
     public class OperadoresDE
     {
-        public static List<IndividuoBin> SelecaoAleatoria(int nIndividuos, List<IndividuoBin> populacao)
+        public static List<IndividuoBin> SelecaoAleatoria(int nIndividuos, List<IndividuoBin> populacao, HashSet<int> filtroIndividuos)
         {
             if (nIndividuos >= populacao.Count) return populacao;
 
-            HashSet<int> indiceSelecionados = new HashSet<int>();
+            HashSet<int> indiceSelecionados;
+            if (filtroIndividuos != null) indiceSelecionados = filtroIndividuos;
+            else indiceSelecionados = new HashSet<int>();
+
             List<IndividuoBin> indSelecionados = new List<IndividuoBin>(nIndividuos);
             Random rand = new Random(DateTime.Now.Millisecond);
             int indice = rand.Next(0, populacao.Count - 1);
@@ -32,7 +35,7 @@ namespace DECore
         // melhor na primeira posição da lista
         public static List<IndividuoBin> SelecaoBest(List<IndividuoBin> populacao)
         {
-            List<IndividuoBin> ind = SelecaoAleatoria(2, populacao);
+            List<IndividuoBin> ind = SelecaoAleatoria(2, populacao, new HashSet<int> { 0 });
             ind.Add(populacao.First());
             return ind;
         }

@@ -132,7 +132,7 @@ namespace DECore
             }
         }
 
-        private void NoSucesso(bool sucesso, double cr, SelecaoDE estrategia)
+        private void NoSucesso(bool sucesso, double cr, double f, SelecaoDE estrategia, IndividuoBin indAtual)
         {
             if (!sucesso)
             {

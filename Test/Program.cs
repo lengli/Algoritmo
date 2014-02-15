@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Functions;
+using AlgoCore;
 
 namespace Test
 {
@@ -8,9 +9,17 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            byte blue = (byte)Math.Round(1234.123 / 255);
-            TestMinGlobalFunctions();
+            List<double> ds = new List<double>();
+            Random rand = new Random(DateTime.Now.Millisecond);
 
+            for (int i = 0; i < 100; i++)
+            {
+                ds.Add(rand.RandomCauchy(.5,.1));
+            }
+            ds.Sort();
+
+            foreach (double d in ds)
+                Console.WriteLine(d);
             Console.ReadLine();
         }
 
