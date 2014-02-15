@@ -15,6 +15,8 @@ namespace DECore
             if (filtroIndividuos != null) indiceSelecionados = filtroIndividuos;
             else indiceSelecionados = new HashSet<int>();
 
+            nIndividuos += indiceSelecionados.Count;
+
             List<IndividuoBin> indSelecionados = new List<IndividuoBin>(nIndividuos);
             Random rand = new Random(DateTime.Now.Millisecond);
             int indice = rand.Next(0, populacao.Count - 1);
