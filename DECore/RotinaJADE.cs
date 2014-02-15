@@ -18,20 +18,31 @@ namespace DECore
         private double _c;
         private double _p;
         private Random rand = new Random(DateTime.Now.Millisecond);
+        private bool _arq;
 
         public RotinaJADE(FuncAptidao aptidao, FuncRepopRestricao FuncRestr,
             ListAptidao gs, ListAptidao hs, FuncValidarRestricao validar,
-            double c, double p,
+            double c, double p, bool arquivamento,
             FuncValidarFronteira valFront)
             : base(aptidao, FuncRestr, gs, hs, validar, valFront)
         {
             _c = c;
             _p = p;
+            _arq = arquivamento;
         }
 
         private void NoSucesso(bool sucesso, double cr, double f, SelecaoDE estrategia, IndividuoBin indAtual)
         {
-            if (!sucesso)
+            if (sucesso)
+            {
+                SCR.Add(cr);
+                SF.Add(f);
+                _mCR = (1 - _c) * _mCR + _c * SCR.Median();
+                _mF = (1 - _c) * _mF + _c * SF.LehmerMean();
+                return;
+            }
+
+            if (_arq)
             {
                 if (_A.Count >= _tamanhoPop)
                 {
@@ -39,13 +50,8 @@ namespace DECore
                     _A.RemoveAt(r);
                 }
                 _A.Add(indAtual);
-                return;
             }
 
-            SCR.Add(cr);
-            SF.Add(f);
-            _mCR = (1 - _c) * _mCR + _c * SCR.Median();
-            _mF = (1 - _c) * _mF + _c * SF.LehmerMean();
         }
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
@@ -57,7 +63,8 @@ namespace DECore
 
             for (int i = 0; i < populacao.Count; i++)
                 DEUtil.ExecutarMutacao(i, populacao, SelecaoDE.CurrentToPBest1BinArchive, Fi, _nAtributos, CRi, _min, _max,
-                    _validarFronteira, FuncaoAptidao, NoSucesso, new Dictionary<string, object> { { "pBest", _p }, { "archive", _A } });
+                    _validarFronteira, FuncaoAptidao, NoSucesso,
+                    new Dictionary<string, object> { { "pBest", _p }, { "archive", _A } });
         }
 
         protected override bool CriterioDeParada(AlgoInfo agInfo) { return false; }

@@ -10,12 +10,14 @@
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <StackPanel x:Name="JADEPanel" Visibility="Collapsed">
                         <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
-                            <TextBlock Text="Percentual pBest" Margin="10,3" Width="100" />
-                            <TextBlock Text="Parametro c" Margin="0,3" />
+                            <TextBlock Text="Percentual pBest" Margin="10,3" Width="90" />
+                            <TextBlock Text="Parametro c" Margin="10,3" Width="70" />
+                            <TextBlock Text="Usar arquivamento" Margin="10,3" Width="100" />
                         </StackPanel>
                         <StackPanel Margin="10,5,0,10" Orientation="Horizontal">
                             <TextBox x:Name="pBestTB" Margin="10,3" Width="90" Text="0.05"/>
-                            <TextBox x:Name="cTB" Margin="10,3" Width="100" Text="0.1"/>
+                            <TextBox x:Name="cTB" Margin="10,3" Width="70" Text="0.1"/>
+                            <CheckBox x:Name="aCB" Margin="10,3" Width="70"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel x:Name="SaDEPanel" Visibility="Collapsed">

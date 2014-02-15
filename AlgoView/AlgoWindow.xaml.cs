@@ -289,7 +289,8 @@ namespace AlgoView
         {
             double pBest = pBestTB.Text.ToDouble();
             double cJADE = cTB.Text.ToDouble();
-            return new RotinaJADE(funcao, restricao, _gs, _hs, _validar, cJADE, pBest, _validarFronteira);
+            bool arq = aCB.IsChecked ?? false;
+            return new RotinaJADE(funcao, restricao, _gs, _hs, _validar, cJADE, pBest, arq, _validarFronteira);
         }
 
         private RotinaAlgo RotinaSaDE(FuncAptidao funcao, FuncRepopRestricao restricao)
