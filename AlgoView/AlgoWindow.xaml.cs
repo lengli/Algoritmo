@@ -119,7 +119,8 @@ namespace AlgoView
                 }
 
                 algo.MinGlogal = _minGlobal;
-                algo.ErroAceitavel = _erroAceitavel;
+                //algo.ErroAceitavel = _erroAceitavel;
+                algo.ErroAceitavel = Math.Pow(10, -precisao);
                 infos.Add(algo.Rodar(maxGer, nPop, min, max, dimensao, precisao, maxAval, usarTabu, distTabu, maxRepop, gerSem, margemComp, tabuNaPop, hillClimbing, lsChains, nPopMutLocal));
             }
 
