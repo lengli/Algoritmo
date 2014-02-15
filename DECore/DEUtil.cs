@@ -84,7 +84,7 @@ namespace DECore
 
                     selecao.Insert(1, populacao[nIndex]);
                     selecao.Insert(2, populacao[atualInd]);
-                    selecao.Add(arIndex <= populacao.Count - 1 ? populacao[arIndex] : arquivo[arIndex - populacao.Count - 1]);
+                    selecao.Add(arIndex <= populacao.Count - 1 ? populacao[arIndex] : arquivo[arIndex - populacao.Count]);
                     fs = new List<double> { _fatorF };
                     break;
                 default: return;
