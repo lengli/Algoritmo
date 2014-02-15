@@ -72,7 +72,7 @@ namespace DECore
                     if (pBest > 1) pBest = 1;
                     int nIndex = (int)Math.Round(pBest * (populacao.Count - 1) * rand.NextDouble());
                     List<IndividuoBin> arquivo = (List<IndividuoBin>)extraParams["archive"];
-                    int arIndex = (int)Math.Round((populacao.Count - 1 + arquivo.Count - 1) * rand.NextDouble());
+                    int arIndex = rand.Next(0, populacao.Count - 1 + arquivo.Count - 1);
 
                     filtros = new HashSet<int> { atualInd };
                     filtros.Add(nIndex);
@@ -84,7 +84,7 @@ namespace DECore
 
                     selecao.Insert(1, populacao[nIndex]);
                     selecao.Insert(2, populacao[atualInd]);
-                    selecao.Add(arIndex < populacao.Count - 1 ? populacao[arIndex] : arquivo[arIndex - populacao.Count - 1]);
+                    selecao.Add(arIndex <= populacao.Count - 1 ? populacao[arIndex] : arquivo[arIndex - populacao.Count - 1]);
                     fs = new List<double> { _fatorF };
                     break;
                 default: return;
