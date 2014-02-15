@@ -114,6 +114,7 @@ namespace AlgoView
                     case "AG": algo = RotinaAG(funcao, restricao); break;
                     case "DE": algo = RotinaDE(funcao, restricao); break;
                     case "SaDE": algo = RotinaSaDE(funcao, restricao); break;
+                    case "JADE": algo = RotinaJADE(funcao, restricao); break;
                     default: return;
                 }
 
@@ -172,6 +173,7 @@ namespace AlgoView
             DEPanel.Visibility = Visibility.Collapsed;
             PsoPanel.Visibility = Visibility.Collapsed;
             SaDEPanel.Visibility = Visibility.Collapsed;
+            JADEPanel.Visibility = Visibility.Collapsed;
 
             switch (item.Content.ToString())
             {
@@ -181,8 +183,14 @@ namespace AlgoView
                 case "DE":
                     DEPanel.Visibility = Visibility.Visible;
                     break;
+                case "PSO":
+                    PsoPanel.Visibility = Visibility.Visible;
+                    break;
                 case "SaDE":
                     SaDEPanel.Visibility = Visibility.Visible;
+                    break;
+                case "JADE":
+                    JADEPanel.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -275,6 +283,13 @@ namespace AlgoView
             object tipoDE = TipoSelecao.SelectedValue;
             if (tipoDE == null || !Enum.TryParse(tipoDE.ToString(), out selecao)) return null;
             return new RotinaDE(funcao, restricao, _gs, _hs, _validar, selecao, probCrossDE, fatorF, _validarFronteira);
+        }
+
+        private RotinaAlgo RotinaJADE(FuncAptidao funcao, FuncRepopRestricao restricao)
+        {
+            double pBest = pBestTB.Text.ToDouble();
+            double cJADE = cTB.Text.ToDouble();
+            return new RotinaJADE(funcao, restricao, _gs, _hs, _validar, cJADE, pBest, _validarFronteira);
         }
 
         private RotinaAlgo RotinaSaDE(FuncAptidao funcao, FuncRepopRestricao restricao)
