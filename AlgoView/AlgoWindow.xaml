@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dvc="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:algo="clr-namespace:AlgoView"
-        Title="Algoritmos" Height="720" Width="980">
+        Title="Algoritmos" Height="720" Width="1100">
     <ScrollViewer>
         <StackPanel>
             <Border BorderBrush="Gray" BorderThickness="0,0,0,1">
@@ -103,7 +103,7 @@
                                 <ComboBoxItem Content="DE"/>
                                 <ComboBoxItem Content="PSO"/>
                             </ComboBox>
-                            <ComboBox Width="40" Margin="10,3" x:Name="FuncaoCombo">
+                            <ComboBox Width="107" Margin="10,3" x:Name="FuncaoCombo">
                             </ComboBox>
                             <TextBlock Text="X" Margin="0,5,4,0"/>
                             <ComboBox SelectedIndex="0" Margin="5,0" x:Name="NVezes">
