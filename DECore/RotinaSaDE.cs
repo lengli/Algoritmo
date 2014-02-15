@@ -44,8 +44,6 @@ namespace DECore
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-            Random ran = new Random(DateTime.Now.Millisecond);
-
             List<double> pk = new List<double>();
             if (g > _lp)
             {
@@ -97,7 +95,7 @@ namespace DECore
             {
                 IndividuoBin individuo = populacao[i];
                 // seleçao da estratégia para o indivíduo
-                double random = ran.NextDouble();
+                double random = new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble();
                 int indiceEstrategia = 0;
                 for (int j = 0; j < probPk.Count; j++)
                 {
@@ -107,7 +105,7 @@ namespace DECore
                 }
 
                 // F
-                double fNormal = ran.RandomNormal(0.5, 0.3);
+                double fNormal = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomNormal(0.5, 0.3);
 
                 // CR
                 if (g >= _lp)
@@ -125,7 +123,7 @@ namespace DECore
 
                 double cr = -1;
                 while (cr < 0 || cr > 1)
-                    cr = ran.RandomNormal(_crm[_selecoes[indiceEstrategia]], 0.1);
+                    cr = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomNormal(_crm[_selecoes[indiceEstrategia]], 0.1);
 
                 DEUtil.ExecutarMutacao(i, populacao, _selecoes[indiceEstrategia],
                    fNormal, _nAtributos, cr, _min, _max, _validarFronteira, FuncaoAptidao, NoSucesso);

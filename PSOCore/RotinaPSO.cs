@@ -76,8 +76,8 @@ namespace PSOCore
                 {
                     double vel = velocidade[i];
                     vel = _fatorPondUsado * vel;
-                    vel += _fi1 * (pi[i] - individuo.Atributos[i]) * (usarRand1 ? rand.NextDouble() : 1);
-                    vel += _fi2 * (pg.Atributos[i] - individuo.Atributos[i]) * (usarRand2 ? rand.NextDouble() : 1);
+                    vel += _fi1 * (pi[i] - individuo.Atributos[i]) * (usarRand1 ? new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble() : 1);
+                    vel += _fi2 * (pg.Atributos[i] - individuo.Atributos[i]) * (usarRand2 ? new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble() : 1);
 
                     //double u = (1 - Math.Abs(pg.Atributos[i] - individuo.Atributos[i])) / (IndividuoBin.Maximo - IndividuoBin.Minimo);
                     //vel += _fi2 * u * u * (usarRand2 ? rand.NextDouble() : 1);

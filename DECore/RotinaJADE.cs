@@ -17,7 +17,6 @@ namespace DECore
         private List<IndividuoBin> _A = new List<IndividuoBin>();
         private double _c;
         private double _p;
-        private Random rand = new Random(DateTime.Now.Millisecond);
         private bool _arq;
 
         public RotinaJADE(FuncAptidao aptidao, FuncRepopRestricao FuncRestr,
@@ -46,7 +45,7 @@ namespace DECore
             {
                 if (_A.Count >= _tamanhoPop)
                 {
-                    int r = rand.Next(0, _A.Count - 1);
+                    int r = new Random(AlgoCore.AlgoUtil.GetSeed()).Next(0, _A.Count - 1);
                     _A.RemoveAt(r);
                 }
                 _A.Add(indAtual);
@@ -56,8 +55,8 @@ namespace DECore
 
         protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-            double CRi = rand.RandomNormal(_mCR, 0.1);
-            double Fi = rand.RandomCauchy(_mF, 0.1);
+            double CRi = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomNormal(_mCR, 0.1);
+            double Fi = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomCauchy(_mF, 0.1);
             if (Fi > 1) Fi = 1;
             if (Fi < 0) Fi = 0;
 

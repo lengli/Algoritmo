@@ -18,14 +18,12 @@ namespace DECore
             nIndividuos += indiceSelecionados.Count;
 
             List<IndividuoBin> indSelecionados = new List<IndividuoBin>(nIndividuos);
-            Random rand = new Random(DateTime.Now.Millisecond);
-            int indice = rand.Next(0, populacao.Count - 1);
-
+            int indice = new Random(AlgoCore.AlgoUtil.GetSeed()).Next(0, populacao.Count - 1);
             while (indiceSelecionados.Count < nIndividuos)
             {
                 // selecionar um índice não escolhido
                 while (indiceSelecionados.Contains(indice))
-                    indice = rand.Next(0, populacao.Count - 1);
+                    indice = new Random(AlgoCore.AlgoUtil.GetSeed()).Next(0, populacao.Count - 1);
 
                 indiceSelecionados.Add(indice);
                 indSelecionados.Add(populacao[indice]);

@@ -9,6 +9,14 @@ namespace AlgoResult
     {
         #region static
 
+        private static int seed = int.MinValue;
+        public static int GetSeed()
+        {
+            if (seed == int.MaxValue) seed = int.MinValue;
+            else seed++;
+            return seed;
+        }
+
         private static int NextID;
         public static int GetNextID { get { return NextID++; } }
 
@@ -16,7 +24,6 @@ namespace AlgoResult
         public static Bound Minimo { get; set; }
         public static Bound Maximo { get; set; }
 
-        public static Random rand = new Random(DateTime.Now.Millisecond);
         public static List<T> GerarPopulacao<T>(int nPop, Bound min, Bound max, int nAtributos,
             int precisao, List<IndividuoBin> tabu = null, double tabuDist = 0)
             where T : IndividuoBin, new()
@@ -34,7 +41,7 @@ namespace AlgoResult
                 T ind = new T();
                 for (int j = 0; j < nAtributos; j++)
                 {
-                    double next = rand.NextDouble();
+                    double next = new Random(GetSeed()).NextDouble();
                     next *= (max(j) - min(j));
                     next += min(j);
                     ind.Atributos.Add(next);

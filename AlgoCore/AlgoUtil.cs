@@ -65,5 +65,12 @@ namespace AlgoCore
             return numbers.Sum(x => x * x) / numbers.Sum();
         }
 
+        private static int seed = int.MinValue;
+        public static int GetSeed()
+        {
+            if (seed == int.MaxValue) seed = int.MinValue;
+            else seed++;
+            return seed;
+        }
     }
 }

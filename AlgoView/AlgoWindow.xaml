@@ -217,7 +217,7 @@
 
             </StackPanel>
 
-            <dvc:Chart Height="200" Visibility="Collapsed">
+            <dvc:Chart Height="200" Visibility="Visible">
                 <dvc:Chart.Series>
                     <dvc:LineSeries Title="Média" x:Name="SerieMedia"
                                 IndependentValueBinding="{Binding Path=X}"
@@ -234,7 +234,7 @@
                     </dvc:LineSeries>
                 </dvc:Chart.Series>
             </dvc:Chart>
-            <dvc:Chart Height="200" Visibility="Collapsed">
+            <dvc:Chart Height="200" Visibility="Visible">
                 <dvc:Chart.Series>
                     <dvc:LineSeries Title="Avaliacoes" x:Name="SerieAvaliacoes"
                                 IndependentValueBinding="{Binding Path=X}"

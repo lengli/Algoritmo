@@ -26,7 +26,6 @@ namespace DECore
             int _nAtributos, double _probCross, Bound _min, Bound _max, FuncValidarFronteira valFront, FuncAptidao aptidao,
             Action<bool, double, double, SelecaoDE, IndividuoBin> noSucesso = null, Dictionary<string, object> extraParams = null)
         {
-            Random rand = new Random(DateTime.Now.Millisecond);
             List<IndividuoBin> selecao;
             List<double> fs;
             HashSet<int> filtros;
@@ -63,16 +62,16 @@ namespace DECore
                     selecao = OperadoresDE.SelecaoAleatoria(3, populacao, new HashSet<int> { atualInd });
                     selecao.Insert(0, populacao[atualInd]);
                     selecao.Insert(2, populacao[atualInd]);
-                    fs = new List<double> { rand.NextDouble(), _fatorF };
+                    fs = new List<double> { new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble(), _fatorF };
                     break;
                 case SelecaoDE.CurrentToPBest1BinArchive:
                     if (extraParams == null || !extraParams.ContainsKey("pBest") || !extraParams.ContainsKey("archive"))
                         throw new Exception("Extraparam precisa ser definido corretamente para pBest");
                     double pBest = (double)extraParams["pBest"];
                     if (pBest > 1) pBest = 1;
-                    int nIndex = (int)Math.Round(pBest * (populacao.Count - 1) * rand.NextDouble());
+                    int nIndex = (int)Math.Round(pBest * (populacao.Count - 1) * new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble());
                     List<IndividuoBin> arquivo = (List<IndividuoBin>)extraParams["archive"];
-                    int arIndex = rand.Next(0, populacao.Count - 1 + arquivo.Count - 1);
+                    int arIndex = new Random(AlgoCore.AlgoUtil.GetSeed()).Next(0, populacao.Count - 1 + arquivo.Count - 1);
 
                     filtros = new HashSet<int> { atualInd };
                     filtros.Add(nIndex);
@@ -92,10 +91,10 @@ namespace DECore
 
             IndividuoBin individuoTemp = new IndividuoBin();
 
-            int jRand = rand.Next(0, _nAtributos - 1);
+            int jRand = new Random(AlgoCore.AlgoUtil.GetSeed()).Next(0, _nAtributos - 1);
             for (int j = 0; j < _nAtributos; j++)
             {
-                if (rand.NextDouble() < _probCross || j == jRand)
+                if (new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble() < _probCross || j == jRand)
                 {
                     double atributo = CalculoAtributo(selecao, j, fs);
 

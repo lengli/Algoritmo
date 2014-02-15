@@ -31,13 +31,12 @@ namespace AGCore
 
         public static List<IndividuoBin> SelecaoPopulacaoIntermediaria(List<double> probsAcum, List<IndividuoBin> individuos)
         {
-            Random rand = new Random(DateTime.Now.Millisecond);
             List<IndividuoBin> popIntermediaria = new List<IndividuoBin>(individuos.Count);
 
             for (int i = 0; i < individuos.Count; i++)
             {
                 // aleatorio, entre 0 e 1
-                double prob = rand.NextDouble();
+                double prob = new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble();
 
                 if (prob <= probsAcum[i])
                 {
@@ -53,7 +52,7 @@ namespace AGCore
         public static void Crossover(List<IndividuoBin> pop, double pc, CrossType crossType)
         {
             List<IndividuoBin> filhos = new List<IndividuoBin>();
-            Random rand = new Random(DateTime.Now.Millisecond);
+            Random rand = new Random(AlgoCore.AlgoUtil.GetSeed());
 
             // iniciando lista de indicação de cruzamento
             List<int> controle = new List<int>(pop.Count);
@@ -109,18 +108,18 @@ namespace AGCore
         public static void MutacaoReal(List<IndividuoBin> pop, double pm, double rangeMut)
         {
             List<IndividuoBin> popIntermediaria = new List<IndividuoBin>();
-            Random rand = new Random(DateTime.Now.Millisecond);
             for (int i = 0; i < pop.Count; i++)
             {
                 IndividuoBin ind = pop[i].Clone();
                 bool mutated = false;
                 for (int j = 0; j < ind.Atributos.Count; j++)
                 {
-                    if (rand.NextDouble() < pm)
+                    if (new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble() < pm)
                     {
                         //http://www.geatbx.com/docu/algindex-04.html
-                        double signal = rand.NextDouble() > 0.5 ? -1 : 1;
-                        double mutVal = rand.NextDouble() * rangeMut * (IndividuoBin.Maximo(j) - IndividuoBin.Minimo(j)) * Math.Pow(2, rand.NextDouble() * (-20));
+                        double signal = new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble() > 0.5 ? -1 : 1;
+                        double mutVal = new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble() * rangeMut * 
+                            (IndividuoBin.Maximo(j) - IndividuoBin.Minimo(j)) * Math.Pow(2, new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble() * (-20));
 
                         double novoVal = ind.Atributos[j] + signal * mutVal;
                         if (novoVal <= IndividuoBin.Maximo(j) && novoVal >= IndividuoBin.Minimo(j))
@@ -199,12 +198,12 @@ namespace AGCore
 
             //http://www.geatbx.com/docu/algindex-03.html
 
-            Random rand = new Random(DateTime.Now.Millisecond);
-
             IndividuoBin filho = new IndividuoBin();
 
             for (int i = 0; i < ind1.Atributos.Count; i++)
             {
+                Random rand = new Random(AlgoCore.AlgoUtil.GetSeed());
+
                 double a = rand.NextDouble() * 1.5 - .25;
                 double val = a * ind1.Atributos[i] + (1 - a) * ind2.Atributos[i];
                 if (val > IndividuoBin.Maximo(i)) val = IndividuoBin.Maximo(i);
@@ -217,7 +216,7 @@ namespace AGCore
 
         public static IndividuoBin CruzamentoHeuristico(IndividuoBin ind1, IndividuoBin ind2)
         {
-            int ptoCorte = new Random(DateTime.Now.Millisecond).Next(1, ind1.Atributos.Count);
+            int ptoCorte = new Random(AlgoCore.AlgoUtil.GetSeed()).Next(1, ind1.Atributos.Count);
 
             IndividuoBin indMelhor = ind1.Aptidao > ind2.Aptidao ? ind1.Clone() : ind2.Clone();
             IndividuoBin indPior = ind1.Aptidao >= ind2.Aptidao ? ind2.Clone() : ind1.Clone();
@@ -239,7 +238,7 @@ namespace AGCore
 
         public static int SelecaoParaReproducao(List<int> controle, int nPop)
         {
-            Random rand = new Random(DateTime.Now.Millisecond);
+            Random rand = new Random(AlgoCore.AlgoUtil.GetSeed());
             int j = rand.Next(0, controle.Sum());
             int k = -1;
             for (int i = 0; i < nPop; i++)

@@ -31,7 +31,6 @@ namespace AlgoCore
         protected double _distTabu;
         protected int _gerSemMelhorar;
         protected double _margemComp;
-        protected Random rand = new Random(DateTime.Now.Millisecond);
         protected List<IndividuoBin> individuosTabu = new List<IndividuoBin>();
         protected AlgoInfo _agInfo;
         protected ListAptidao _gs;
@@ -211,8 +210,8 @@ namespace AlgoCore
                 _agInfo.AdicionarInfo(populacao, g, _avaliacoes);
 
                 // se todos os individuos convergirem 
-                int gr = populacao.GroupBy(ind => ind.Aptidao).Count();
-                if (g > 400 && gr == 1) break;
+                //int gr = populacao.GroupBy(ind => ind.Aptidao).Count();
+                //if (g > 400 && gr == 1) break;
             }
             return _agInfo;
         }
