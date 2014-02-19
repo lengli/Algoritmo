@@ -5,10 +5,10 @@
     <StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Margin="5">Função</TextBlock>
-            <ComboBox Height="20" Width="50" x:Name="FuncaoCombo"></ComboBox>
+            <ComboBox Height="20" Width="130" x:Name="FuncaoCombo"></ComboBox>
             <TextBlock Margin="15 5 5 5">Precisão</TextBlock>
             <TextBox Height="20" Width="50" x:Name="PontosTb"></TextBox>
-            <Button Margin="15 0" Padding="5 0" Click="Button_Click">Calcular</Button>
+            <Button Margin="15 0" Padding="5 0" x:Name="GerarButton" Click="Button_Click">Gerar</Button>
         </StackPanel>
         <Grid VerticalAlignment="Top">
         <Canvas Height="300" Width="300" x:Name="ValidArea" Margin="0">

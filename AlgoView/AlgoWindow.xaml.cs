@@ -132,6 +132,12 @@ namespace AlgoView
             TimeSpan deltaTempo = DateTime.Now - inicio;
             Tempo.Text = deltaTempo.TotalSeconds.ToString();
 
+            if (dimensao == 2 && infos.Count == 1)
+            {
+                new MapaContorno(FuncaoCombo.Text, infos[0].Informacoes.Take(50).Select(x => x.MelhorCromo[0]).ToList(),
+                    infos[0].Informacoes.Select(x => x.MelhorCromo[1]).ToList()).Show();
+            }
+
             if (FuncaoCombo.Text == "G5")
             {
                 EvolGraph.AddSequencialPoints(

@@ -3,15 +3,32 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Controls;
 
 namespace AlgoView
 {
     public partial class MapaContorno
     {
+        private List<double> _xs;
+        private List<double> _ys;
+
         public MapaContorno()
         {
             InitializeComponent();
             FuncaoCombo.ItemsSource = Functions.Functions.Funcoes();
+        }
+
+        public MapaContorno(string fc, List<double> xs, List<double> ys)
+            : this()
+        {
+            FuncaoCombo.Text = fc;
+            FuncaoCombo.IsEnabled = false;
+            PontosTb.Text = "300";
+            PontosTb.IsEnabled = false;
+            GerarButton.Visibility = Visibility.Collapsed;
+            _xs = xs;
+            _ys = ys;
+            Button_Click(null, null);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -83,12 +100,15 @@ namespace AlgoView
                     tabelaCores[i].Add(CalculoCor(tabelaResultado[i][j] - menorApt, rangeRes));
             }
             Desenhar(tabelaCores, iMenor, jMenor);
+
+            if (_xs != null && _ys != null)
+                DesenharPontos(min0, max0, min1, max1);
         }
 
         private int RangeCor = 255 * 4 + 100;
         private Color CalculoCor(double apt, double range)
         {
-            double cor = (RangeCor*apt)/range;
+            double cor = (RangeCor * apt) / range;
             if (cor >= RangeCor - 255)
             {
                 double nC = Math.Round(RangeCor - cor);
@@ -160,6 +180,33 @@ namespace AlgoView
                 Stroke = new SolidColorBrush(Colors.Black),
                 Fill = new SolidColorBrush(Colors.White)
             });
+        }
+
+        private void DesenharPontos(double min0, double max0, double min1, double max1)
+        {
+            double range0 = max0 - min0;
+            double range1 = max1 - min1;
+
+            for (int i = 0; i < _xs.Count; i++)
+            {
+                double x = minPx + (maxPx - minPx) * (_xs[i] - min0) / range0;
+                double y = minPx + (maxPx - minPx) * (_ys[i] - min1) / range1;
+                CanvasGraph.Children.Add(new Ellipse
+                {
+                    Margin = new Thickness(x - 3, y - 3, 0, 0),
+                    Width = 6,
+                    Height = 6,
+                    Stroke = new SolidColorBrush(Colors.Black),
+                    Fill = new SolidColorBrush(Colors.White)
+                });
+                /*
+                if (i % 50 == 0 || i == _xs.Count - 1)
+                    CanvasGraph.Children.Add(new TextBlock
+                    {
+                        Margin = new Thickness(x - 3, y - 3 + 10, 0, 0),
+                        Text = (_xs.Count - i).ToString()
+                    });*/
+            }
         }
     }
 }
