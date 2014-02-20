@@ -185,21 +185,25 @@ namespace AlgoCore
                 //criterio de repopulação, evitar mínimos locais devido ao elitismo
                 if (usarTabu)
                 {
-                    if (!CriterioRepopular(_agInfo, ultimaRepop)) continue;
-                    // criterio de parada: repopular n vezes
-                    if (nRepopulacao >= nMaxRepop) break;
-                    nRepopulacao++;
+                    if (CriterioRepopular(_agInfo, ultimaRepop))
+                    {
+                        // criterio de parada: repopular n vezes
+                        if (nRepopulacao >= nMaxRepop) break;
+                        nRepopulacao++;
 
-                    individuosTabu.Add(populacao[0].Clone());
+                        individuosTabu.Add(populacao[0].Clone());
+                        if (individuosTabu.Count > 5)
+                            individuosTabu = individuosTabu.OrderBy(c => c.Aptidao).Take(5).ToList();
 
-                    populacao = PopulacaoAleatoria(tamanhoPop - (tabuNaPop ? individuosTabu.Count : 0), min, max, nAtributos, precisao,
-                        lsChains != null, individuosTabu);
+                        populacao = PopulacaoAleatoria(tamanhoPop - (tabuNaPop ? individuosTabu.Count : 0), min, max, nAtributos, precisao,
+                            lsChains != null, individuosTabu);
 
-                    // adicionando os individuos tabus
-                    if (tabuNaPop)
-                        populacao.AddRange(individuosTabu);
+                        // adicionando os individuos tabus
+                        if (tabuNaPop)
+                            populacao.AddRange(individuosTabu);
 
-                    ultimaRepop = g;
+                        ultimaRepop = g;
+                    }
                 }
                 else
                 {
@@ -303,7 +307,7 @@ namespace AlgoCore
             List<IndividuoBin> tabu = null) where T : IndividuoBin, new()
         {
             List<T> _populacao;
-             
+
             if (FuncRestr == null)
                 _populacao = IndividuoBin.GerarPopulacao<T>(nPop, min, max, nAtributos, precisao, tabu, _distTabu);
             else
