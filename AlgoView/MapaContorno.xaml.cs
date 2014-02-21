@@ -55,7 +55,9 @@ namespace AlgoView
 
             // duas dimensões
             List<List<double>> tabelaResultado = new List<List<double>>();
+            // 0 => y; 1 => x
             double min0 = min(0) / 2, min1 = min(1) / 2, max0 = max(0) / 2, max1 = max(1) / 2;
+            //double min0 = -30, max0 =-10, min1 = 0, max1 = 20;
             double rangeI = max0 - min0, rangeJ = max1 - min1;
             double interI = rangeI / precisao, interJ = rangeJ / precisao;
             MaxYTB.Text = string.Format("{0:#,0.00}", max0);

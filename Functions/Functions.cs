@@ -211,6 +211,7 @@ namespace Functions
             return -20.0 * Math.Exp(sum1) - Math.Exp(sum2) + 20.0 + Math.E - 700;
         }
 
+        //TODO: rever essa função
         /// <summary>
         /// f 09 - Multi-modal; Non-separable; Asymetrical; Continuous but differentiable only ona a set of points
         /// </summary>
