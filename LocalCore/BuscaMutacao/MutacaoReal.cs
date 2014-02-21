@@ -31,7 +31,7 @@ namespace LocalCore.BuscaMutacao
                 tempInd.Atributos[i] = novoValor;
                 double aptidaoNova;
 
-                if (_validarFronteira != null && !_validarFronteira(tempInd.Atributos))
+                if (_validarFronteira != null && !_validarFronteira(tempInd.Atributos) && funcAptidaoVirtual != null)
                     aptidaoNova = funcAptidaoVirtual(tempInd.Atributos);
                 else
                     aptidaoNova = funcAptidao(tempInd.Atributos);

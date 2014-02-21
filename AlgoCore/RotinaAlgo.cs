@@ -247,12 +247,12 @@ namespace AlgoCore
                 populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, FuncaoAptidaoVirtual, -mutReal, _validarRestricao);
                 populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, FuncaoAptidaoVirtual, -mutReal * 1E-2, _validarRestricao);
 
-                // +- 5% -> alta convergencia
-                //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, (max - min) / 20);
+                // +- 5% -> alta convergencia + diversidade
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 20, null);
                 // +- 0.1% - > exploração
-                //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, (max - min) / 1000);
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 1000, null);
                 // +- precisão - > explotação
-                //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, Math.Pow(10, -precisao));
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, Math.Pow(10, -precisao), null);
             }
 
             if (populacao[0].Aptidao < ultAptidao)
