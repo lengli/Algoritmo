@@ -96,7 +96,7 @@
                             <TextBlock Text="Função aptidão" Margin="10,3"  Width="80"/>
                         </StackPanel>
                         <StackPanel Margin="10,5,10,0" Orientation="Horizontal" HorizontalAlignment="Left">
-                            <ComboBox x:Name="AlgoCombo" Margin="10,3" SelectedIndex="1" Width="60" SelectionChanged="AlgoComboSelectionChanged">
+                            <ComboBox x:Name="AlgoCombo" Margin="10,3" SelectedIndex="3" Width="60" SelectionChanged="AlgoComboSelectionChanged">
                                 <ComboBoxItem Content="AG"/>
                                 <ComboBoxItem Content="SaDE"/>
                                 <ComboBoxItem Content="JADE"/>
@@ -131,7 +131,7 @@
                 <TextBlock Text="Dist Tabu" Margin="10,3" Width="55" />
             </StackPanel>
             <StackPanel Margin="10,3,10,10" Orientation="Horizontal">
-                <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="50" />
+                <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="1" />
                 <TextBox x:Name="Precisao" Margin="10,3" Width="70" Text="8" />
                 <TextBox x:Name="MaxGer" Margin="10,3" Width="70" Text="0" />
                 <TextBox x:Name="MaxAval" Margin="10,3" Width="50" Text="100000" />
@@ -163,7 +163,7 @@
                 <CheckBox x:Name="LSChains" Margin="10,5" Width="55" IsChecked="False"/>
                 <TextBox x:Name="AceleLSChains" Margin="10,3" Width="65" Text="1" IsEnabled="{Binding IsChecked, ElementName=LSChains}" />
                 <TextBox x:Name="NIterLSChains" Margin="10,5" Width="70" Text="3" IsEnabled="{Binding IsChecked, ElementName=LSChains}"  />
-                <TextBox x:Name="QtdMutLocal" Margin="10,3" Width="95" Text="0" />
+                <TextBox x:Name="QtdMutLocal" Margin="10,3" Width="95" Text="1" />
             </StackPanel>
             <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
                 <TextBlock Text="No de Ger." Margin="10,3" Width="85" />

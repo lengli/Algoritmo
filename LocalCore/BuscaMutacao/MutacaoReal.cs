@@ -18,11 +18,11 @@ namespace LocalCore.BuscaMutacao
 
             for (int i = 0; i < tempInd.Atributos.Count; i++)
             {
-                double max = IndividuoBin.Maximo(i);
-                double min = IndividuoBin.Minimo(i);
+                //double max = IndividuoBin.Maximo(i);
+                //double min = IndividuoBin.Minimo(i);
 
                 double valorAntigo = tempInd.Atributos[i];
-                double novoValor = tempInd.Atributos[i] + (max - min) * mutReal + min;
+                double novoValor = tempInd.Atributos[i] + mutReal; //+ (max - min) * mutReal + min;
 
                 if (novoValor < IndividuoBin.Minimo(i) || novoValor > IndividuoBin.Maximo(i)
                     /*|| (_validarFronteira != null && !_validarFronteira(novoValor, i))*/)

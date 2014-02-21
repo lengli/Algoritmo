@@ -230,9 +230,10 @@ namespace AlgoCore
             int qtdMutLocal, ParametrosHillClimbing hillClimbing, ParametrosLSChains lsChains) // parametros das buscas locais
         {
             // busca local
-            if (falhas >= 3)
+            if (falhas >= 5)
             {
                 mutReal /= 5;
+                if (mutReal < Math.Pow(10, -(precisao - 2))) mutReal *= 5;
                 falhas = 0;
             }
 
@@ -248,12 +249,17 @@ namespace AlgoCore
                 populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, FuncaoAptidaoVirtual, -mutReal * 1E-2, _validarRestricao);
 
                 // +- 5% -> alta convergencia + diversidade
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 20, null);
+                //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 20, null);
                 // +- 0.1% - > exploração
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 1000, null);
+                //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 1000, null);
                 // +- precisão - > explotação
                 populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, Math.Pow(10, -precisao), null);
+                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, -Math.Pow(10, -precisao), null);
             }
+            
+            Console.WriteLine("MutReal:" + mutReal);
+            Console.WriteLine("Apt:" + populacao[0].Aptidao);
+            Console.WriteLine();
 
             if (populacao[0].Aptidao < ultAptidao)
                 ultAptidao = populacao[0].Aptidao;
