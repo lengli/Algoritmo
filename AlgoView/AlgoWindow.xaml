@@ -96,12 +96,14 @@
                             <TextBlock Text="Função aptidão" Margin="10,3"  Width="80"/>
                         </StackPanel>
                         <StackPanel Margin="10,5,10,0" Orientation="Horizontal" HorizontalAlignment="Left">
-                            <ComboBox x:Name="AlgoCombo" Margin="10,3" SelectedIndex="3" Width="60" SelectionChanged="AlgoComboSelectionChanged">
+                            <ComboBox x:Name="AlgoCombo" Margin="10,3" SelectedIndex="4" Width="60" SelectionChanged="AlgoComboSelectionChanged">
                                 <ComboBoxItem Content="AG"/>
                                 <ComboBoxItem Content="SaDE"/>
                                 <ComboBoxItem Content="JADE"/>
                                 <ComboBoxItem Content="DE"/>
+                                <ComboBoxItem Content="RandomDE"/>
                                 <ComboBoxItem Content="PSO"/>
+                                <ComboBoxItem Content="DE/PSO/AG"/>
                             </ComboBox>
                             <ComboBox Width="107" Margin="10,3" x:Name="FuncaoCombo">
                             </ComboBox>
@@ -110,6 +112,7 @@
                                 <ComboBoxItem Content="1"/>
                                 <ComboBoxItem Content="5"/>
                                 <ComboBoxItem Content="30"/>
+                                <ComboBoxItem Content="51"/>
                             </ComboBox>
                             <Button Content="Rodar Algoritmo" Width="95" Margin="4,0,0,0" Click="Button_Click" />
                             <TextBlock Margin="10,5,10,0" x:Name="Tempo" />
@@ -131,14 +134,14 @@
                 <TextBlock Text="Dist Tabu" Margin="10,3" Width="55" />
             </StackPanel>
             <StackPanel Margin="10,3,10,10" Orientation="Horizontal">
-                <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="1" />
+                <TextBox x:Name="NPop" Margin="10,3" Width="65" Text="50" />
                 <TextBox x:Name="Precisao" Margin="10,3" Width="70" Text="8" />
                 <TextBox x:Name="MaxGer" Margin="10,3" Width="70" Text="0" />
                 <TextBox x:Name="MaxAval" Margin="10,3" Width="50" Text="100000" />
                 <TextBox x:Name="Dim" Margin="10,3" Width="55" Text="10" />
                 <CheckBox x:Name="UsarTabu" Margin="10,5" Width="30" IsChecked="False"  />
-                <TextBox x:Name="GerSMelhor" Margin="10,3" Width="80" Text="20" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
-                <TextBox x:Name="MargemComp" Margin="10,3" Width="80" Text="0.00000001" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
+                <TextBox x:Name="GerSMelhor" Margin="10,3" Width="80" Text="100" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
+                <TextBox x:Name="MargemComp" Margin="10,3" Width="80" Text="0.0000000001" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
                 <TextBox x:Name="MaxRepop" Margin="10,3" Width="60" Text="30" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
                 <CheckBox x:Name="TabuNaPop" Margin="10,5" Width="60" IsChecked="False" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}"  />
                 <TextBox x:Name="DistTabu" Margin="10,3" Width="55" Text="0.001" IsEnabled="{Binding IsChecked, ElementName=UsarTabu}" />
@@ -163,7 +166,7 @@
                 <CheckBox x:Name="LSChains" Margin="10,5" Width="55" IsChecked="False"/>
                 <TextBox x:Name="AceleLSChains" Margin="10,3" Width="65" Text="1" IsEnabled="{Binding IsChecked, ElementName=LSChains}" />
                 <TextBox x:Name="NIterLSChains" Margin="10,5" Width="70" Text="3" IsEnabled="{Binding IsChecked, ElementName=LSChains}"  />
-                <TextBox x:Name="QtdMutLocal" Margin="10,3" Width="95" Text="1" />
+                <TextBox x:Name="QtdMutLocal" Margin="10,3" Width="95" Text="0" />
             </StackPanel>
             <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
                 <TextBlock Text="No de Ger." Margin="10,3" Width="85" />
@@ -184,21 +187,23 @@
                 <TextBlock x:Name="NAval" Margin="10,3" Width="70" />
             </StackPanel>
             <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
-                <TextBlock Text="Melhor (no. Aval)" Margin="10,3" Width="180" />
-                <TextBlock Text="Pior (no. Aval)" Margin="10,3" Width="180" />
-                <TextBlock Text="Media Melhor (Media Aval)" Margin="10,3" Width="180" />
+                <TextBlock Text="Best" Margin="10,3" Width="180" />
+                <TextBlock Text="Worst" Margin="10,3" Width="180" />
+                <TextBlock Text="Median" Margin="10,3" Width="180" />
             </StackPanel>
             <StackPanel Margin="10,3,10,0" Orientation="Horizontal">
-                <TextBlock x:Name="Melhor_Aval" Margin="10,3" Width="180" />
-                <TextBlock x:Name="Pior_Aval" Margin="10,3" Width="180" />
-                <TextBlock x:Name="MediaMelhor_MediaAval" Margin="10,3" Width="180" />
+                <TextBlock x:Name="BestTB" Margin="10,3" Width="180" />
+                <TextBlock x:Name="WorstTB" Margin="10,3" Width="180" />
+                <TextBlock x:Name="MedianTB" Margin="10,3" Width="180" />
             </StackPanel>
             <StackPanel Margin="10,10,10,0" Orientation="Horizontal">
-                <TextBlock Text="Std Melhor (std Aval)" Margin="10,3" Width="250" />
+                <TextBlock Text="Mean" Margin="10,3" Width="250" />
+                <TextBlock Text="Std" Margin="10,3" Width="250" />
                 <TextBlock Text="Tx Sucesso %" Margin="10,3" Width="85" />
             </StackPanel>
             <StackPanel Margin="10,3,10,0" Orientation="Horizontal">
-                <TextBlock x:Name="StdMelhor_StdAval" Margin="10,3" Width="250" />
+                <TextBlock x:Name="MeanTB" Margin="10,3" Width="250" />
+                <TextBlock x:Name="StdMTB" Margin="10,3" Width="250" />
                 <TextBlock x:Name="TxSucesso" Margin="10,3" Width="85" />
             </StackPanel>
             <StackPanel x:Name="ControlesExtra" Orientation="Vertical" Margin="10">

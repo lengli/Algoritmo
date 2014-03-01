@@ -12,6 +12,7 @@ using LocalCore.LSChains;
 using AlgoCore;
 using DECore;
 using AlgoView.Helpers;
+using HybridCore;
 
 
 namespace AlgoView
@@ -115,6 +116,8 @@ namespace AlgoView
                     case "DE": algo = RotinaDE(funcao, restricao); break;
                     case "SaDE": algo = RotinaSaDE(funcao, restricao); break;
                     case "JADE": algo = RotinaJADE(funcao, restricao); break;
+                    case "DE/PSO/AG": algo = RotinaThreeLegs(funcao, restricao); break;
+                    case "RandomDE": algo = RotinaRandomDE(funcao, restricao); break;
                     default: return;
                 }
 
@@ -204,18 +207,20 @@ namespace AlgoView
 
         private void ExibirNRodadas(List<AlgoInfo> infos)
         {
-            AlgoInfo melhorRodada = infos.OrderBy(info => info.MelhorIndividuo.Aptidao).First();
-            AlgoInfo piorRodada = infos.OrderByDescending(info => info.MelhorIndividuo.Aptidao).First();
-            double mediaMelhores = infos.Average(info => info.MelhorIndividuo.Aptidao);
-            double mediaAval = infos.Average(info => info.AvalParaMelhor);
+            double best = Math.Abs(_minGlobal - infos.Min(info => info.MelhorIndividuo.Aptidao));
+            double worst = Math.Abs(_minGlobal - infos.Max(info => info.MelhorIndividuo.Aptidao));
+            double median = Math.Abs(_minGlobal - infos.Select(info => info.MelhorIndividuo.Aptidao).ToList().Median());
+            double mean = Math.Abs(_minGlobal - infos.Average(info => info.MelhorIndividuo.Aptidao));
+            double std = Std(infos.Select(info => Math.Abs(_minGlobal - info.MelhorIndividuo.Aptidao)).ToList());
+
             double txSucesso = (double)infos.Count(info => Math.Abs(info.MelhorIndividuo.Aptidao - _minGlobal) <= _erroAceitavel) / infos.Count();
 
-            Melhor_Aval.Text = string.Format("{0} ({1})", melhorRodada.MelhorIndividuo.Aptidao, melhorRodada.AvalParaMelhor);
-            Pior_Aval.Text = string.Format("{0} ({1})", piorRodada.MelhorIndividuo.Aptidao, piorRodada.AvalParaMelhor);
-            MediaMelhor_MediaAval.Text = string.Format("{0} ({1})", mediaMelhores, mediaAval);
             TxSucesso.Text = string.Format("{0:0.00%}", txSucesso);
-            StdMelhor_StdAval.Text = string.Format("{0} ({1})", Std(infos.Select(info => info.MelhorIndividuo.Aptidao).ToList()),
-                Std(infos.Select(info => (double)info.AvalParaMelhor).ToList()));
+            BestTB.Text= best.ToString();
+            WorstTB.Text = worst.ToString();
+            MedianTB.Text= median.ToString();
+            MeanTB.Text = mean.ToString();
+            StdMTB.Text = std.ToString();
         }
 
         private void ExibirUmaRodada(AlgoInfo agInfo)
@@ -231,10 +236,10 @@ namespace AlgoView
             List<Point> medias = new List<Point>();
             List<Point> melhores = new List<Point>();
             List<Point> avaliacoes = new List<Point>();
-
+            /*
             int inc = Convert.ToInt32(Math.Ceiling(agInfo.Informacoes.Count / 500.0));
 
-            for (int i = 0; i < agInfo.Informacoes.Count; i += inc)
+            for (int i = agInfo.Informacoes.Count / 2 - 1; i < agInfo.Informacoes.Count; i += inc)
             {
                 if (agInfo.Informacoes[i].Media <= int.MaxValue)
                     medias.Add(new Point { X = i, Y = agInfo.Informacoes[i].Media });
@@ -242,15 +247,21 @@ namespace AlgoView
                     melhores.Add(new Point { X = i, Y = agInfo.Informacoes[i].MelhorAptidao });
                 avaliacoes.Add(new Point { X = i, Y = agInfo.Informacoes[i].Avaliacoes });
             }
-
+             * 
             SerieMedia.ItemsSource = medias;
             SerieMelhor.ItemsSource = melhores;
             SerieAvaliacoes.ItemsSource = avaliacoes;
-
+            
+            */
             NAval.Text = agInfo.AvalParaMelhor.ToString();
         }
 
         #region Construir objeto algoritmo
+
+        private RotinaAlgo RotinaRandomDE(FuncAptidao funcao, FuncRepopRestricao restricao)
+        {
+            return new DECore.RotinaRandomDE(funcao, restricao, _gs, _hs, _validar, _validarFronteira);
+        }
 
         private RotinaAlgo RotinaPSO(FuncAptidao funcao, FuncRepopRestricao restricao)
         {
@@ -298,6 +309,11 @@ namespace AlgoView
             double cJADE = cTB.Text.ToDouble();
             bool arq = aCB.IsChecked ?? false;
             return new RotinaJADE(funcao, restricao, _gs, _hs, _validar, cJADE, pBest, arq, _validarFronteira);
+        }
+
+        private RotinaAlgo RotinaThreeLegs(FuncAptidao funcao, FuncRepopRestricao restricao)
+        {
+            return new ThreeLegs(funcao, restricao, _gs, _hs, _validar, _validarFronteira);
         }
 
         private RotinaAlgo RotinaSaDE(FuncAptidao funcao, FuncRepopRestricao restricao)
