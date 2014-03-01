@@ -29,7 +29,7 @@ namespace AGCore
             probCrossUsada = probCrossover;
         }
 
-        protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
+        public override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             List<double> probAcum = AGOperadores.MetodoDaRoleta(populacao.Select(ind => ind.Aptidao).ToList());
             List<IndividuoBin> popInterm = AGOperadores.SelecaoPopulacaoIntermediaria(probAcum, populacao);

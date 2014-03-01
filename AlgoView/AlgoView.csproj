@@ -160,6 +160,10 @@
       <Project>{C59A0912-6A0A-4FAF-AABC-C3C7A3471643}</Project>
       <Name>Functions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HybridCore\HybridCore.csproj">
+      <Project>{F34C210C-3F17-4467-94B2-2767A9A16377}</Project>
+      <Name>HybridCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LocalCore\LocalCore.csproj">
       <Project>{773B29B4-113B-4D24-8F29-0C26C02907CF}</Project>
       <Name>LocalCore</Name>

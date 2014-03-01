@@ -40,7 +40,7 @@ namespace PSOCore
             GerarVelocidadesIniciais(_nAtributos, populacao);
         }
 
-        protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
+        public override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             _fatorPondUsado = _fatorPond - (0.5 * _fatorPond * _avaliacoes / _maxAval);
             for (int j = populacao.Count - 1; j >= 0; j--)
@@ -71,7 +71,10 @@ namespace PSOCore
                 }
                 else pg = populacao.OrderBy(ind => ind.Aptidao).FirstOrDefault();
 
+                if (!individuo.ParamExtras.ContainsKey(propVelocidade))
+                    GerarVelocidadesIniciais(_nAtributos, individuo);
                 List<double> velocidade = ((List<double>)individuo.ParamExtras[propVelocidade]);
+
                 for (int i = 0; i < _nAtributos; i++)
                 {
                     double vel = velocidade[i];
@@ -127,19 +130,33 @@ namespace PSOCore
             return (2 * _coefKConstr) / (fi - 2 + Math.Sqrt(fi * fi - (4 * fi)));
         }
 
-        private void GerarVelocidadesIniciais(int nAtributos, List<IndividuoBin> populacao)
+        public void GerarVelocidadesIniciais(int nAtributos, List<IndividuoBin> populacao)
         {
-            foreach (IndividuoBin individuo in populacao)
-            {
-                if (!individuo.ParamExtras.ContainsKey(propVelocidade))
-                    individuo.ParamExtras.Add(propVelocidade, new List<double>());
-
-                for (int i = 0; i < nAtributos; i++)
+            if (populacao != null)
+                foreach (IndividuoBin individuo in populacao)
                 {
-                    //((List<double>)individuo.ParamExtras[propVelocidade]).Add(rand.NextDouble()* (_max - _min)+ _min);
-                    ((List<double>)individuo.ParamExtras[propVelocidade]).Add(0);
-                    //((List<double>)individuo.ParamExtras[propVelocidade]).Add((IndividuoBin.Maximo - IndividuoBin.Minimo) * .1);
+                    if (!individuo.ParamExtras.ContainsKey(propVelocidade))
+                        individuo.ParamExtras.Add(propVelocidade, new List<double>());
+
+                    for (int i = 0; i < nAtributos; i++)
+                    {
+                        //((List<double>)individuo.ParamExtras[propVelocidade]).Add(rand.NextDouble()* (_max - _min)+ _min);
+                        ((List<double>)individuo.ParamExtras[propVelocidade]).Add(0);
+                        //((List<double>)individuo.ParamExtras[propVelocidade]).Add((IndividuoBin.Maximo - IndividuoBin.Minimo) * .1);
+                    }
                 }
+        }
+
+        private void GerarVelocidadesIniciais(int nAtributos, IndividuoBin individuo)
+        {
+            if (!individuo.ParamExtras.ContainsKey(propVelocidade))
+                individuo.ParamExtras.Add(propVelocidade, new List<double>());
+
+            for (int i = 0; i < nAtributos; i++)
+            {
+                //((List<double>)individuo.ParamExtras[propVelocidade]).Add(rand.NextDouble()* (_max - _min)+ _min);
+                ((List<double>)individuo.ParamExtras[propVelocidade]).Add(0);
+                //((List<double>)individuo.ParamExtras[propVelocidade]).Add((IndividuoBin.Maximo - IndividuoBin.Minimo) * .1);
             }
         }
 

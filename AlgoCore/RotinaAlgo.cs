@@ -141,10 +141,10 @@ namespace AlgoCore
             _distTabu = distTabu;
             _margemComp = margemComp;
             _gerSemMelhorar = gerSemMelhorar;
-            mutReal = 20;
 
             _agInfo = new AlgoInfo();
-            populacao = PopulacaoAleatoria(tamanhoPop, min, max, nAtributos, precisao, lsChains != null);
+            if (geracoesMAx > -1)
+                populacao = PopulacaoAleatoria(tamanhoPop, min, max, nAtributos, precisao, lsChains != null);
 
             InicializarAlgoritmo(populacao);
 
@@ -161,16 +161,34 @@ namespace AlgoCore
                     _popMax = populacao.Max(ind => ind.Aptidao);
                     _popMin = populacao.Min(ind => ind.Aptidao);
                 }
+
                 // Limite do nr. de avaliações
-                if ((_maxAval != 0 && _avaliacoes >= _maxAval) ||
-                    (_agInfo.MelhorIndividuo != null &&
-                    Math.Abs(_agInfo.MelhorIndividuo.Aptidao - MinGlogal) < ErroAceitavel)) break;
+                if ((_maxAval != 0 && _avaliacoes >= _maxAval)
+                    //|| (_agInfo.MelhorIndividuo != null && Math.Abs(_agInfo.MelhorIndividuo.Aptidao - MinGlogal) < ErroAceitavel)
+                    ) break;
 
                 //if (erroAceitavel > 0 && Math.Abs(_agInfo.MelhorIndividuo.Aptidao - minGlobal) < erroAceitavel) break;
 
                 // avaliará individuos novos
-                foreach (IndividuoBin individuo in populacao.Where(p => p.Aptidao == double.MaxValue))
-                    individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
+                for (int i =0; i<populacao.Count;i++)
+                {
+                     IndividuoBin individuo = populacao[i];
+                    if (usarTabu)
+                    {
+                        foreach (IndividuoBin inTabu in individuosTabu)
+                        {
+                            if(inTabu.Proximo(distTabu,individuo))
+                            {
+                                List<IndividuoBin> inds = IndividuoBin.GerarPopulacao<IndividuoBin>(1, _min, _max,
+                                    _nAtributos, precisao, individuosTabu, distTabu);
+                                if (inds.Count > 0) populacao[i] = inds[0];
+                            }
+                        }
+                    }
+
+                    if(individuo.Aptidao == double.MaxValue)
+                        individuo.Aptidao = FuncaoAptidao(individuo.Atributos);
+                }
 
                 ExecutarAlgoritmo(populacao);
 
@@ -216,13 +234,15 @@ namespace AlgoCore
                 // se todos os individuos convergirem 
                 //int gr = populacao.GroupBy(ind => ind.Aptidao).Count();
                 //if (g > 400 && gr == 1) break;
+                Console.WriteLine("Ger:" + g + " / Apt:" + _agInfo.MelhorIndividuo.Aptidao + " / aval:" + _avaliacoes);
             }
             return _agInfo;
         }
 
-        int falhas;
-        double ultAptidao = double.MaxValue;
-        double mutReal;
+        List<int> falhas;
+        List<double> ultAptidao;
+        List<double> mutExplt;
+        List<double> mutExplr;
         // método destinado a inserir algorítmos meméticos
         // considerando que a lista populacao já está ordenada por aptidao
         private void BuscaLocal(List<IndividuoBin> populacao,
@@ -230,40 +250,87 @@ namespace AlgoCore
             int qtdMutLocal, ParametrosHillClimbing hillClimbing, ParametrosLSChains lsChains) // parametros das buscas locais
         {
             // busca local
-            if (falhas >= 5)
+            if (mutExplr == null || mutExplt == null)
             {
-                mutReal /= 5;
-                if (mutReal < Math.Pow(10, -(precisao - 2))) mutReal *= 5;
-                falhas = 0;
+                mutExplt = new List<double>();
+                mutExplr = new List<double>();
+                falhas = new List<int>();
+                ultAptidao = new List<double>();
+                for (int i = 0; i < _nAtributos; i++)
+                {
+                    mutExplr.Add((max(0) - min(0)) / 8);
+                    mutExplt.Add((max(0) - min(0)) / 15);
+                    falhas.Add(0);
+                    ultAptidao.Add(double.MaxValue);
+                }
             }
 
             for (int z = 0; z < qtdMutLocal; z++)
             {
-                //populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
-                //populacao[z] = MutacaoBinaria.Executar(populacao[z], FuncaoAptidao);
+                for (int j = 0; j < _nAtributos; j++)
+                {
+                    IndividuoBin ind1 = populacao[z].Clone();
+                    if (falhas[j] >= 4)
+                    {
+                        mutExplt[j] /= 1 + new Random(AlgoUtil.GetSeed()).NextDouble();
+                        mutExplr[j] /= 1 + new Random(AlgoUtil.GetSeed()).NextDouble();
+                        if (mutExplt[j] < Math.Pow(10, -(precisao + 2)))
+                            mutExplt[j] = Math.Pow(10, -(precisao - 2));
+                        if (mutExplr[j] < (max(0) - min(0)) / 200)
+                            mutExplr[j] = (max(0) - min(0)) / 100;
+                        falhas[j] = 0;
+                        ultAptidao[j] = double.MaxValue;
+                    }
 
-                // adaptativo
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, FuncaoAptidaoVirtual, mutReal, _validarRestricao);
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, FuncaoAptidaoVirtual, mutReal * 1E-2, _validarRestricao);
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, FuncaoAptidaoVirtual, -mutReal, _validarRestricao);
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, FuncaoAptidaoVirtual, -mutReal * 1E-2, _validarRestricao);
+                    double explt = mutExplt[j];
+                    double explr = mutExplr[j];
 
-                // +- 5% -> alta convergencia + diversidade
-                //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 20, null);
-                // +- 0.1% - > exploração
-                //populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, (max(z) - min(z)) / 1000, null);
-                // +- precisão - > explotação
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, Math.Pow(10, -precisao), null);
-                populacao[z] = MutacaoReal.Executar(populacao[z], FuncaoAptidao, null, -Math.Pow(10, -precisao), null);
+                    if (new Random(AlgoUtil.GetSeed()).NextDouble() < 0.5)
+                    {
+                        explt *= -1;
+                        explr *= -1;
+                    }
+
+                    List<IndividuoBin> tempInds = new List<IndividuoBin>();
+                    for (int k = 1; k < 4; k++)
+                    {
+                        ind1 = MutacaoReal.Executar(ind1, FuncaoAptidao, FuncaoAptidaoVirtual, explt, _validarRestricao, j);
+                        tempInds.Add(ind1.Clone());
+                        ind1 = MutacaoReal.Executar(ind1, FuncaoAptidao, FuncaoAptidaoVirtual, explr, _validarRestricao, j);
+                        tempInds.Add(ind1.Clone());
+                    }
+
+                    int melhor = 0;
+                    double melhorApt = double.MaxValue;
+                    for (int m = 0; m < tempInds.Count; m++)
+                    {
+                        if (tempInds[m].Aptidao < melhorApt)
+                        {
+                            melhorApt = tempInds[m].Aptidao;
+                            melhor = m;
+                        }
+                    }
+
+                    if (tempInds[melhor].Aptidao < populacao[z].Aptidao)
+                    {
+                        ultAptidao[j] = tempInds[melhor].Aptidao;
+                        populacao[z] = tempInds[melhor];
+                    }
+                    else
+                    {
+                        falhas[j]++;
+                        populacao.Add(tempInds[melhor]);
+                    }
+
+                    if (falhas[j] != 0) continue;
+
+                    //Console.WriteLine("Mut-Exploração:" + mutExplr);
+                    //Console.WriteLine("Mut-Explotação:" + mutExplt);
+                    //Console.WriteLine("Apt:" + populacao[0].Aptidao);
+                    //Console.WriteLine();
+                }
             }
-            
-            Console.WriteLine("MutReal:" + mutReal);
-            Console.WriteLine("Apt:" + populacao[0].Aptidao);
-            Console.WriteLine();
 
-            if (populacao[0].Aptidao < ultAptidao)
-                ultAptidao = populacao[0].Aptidao;
-            else falhas++;
 
             // busca por hill climbing
             if (hillClimbing != null)
@@ -291,7 +358,7 @@ namespace AlgoCore
 
         protected abstract bool CriterioDeParada(AlgoInfo agInfo);
         protected abstract void InicializarAlgoritmo(List<IndividuoBin> populacao);
-        protected abstract void ExecutarAlgoritmo(List<IndividuoBin> populacao);
+        public abstract void ExecutarAlgoritmo(List<IndividuoBin> populacao);
 
         private bool CriterioRepopular(AlgoInfo agInfo, int ultimaRepop)
         {

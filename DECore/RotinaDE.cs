@@ -22,7 +22,7 @@ namespace DECore
         }
 
         //double _fatorFUsado;
-        protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
+        public override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             //if (_fatorF > 0)
             //    _fatorFUsado = _fatorF / (Math.Pow(20, (double)_avaliacoes / _maxAval));

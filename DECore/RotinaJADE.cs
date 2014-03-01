@@ -53,7 +53,7 @@ namespace DECore
 
         }
 
-        protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
+        public override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             double CRi = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomNormal(_mCR, 0.1);
             double Fi = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomCauchy(_mF, 0.1);

@@ -42,7 +42,7 @@ namespace DECore
             }
         }
 
-        protected override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
+        public override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
             List<double> pk = new List<double>();
             if (g > _lp)

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F34C210C-3F17-4467-94B2-2767A9A16377}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HybridCore</RootNamespace>
+    <AssemblyName>HybridCore</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ThreeLegs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AGCore\AGCore.csproj">
+      <Project>{F8721596-EA7C-4461-932E-24B62096D842}</Project>
+      <Name>AGCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AlgoCore\AlgoCore.csproj">
+      <Project>{9CCD02DB-7EF7-4482-B00B-A68F34548228}</Project>
+      <Name>AlgoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AlgoResult\AlgoResult.csproj">
+      <Project>{81E003C6-F470-4C8B-BE08-B2184A9D649E}</Project>
+      <Name>AlgoResult</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DECore\DECore.csproj">
+      <Project>{AFAC529B-FDE6-41D6-9E2F-14FA27A9A189}</Project>
+      <Name>DECore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Functions\Functions.csproj">
+      <Project>{C59A0912-6A0A-4FAF-AABC-C3C7A3471643}</Project>
+      <Name>Functions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LocalCore\LocalCore.csproj">
+      <Project>{773B29B4-113B-4D24-8F29-0C26C02907CF}</Project>
+      <Name>LocalCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PSOCore\PSOCore.csproj">
+      <Project>{EBC0B467-E91E-40D7-B688-77BFC49CBD75}</Project>
+      <Name>PSOCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
