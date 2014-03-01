@@ -159,7 +159,7 @@ namespace Functions
                 tmp2 = z[i] - 1.0;
                 f += 100.0 * tmp1 * tmp1 + tmp2 * tmp2;
             }
-            return f;
+            return f - 900;
         }
 
         /// <summary>
