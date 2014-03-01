@@ -56,8 +56,8 @@ namespace AlgoView
             // duas dimensões
             List<List<double>> tabelaResultado = new List<List<double>>();
             // 0 => y; 1 => x
-            double min0 = min(0) / 2, min1 = min(1) / 2, max0 = max(0) / 2, max1 = max(1) / 2;
-            //double min0 = -30, max0 =-10, min1 = 0, max1 = 20;
+            double min0 = min(0), min1 = min(1), max0 = max(0), max1 = max(1);
+            //double min0 = -20, max0 = 20, min1 = -20, max1 = 20;
             double rangeI = max0 - min0, rangeJ = max1 - min1;
             double interI = rangeI / precisao, interJ = rangeJ / precisao;
             MaxYTB.Text = string.Format("{0:#,0.00}", max0);
@@ -69,6 +69,7 @@ namespace AlgoView
 
             // cálculo da aptidão nos pontos a serem mapeados
             double menorApt = double.MaxValue, maiorApt = double.MinValue;
+            double menorAtrI = 0, menorAtrJ = 0;
             for (int i = 0; i < precisao; i++)
             {
                 tabelaResultado.Add(new List<double>());
@@ -83,6 +84,8 @@ namespace AlgoView
                         iMenor = i;
                         jMenor = j;
                         menorApt = res;
+                        menorAtrI = atrI;
+                        menorAtrJ = atrJ;
                     }
                     if (res > maiorApt) maiorApt = res;
                 }
@@ -105,6 +108,8 @@ namespace AlgoView
 
             if (_xs != null && _ys != null)
                 DesenharPontos(min0, max0, min1, max1);
+
+            MelhorTB.Text = string.Format("[{0},{1}] => {2}", menorAtrI, menorAtrJ, menorApt);
         }
 
         private int RangeCor = 255 * 4 + 100;
@@ -157,21 +162,27 @@ namespace AlgoView
 
                 for (int j = 0; j < iT; j++)
                 {
-                    double y = minPx + j * stepY;
+                    double y = maxPx - j * stepY;
                     if (i == iMenor && j == jMenor)
                     {
                         xMenor = x;
                         yMenor = y;
                     }
                     else
+                    {
+                        double wh = 300 / nT;
+                        //if (tabelaCores[i][j].R % 5 != 0) continue;
+                        //if (tabelaCores[i][j].G % 5 != 0) continue;
+                        //if (tabelaCores[i][j].B % 5 != 0) continue;
                         CanvasGraph.Children.Add(new Rectangle
                         {
-                            Margin = new Thickness(x, y, 0, 0),
-                            Width = 300 / nT,
-                            Height = 300 / nT,
+                            Margin = new Thickness(x, y - wh, 0, 0),
+                            Width = wh,
+                            Height = wh,
                             Stroke = new SolidColorBrush(tabelaCores[i][j]),
                             Fill = new SolidColorBrush(tabelaCores[i][j])
                         });
+                    }
                 }
             }
             CanvasGraph.Children.Add(new Ellipse

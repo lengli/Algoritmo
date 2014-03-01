@@ -11,6 +11,7 @@
             <Button Margin="15 0" Padding="5 0" x:Name="GerarButton" Click="Button_Click">Gerar</Button>
         </StackPanel>
         <Grid VerticalAlignment="Top">
+            <TextBlock Text="" x:Name="MelhorTB" HorizontalAlignment="Center" Margin="0 8 0 0"/>
         <Canvas Height="300" Width="300" x:Name="ValidArea" Margin="0">
 
         </Canvas>
