@@ -24,9 +24,10 @@ namespace DECore
 
         internal static void ExecutarMutacao(int atualInd, List<IndividuoBin> populacao, SelecaoDE _tipoSelecao, double _fatorF,
             int _nAtributos, double _probCross, Bound _min, Bound _max, FuncValidarFronteira valFront, FuncAptidao aptidao,
-            Action<bool, double, double, SelecaoDE, IndividuoBin> noSucesso = null, Dictionary<string, object> extraParams = null)
+            Action<bool, double, double, SelecaoDE, IndividuoBin> noSucesso = null, Dictionary<string, object> extraParams = null,
+            double _margem = 0, IndividuoBin preSelecao = null)
         {
-            List<IndividuoBin> selecao;
+            List<IndividuoBin> selecao = null;
             List<double> fs;
             HashSet<int> filtros;
 
@@ -89,6 +90,12 @@ namespace DECore
                 default: return;
             }
 
+            if (preSelecao != null)
+            {
+                selecao.RemoveAt(0);
+                selecao.Insert(0, preSelecao);
+            }
+
             IndividuoBin individuoTemp = new IndividuoBin();
 
             int jRand = new Random(AlgoCore.AlgoUtil.GetSeed()).Next(0, _nAtributos - 1);
@@ -111,7 +118,7 @@ namespace DECore
             }
 
             individuoTemp.Aptidao = aptidao(individuoTemp.Atributos);
-            bool sucesso = individuoTemp.Aptidao < populacao[atualInd].Aptidao;
+            bool sucesso = individuoTemp.Aptidao < populacao[atualInd].Aptidao + _margem;
             if (sucesso)
                 populacao[atualInd] = individuoTemp;
             if (noSucesso != null) noSucesso(sucesso, _probCross, _fatorF, _tipoSelecao, populacao[atualInd]);
