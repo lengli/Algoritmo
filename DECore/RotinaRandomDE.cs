@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AlgoCore;
 using Functions;
 using AlgoResult;
@@ -23,18 +22,18 @@ namespace DECore
             _ger = ger;
         }
 
-        protected override bool CriterioDeParada(AlgoResult.AlgoInfo agInfo) { return false; }
+        protected override bool CriterioDeParada(AlgoInfo agInfo) { return false; }
 
-        protected override void InicializarAlgoritmo(List<AlgoResult.IndividuoBin> populacao) { }
+        protected override void InicializarAlgoritmo(List<IndividuoBin> populacao) { }
 
-        private int _gerFalhas = 0;
+        private int _gerFalhas;
         private double _melhorAptAnterior = double.MaxValue;
-        public override void ExecutarAlgoritmo(List<AlgoResult.IndividuoBin> populacao)
+        public override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
-            if (_gerFalhas >= _ger)
+            if (_ger != 0 && _gerFalhas >= _ger)
             {
                 IndividuoBin individuo = IndividuoBin.GerarPopulacao<IndividuoBin>(1, _min, _max,
-                    _nAtributos, IndividuoBin.Precisao, null, 0).FirstOrDefault();
+                    _nAtributos, IndividuoBin.Precisao).FirstOrDefault();
 
                 _gerFalhas = 0;
                 _melhorAptAnterior = double.MaxValue;
