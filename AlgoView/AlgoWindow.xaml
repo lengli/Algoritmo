@@ -90,6 +90,20 @@
                             <TextBox Text="0" x:Name="NVizinhos" Margin="10,3" Width="60"/>
                         </StackPanel>
                     </StackPanel>
+                    <StackPanel x:Name="RandomDEPanel" Visibility="Collapsed">
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBlock Text="CR" Margin="10,3" Width="40"/>
+                            <TextBlock Text="F" Margin="10,3" Width="40"/>
+                            <TextBlock Text="Margem" Margin="10,3" Width="40"/>
+                            <TextBlock Text="Ger. p/ novo Ind." Margin="10,3" Width="95"/>
+                        </StackPanel>
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <TextBox Text="0" x:Name="RandomCR" Margin="10,3" Width="40"/>
+                            <TextBox Text="0" x:Name="RandomF" Margin="10,3" Width="40"/>
+                            <TextBox Text="0" x:Name="RandomMargem" Margin="10,3" Width="40"/>
+                            <TextBox Text="0" x:Name="GerNovoInd" Margin="10,3" Width="95"/>
+                        </StackPanel>
+                    </StackPanel>
                     <StackPanel>
                         <StackPanel Margin="10,5,10,0" Orientation="Horizontal" HorizontalAlignment="Left">
                             <TextBlock Text="Algoritmo" Margin="10,3"  Width="60"/>

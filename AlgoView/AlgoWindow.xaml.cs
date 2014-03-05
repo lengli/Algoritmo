@@ -184,6 +184,7 @@ namespace AlgoView
             PsoPanel.Visibility = Visibility.Collapsed;
             SaDEPanel.Visibility = Visibility.Collapsed;
             JADEPanel.Visibility = Visibility.Collapsed;
+            RandomDEPanel.Visibility = Visibility.Collapsed;
 
             switch (item.Content.ToString())
             {
@@ -202,6 +203,9 @@ namespace AlgoView
                 case "JADE":
                     JADEPanel.Visibility = Visibility.Visible;
                     break;
+                case "RandomDE":
+                    RandomDEPanel.Visibility = Visibility.Visible;
+                    break;
             }
         }
 
@@ -216,9 +220,9 @@ namespace AlgoView
             double txSucesso = (double)infos.Count(info => Math.Abs(info.MelhorIndividuo.Aptidao - _minGlobal) <= _erroAceitavel) / infos.Count();
 
             TxSucesso.Text = string.Format("{0:0.00%}", txSucesso);
-            BestTB.Text= best.ToString();
+            BestTB.Text = best.ToString();
             WorstTB.Text = worst.ToString();
-            MedianTB.Text= median.ToString();
+            MedianTB.Text = median.ToString();
             MeanTB.Text = mean.ToString();
             StdMTB.Text = std.ToString();
         }
@@ -260,7 +264,12 @@ namespace AlgoView
 
         private RotinaAlgo RotinaRandomDE(FuncAptidao funcao, FuncRepopRestricao restricao)
         {
-            return new DECore.RotinaRandomDE(funcao, restricao, _gs, _hs, _validar, _validarFronteira);
+            double cr = RandomCR.Text.ToDouble();
+            double f = RandomF.Text.ToDouble();
+            double marg = RandomMargem.Text.ToDouble();
+            int ger;
+            if (!int.TryParse(GerNovoInd.Text, out ger)) ger = 0;
+            return new DECore.RotinaRandomDE(cr, f, marg, ger, funcao, restricao, _gs, _hs, _validar, _validarFronteira);
         }
 
         private RotinaAlgo RotinaPSO(FuncAptidao funcao, FuncRepopRestricao restricao)
