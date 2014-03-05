@@ -27,7 +27,7 @@ namespace DECore
             Action<bool, double, double, SelecaoDE, IndividuoBin> noSucesso = null, Dictionary<string, object> extraParams = null,
             double _margem = 0, IndividuoBin preSelecao = null)
         {
-            List<IndividuoBin> selecao = null;
+            List<IndividuoBin> selecao;
             List<double> fs;
             HashSet<int> filtros;
 

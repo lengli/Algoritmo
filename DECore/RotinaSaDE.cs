@@ -9,9 +9,6 @@ namespace DECore
 {
     public class RotinaSaDE : RotinaAlgo
     {
-        private const string keyEstrategia = "Estrategia";
-        private const string keyF = "F";
-        private const string keyCR = "CR";
         private int _lp;
         private List<SelecaoDE> _selecoes;
         private int _nEstrategias;
@@ -93,9 +90,8 @@ namespace DECore
 
             for (int i = 0; i < populacao.Count; i++)
             {
-                IndividuoBin individuo = populacao[i];
                 // seleçao da estratégia para o indivíduo
-                double random = new Random(AlgoCore.AlgoUtil.GetSeed()).NextDouble();
+                double random = new Random(AlgoUtil.GetSeed()).NextDouble();
                 int indiceEstrategia = 0;
                 for (int j = 0; j < probPk.Count; j++)
                 {
@@ -105,7 +101,7 @@ namespace DECore
                 }
 
                 // F
-                double fNormal = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomNormal(0.5, 0.3);
+                double fNormal = new Random(AlgoUtil.GetSeed()).RandomNormal(0.5, 0.3);
 
                 // CR
                 if (g >= _lp)
@@ -123,7 +119,7 @@ namespace DECore
 
                 double cr = -1;
                 while (cr < 0 || cr > 1)
-                    cr = new Random(AlgoCore.AlgoUtil.GetSeed()).RandomNormal(_crm[_selecoes[indiceEstrategia]], 0.1);
+                    cr = new Random(AlgoUtil.GetSeed()).RandomNormal(_crm[_selecoes[indiceEstrategia]], 0.1);
 
                 DEUtil.ExecutarMutacao(i, populacao, _selecoes[indiceEstrategia],
                    fNormal, _nAtributos, cr, _min, _max, _validarFronteira, FuncaoAptidao, NoSucesso);
