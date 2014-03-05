@@ -234,7 +234,7 @@ namespace AlgoCore
                 // se todos os individuos convergirem 
                 //int gr = populacao.GroupBy(ind => ind.Aptidao).Count();
                 //if (g > 400 && gr == 1) break;
-                Console.WriteLine("Ger:" + g + " / Apt:" + _agInfo.MelhorIndividuo.Aptidao + " / aval:" + _avaliacoes);
+                //Console.WriteLine("Ger:" + g + " / Apt:" + _agInfo.MelhorIndividuo.Aptidao + " / aval:" + _avaliacoes);
             }
             return _agInfo;
         }
