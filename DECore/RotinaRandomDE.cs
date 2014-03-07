@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using AlgoCore;
 using Functions;
 using AlgoResult;
@@ -58,7 +59,10 @@ namespace DECore
                         _min, _max, _validarFronteira, FuncaoAptidao, null, null, _margem);
                 }
 
+            if (_ger == 0) return;
+
             double melhorApt = populacao.Min(x => x.Aptidao);
+            
             if (melhorApt < _melhorAptAnterior)
             {
                 _melhorAptAnterior = melhorApt;
