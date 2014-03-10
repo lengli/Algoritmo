@@ -266,10 +266,11 @@ namespace AlgoView
         {
             double cr = RandomCR.Text.ToDouble();
             double f = RandomF.Text.ToDouble();
-            double marg = RandomMargem.Text.ToDouble();
+            double alphaMarg = AlphaMargem.Text.ToDouble();
+            double gammaMarg = GamaMargem.Text.ToDouble();
             int ger;
             if (!int.TryParse(GerNovoInd.Text, out ger)) ger = 0;
-            return new DECore.RotinaRandomDE(cr, f, marg, ger, funcao, restricao, _gs, _hs, _validar, _validarFronteira);
+            return new DECore.RotinaRandomDE(cr, f, alphaMarg, gammaMarg, ger, funcao, restricao, _gs, _hs, _validar, _validarFronteira);
         }
 
         private RotinaAlgo RotinaPSO(FuncAptidao funcao, FuncRepopRestricao restricao)

@@ -10,16 +10,17 @@ namespace DECore
 {
     public class RotinaRandomDE : RotinaAlgo
     {
-        private double _cr, _f, _margem;
+        private double _cr, _f, _alfa, _gama;
         private int _ger;
 
-        public RotinaRandomDE(double cr, double f, double margem, int ger,
+        public RotinaRandomDE(double cr, double f, double alfa,double gama, int ger,
             FuncAptidao ap, FuncRepopRestricao rp, ListAptidao gs, ListAptidao hs, FuncValidarRestricao vl, FuncValidarFronteira fr)
             : base(ap, rp, gs, hs, vl, fr)
         {
             _cr = cr;
             _f = f;
-            _margem = margem;
+            _alfa = alfa;
+            _gama = gama;
             _ger = ger;
         }
 
@@ -29,8 +30,10 @@ namespace DECore
 
         private int _gerFalhas;
         private double _melhorAptAnterior = double.MaxValue;
+        private double _margem;
         public override void ExecutarAlgoritmo(List<IndividuoBin> populacao)
         {
+            _margem = _alfa * _nAtributos * Math.Pow((_geracoesMAx - _ger) / _geracoesMAx, _gama);
             if (_ger != 0 && _gerFalhas >= _ger)
             {
                 IndividuoBin individuo = IndividuoBin.GerarPopulacao<IndividuoBin>(1, _min, _max,
